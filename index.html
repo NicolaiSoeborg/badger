@@ -20,7 +20,7 @@
     </head>
     <body ondragover="event.preventDefault();" ondrop="event.preventDefault(); dropHandler(event)">
         <div id="container">
-            <div class="badge" data-position="bottom-right-aligned" data-intro="This is the current badge design. Drag'n'Drop an image to change background.">
+            <div class="badge" data-position="bottom-right-aligned" data-intro="This is the current badge design. Drag'n'Drop an image (saved in a local folder) to change background.">
                 <div style="float: left">
                     <button class="closeBtn no-print" title="Delete badge" onclick="deleteBadge(this)">X</button>
                     <svg version="1.1" baseProfile="full" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +98,7 @@
             	window.onbeforeunload = function() {
             		localStorage.savedBadge = $($('#outputTextField')[0]).val();
             	}
-			}
+            }
         </script>
     </body>
 </html>

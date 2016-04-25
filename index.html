@@ -12,6 +12,7 @@
             .menu { display: inline-block; float: left; padding: 10px; background: rgb(90, 210, 135); }
             .badge { float: left; }
             .closeBtn { float: right; position: relative; right: 25px; top: 25px; }
+            .hidden { display: none; }
             @media print { .no-print, .no-print * { display: none !important; } } /* Don't print menu */
         </style>
         <script>var jsintro = function() { introJs().setOptions({'showStepNumbers': false, 'skipLabel': 'Exit', 'showBullets': false}).start(); }</script>
@@ -50,9 +51,9 @@
             <!-- badge -->
             <div class="menu no-print" data-intro="Select a textfield on the badge and use this box to change properties.">
                 <input type="hidden" id="txtItem">
-                Text: <input type="text" id="txtText" onkeyup="save()"><br>
+                Text: <input type="text" id="txtText" onkeyup="saveBadge()"><br>
                 Font:
-                <select id="txtFont" onchange="save()">
+                <select id="txtFont" onchange="saveBadge()">
                     <option style="font-family: 'Times New Roman'" value="Times New Roman" selected>Times New Roman</option>
                     <option style="font-family: 'Helvetica'" value="Helvetica">Helvetica</option>
                     <option style="font-family: 'Arial'" value="Arial">Arial</option>
@@ -65,12 +66,22 @@
                     <!-- TODO: How well does this work on Mac? Add option 'write name on own font'. -->
                 </select>
                 <br>
-                Size: <input type="number" style="width: 40px" id="txtSize" onkeyup="save()" onchange="save()" min="0" value="60"> px &nbsp;
+                Size: <input type="number" style="width: 40px" id="txtSize" onkeyup="saveBadge()" onchange="saveBadge()" min="0" value="60"> px &nbsp;
                 <!-- Background: <input type="file" id="txtBg" onchange="console.log(this);"><br> -->
-                Color: <input type="color" id="txtColor" value="#ffffff" onchange="save()"><br>
+                Color: <input type="color" id="txtColor" value="#ffffff" onchange="saveBadge()"><br>
                 Image Scale: <input id='scale_slider' type='range' min='0.1' max='3.0' step='0.01' value='1.0' onchange="scaleImage(this.value)" /><br>
-                <button type="button" onclick="jsintro();">?</button>
-                <button type="button" onclick="save(); cloneBadge()" style="float: right" data-intro="When the design is ready, use this button to clone (copy) the current badge design. This allows you to easily change e.g. the name of a <i>rus</i> on your team.">Clone</button>
+                <button type="button" onclick="outputLayout()" data-intro="Click this button to save the current layout.">Save</button>
+                <button type="button" onclick="inputLayout()">Load</button>
+                <button type="button" onclick="jsintro()">?</button>
+                <button type="button" onclick="saveBadge(); cloneBadge()" style="float: right" data-intro="When the design is ready, use this button to clone (copy) the current badge design. This allows you to easily change e.g. the name of a <i>rus</i> on your team.">Clone</button><br>
+                <div class="menu no-print hidden" id="outputBox">
+            		Save this code: <input type="textbox" id="outputTextField" onclick="this.select()" placeholder="If this box is empty, something is wrong!" style="width: 100%" readonly/><br>
+            		<small>Last updated <label id="lastSaveOutputTimer">999</label> sec ago.</small>
+            	</div>
+				<div class="menu no-print hidden" id="inputBox">
+            		Insert saved code: <input type="textbox" id="inputTextField" style="width: 100%" /><br>
+            		<button onclick="loadSaved();">Load</button>&nbsp;<small><b>WARNING:</b> Do not load untrusted code!</small>
+            	</div>
             </div>
         </div>
         <!-- container -->
@@ -79,9 +90,14 @@
 			if (typeof introJs !== 'function') alert("Intro.js not loaded.");
 
             setEdit($('#TextMiddle')[0]); // "DTU" textbox selected as default
-            if (typeof(localStorage) !== "undefined" && !localStorage.hasrun) {
-            	jsintro();
-            	localStorage.setItem("hasrun", true);
+            if (typeof(localStorage) !== "undefined") {
+            	if (!localStorage.hasrun) {
+            		jsintro();
+            		localStorage.setItem("hasrun", true);
+            	}
+            	window.onbeforeunload = function() {
+            		localStorage.savedBadge = $($('#outputTextField')[0]).val();
+            	}
 			}
         </script>
     </body>

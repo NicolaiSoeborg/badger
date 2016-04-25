@@ -3,6 +3,12 @@
 if (window.navigator.userAgent.indexOf('Edge/') > -1)
     alert("IE Edge not supported! Please use Firefox or Chrome instead.");
 
+$(document).ready(function() {
+    setInterval(function(){
+        $("#lastSaveOutputTimer").text(parseInt($("#lastSaveOutputTimer").text()) + 1);
+    }, 1000);
+});
+
 function setEdit(elm) {
     $("#txtItem").val( elm.id );
     $("#txtText").val( elm.innerHTML );
@@ -11,7 +17,7 @@ function setEdit(elm) {
     $("#txtColor").val( rgbToHex($(elm).css('fill')) );
 }
 
-function save() {
+function saveBadge() {
     // hack til at vaelge det valgte tekstfeltet i svg billedet:
     var elm = $("#" + $("#txtItem").val() )[0];
     
@@ -19,6 +25,8 @@ function save() {
     $(elm).css('font-family', $("#txtFont").val()); // font
     $(elm).css('font-size', $("#txtSize").val() + "px"); // size
     $(elm).css('fill', $("#txtColor").val()); // farve
+
+    outputLayout(true);
 }
 
 function dropHandler(file) {
@@ -95,7 +103,7 @@ function scaleImage(val) {
 }
 
 function cloneBadge() {
-    $($('.badge')[0]).clone().appendTo('#container');
+    $($('.badge')[0]).clone().removeAttr('data-intro').appendTo('#container');
 }
 
 function deleteBadge(badge) {
@@ -104,7 +112,49 @@ function deleteBadge(badge) {
     }
 }
 
-// Hack for browsers that doesn't support "beforeprint" (everyone but IE ...)
+function hideAndToggle(hide, toggle) {
+    $(hide).each(function() {
+        $(this).addClass('hidden');
+    });
+    $(toggle).each(function() {
+        if ($(this).hasClass('hidden'))
+            $(this).removeClass('hidden');
+        else $(this).addClass('hidden');
+    });
+}
+
+function outputLayout(justReload = false) {
+    $($('#outputTextField')[0]).val( btoa($("body").html()) ); // TODO: Improve this!
+    $("#lastSaveOutputTimer").text('0');
+
+    if (!justReload)
+        hideAndToggle($('#inputBox'), $('#outputBox'));
+}
+
+function inputLayout() {
+    hideAndToggle($('#outputBox'), $('#inputBox'));
+}
+
+function loadSaved() {
+    var decoded = atob( $($('#inputTextField')[0]).val() );
+    if (decoded.length > 0) {
+        $("body").html(decoded);
+        outputLayout(true);
+    }
+}
+
+/*function loadStored() {
+    if (localStorage.savedBadge) {
+        $(document).ready(function() {
+            $($('#inputTextField')[0]).val( localStorage.savedBadge );
+            loadSaved();
+        });
+        return true;
+    }
+    return false;
+}*/
+
+// Hack for browsers that doesn't support "beforeprint" (everyone but IE !)
 if ('matchMedia' in window) {
     window.matchMedia('print').addListener(function(media) {
         if (media.matches) {

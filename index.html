@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta http-equiv='content-type' content='text/html; charset=UTF-8'>
         <title>Badger, badger, badger, mushroom, mushroom!</title>
-        <script type='text/javascript' src='//code.jquery.com/jquery-2.2.1.min.js'></script>
+        <script type='text/javascript' src='https://code.jquery.com/jquery-2.2.1.min.js'></script>
+        <script type='text/javascript' src='https://cdn.jsdelivr.net/intro.js/2.1.0/intro.min.js'></script>
+        <link rel="stylesheet" href='https://cdn.jsdelivr.net/intro.js/2.1.0/introjs.min.css'>
         <style type='text/css'>
             #container { width: 100%; overflow: hidden; }
             .draggable { cursor: move; }  /* Change mouse cursor */
@@ -16,7 +18,7 @@
     </head>
     <body ondragover="event.preventDefault();" ondrop="event.preventDefault(); dropHandler(event)">
         <div id="container">
-            <div class="badge">
+            <div class="badge" data-position="bottom-right-aligned" data-intro="This is the current badge design. Drag'n'Drop an image to change background.">
                 <div style="float: left">
                     <button class="closeBtn no-print" title="Delete badge" onclick="deleteBadge(this)">X</button>
                     <svg version="1.1" baseProfile="full" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
@@ -31,7 +33,7 @@
                             <path id="text-upper-path" d="M 80, 150 c 0, -100, 140, -100, 140, 0" stroke="black" fill="green" stroke-width="2" fill-opacity="0.5" />
                         </defs>
                         <image id="fgImg" xlink:href="pic.jpg" x="-50" y="-50" height="400px" width="400px" clip-path="url(#badge-cutoff)" beforeprint="fullCut()" />
-                        <image id="bgImg" xlink:href="pic.jpg" x="-50" y="-50" height="400px" width="400px" style="opacity:0.2;" class="draggable no-print" onmousedown="selectElement(event)" />
+                        <image id="bgImg" xlink:href="pic.jpg" x="-50" y="-50" height="400px" width="400px" style="opacity: 0.2" class="draggable no-print" onmousedown="selectElement(event)" />
                         <circle cx="150" cy="150" r="3cm" stroke="black" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent" />
                         <!-- Tekst -->
                         <g font-size="25" fill="white" text-anchor="middle">
@@ -45,8 +47,8 @@
                 </div>
             </div>
             <!-- badge -->
-            <div class="menu no-print">
-                <input type="hidden" id="txtItem"><br>
+            <div class="menu no-print" data-intro="Select a textfield on the badge and use this box to change properties.">
+                <input type="hidden" id="txtItem">
                 Text: <input type="text" id="txtText" onkeyup="save()"><br>
                 Font:
                 <select id="txtFont" onchange="save()">
@@ -66,7 +68,8 @@
                 <!-- Background: <input type="file" id="txtBg" onchange="console.log(this);"><br> -->
                 Color: <input type="color" id="txtColor" value="#ffffff" onchange="save()"><br>
                 Image Scale: <input id='scale_slider' type='range' min='0.1' max='3.0' step='0.01' value='1.0' onchange="scaleImage(this.value)" /><br>
-                <button type="button" onclick="save(); cloneBadge()" style="float: right">Clone</button>
+                <button type="button" onclick="introJs().setOptions({'showStepNumbers': false, 'skipLabel': 'Exit', 'showBullets': false}).start()">?</button>
+                <button type="button" onclick="save(); cloneBadge()" style="float: right" data-intro="When the design is ready, use this button to clone (copy) the current badge design. This allows you to easily change e.g. the name of a <i>rus</i> on your team.">Clone</button>
             </div>
         </div>
         <!-- container -->

@@ -3,6 +3,9 @@
 if (window.navigator.userAgent.indexOf('Edge/') > -1)
     alert("IE Edge not supported! Please use Firefox or Chrome instead.");
 
+if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent))
+    alert("Safari not supported! Please use Firefox or Chrome instead.");
+
 $(document).ready(function() {
     setInterval(function(){
         $("#lastSaveOutputTimer").text(parseInt($("#lastSaveOutputTimer").text()) + 1);

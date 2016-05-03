@@ -1,2 +1,2 @@
-# badger
-The one true way to make badge sheets for printing
+# README
+See the master branch for info

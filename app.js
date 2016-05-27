@@ -34,10 +34,15 @@ function saveBadge() {
 
 function dropHandler(file) {
     file.stopPropagation(); // don't change webpage to image file
-    var localFilename = file.dataTransfer.files[0].name;
-    // change bagground
-    $('#bgImg')[0].href.baseVal = localFilename;
-    $('#fgImg')[0].href.baseVal = localFilename;
+    try {
+        var localFilename = file.dataTransfer.files[0].name;
+        console.log(file.dataTransfer.files[0].webkitRelativePath);
+        // change bagground
+        $('#bgImg:first')[0].href.baseVal = localFilename;
+        $('#fgImg:first')[0].href.baseVal = localFilename;
+    } catch(err) {
+        alert("Error in dropHandler:\n" + err);
+    }
 }
 
 
@@ -96,7 +101,7 @@ function fullCut() { // Prepair border of background for printing
 }
 
 function scaleImage(val) {
-    [ $('#fgImg')[0], $('#bgImg')[0] ].forEach(function(img) {
+    [ $('#fgImg:first'), $('#bgImg:first') ].forEach(function(img) {
         //$(img).css('transform', 'scale('+val+', '+val+')');
         newHeight = parseInt($(img).attr('height'),10) * val;
         newWidth = parseInt($(img).attr('width'),10) * val;
@@ -106,7 +111,7 @@ function scaleImage(val) {
 }
 
 function cloneBadge() {
-    $($('.badge')[0]).clone().removeAttr('data-intro').appendTo('#container');
+    $('.badge:first').clone().removeAttr('data-intro').appendTo('#container');
 }
 
 function deleteBadge(badge) {
@@ -120,14 +125,16 @@ function hideAndToggle(hide, toggle) {
         $(this).addClass('hidden');
     });
     $(toggle).each(function() {
-        if ($(this).hasClass('hidden'))
+        if ($(this).hasClass('hidden')) {
             $(this).removeClass('hidden');
-        else $(this).addClass('hidden');
+        } else {
+            $(this).addClass('hidden');
+        }
     });
 }
 
 function outputLayout(justReload = false) {
-    $($('#outputTextField')[0]).val( btoa($("body").html()) ); // TODO: Improve this!
+    $('#outputTextField').val( btoa($("body").html()) ); // TODO: Improve this!
     $("#lastSaveOutputTimer").text('0');
 
     if (!justReload)
@@ -139,23 +146,13 @@ function inputLayout() {
 }
 
 function loadSaved() {
-    var decoded = atob( $($('#inputTextField')[0]).val() );
-    if (decoded.length > 0) {
+    var decoded = atob( $('#inputTextField').val() );
+    if (decoded.length > 0) { // TODO: Better sanity checking?
         $("body").html(decoded);
         outputLayout(true);
     }
 }
 
-/*function loadStored() {
-    if (localStorage.savedBadge) {
-        $(document).ready(function() {
-            $($('#inputTextField')[0]).val( localStorage.savedBadge );
-            loadSaved();
-        });
-        return true;
-    }
-    return false;
-}*/
 
 // Hack for browsers that doesn't support "beforeprint" (everyone but IE !)
 if ('matchMedia' in window) {

@@ -103,15 +103,19 @@
             		localStorage.setItem("hasrun", true);
             	}
 
-                if (localStorage.savedBadge && confirm("Load previous saved badge?")) {
-                    $($('#outputTextField')[0]).val(localStorage.savedBadge);
-                    loadSaved();
-                }
+                // Prompt to load if a badge previous has been saved (and isn't the default badge)
+                //outputLayout(true);
+                /*if (localStorage.savedBadge && localStorage.savedBadge != $('#outputTextField').val()) {
+                    if (confirm("Load previous saved badge?")) {
+                        $('#outputTextField').val(localStorage.savedBadge);
+                        loadSaved();
+                    } //else if (confirm("Delete previous saved badge?")) {
+                }*/
 
                 // Closing app? Lets save the current layout
                 window.onbeforeunload = function(e) {
-                    outputLayout(true);
-                    localStorage.savedBadge = $($('#outputTextField')[0]).val();
+                    outputLayout(true); // Make sure "#outputTextField" is updated
+                    localStorage.savedBadge = $('#outputTextField').val();
                 }
             }
         </script>

@@ -100,6 +100,12 @@ function fullCut() { // Prepair border of background for printing
     });
 }
 
+function fullUncut() { // Add border again
+    $("[id=fgImg]").each(function(_,elm) {
+        $(elm).attr("clip-path", "url(#badge-cutoff)");
+    });
+}
+
 function scaleImage(val) {
     [ $('#fgImg:first'), $('#bgImg:first') ].forEach(function(img) {
         //$(img).css('transform', 'scale('+val+', '+val+')');
@@ -108,6 +114,7 @@ function scaleImage(val) {
         $(img).css('max-width', newWidth); $(img).css('width', newWidth);
         $(img).css('max-height', newHeight); $(img).css('height', newHeight);
     });
+    fullUncut(); // TODO: This is dumb, but kinda works
 }
 
 function cloneBadge() {
@@ -158,7 +165,7 @@ function loadSaved() {
 if ('matchMedia' in window) {
     window.matchMedia('print').addListener(function(media) {
         if (media.matches) {
-            fullCut();
+            fullCut(); // TODO: Detect when printing is done and call fullUncut()
         }
     });
 }

@@ -14,7 +14,7 @@ $(document).ready(function() {
 
 function setEdit(elm) {
     $("#txtItem").val( elm.id );
-    $("#txtText").val( elm.innerHTML );
+    $("#txtText").val( elm.textContent );
     $("#txtFont option[value=" + $(elm).css('font-family') + "]").prop('selected', true);
     $("#txtSize").val( $(elm).css('font-size').replace("px", "") );
     $("#txtColor").val( rgbToHex($(elm).css('fill')) );
@@ -24,7 +24,7 @@ function saveBadge() {
     // hack til at vaelge det valgte tekstfeltet i svg billedet:
     var elm = $("#" + $("#txtItem").val() )[0];
     
-    elm.innerHTML = $("#txtText").val(); // tekst
+    elm.textContent = $("#txtText").val(); // tekst
     $(elm).css('font-family', $("#txtFont").val()); // font
     $(elm).css('font-size', $("#txtSize").val() + "px"); // size
     $(elm).css('fill', $("#txtColor").val()); // farve

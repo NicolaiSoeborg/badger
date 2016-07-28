@@ -22,7 +22,7 @@
             .hidden { display: none; }
             @media print { .no-print, .no-print * { display: none !important; } } /* Don't print menu */
         </style>
-        
+
         <script type='text/javascript' src='app.js'></script>
     </head>
     <body ondragover="event.preventDefault();" ondrop="event.preventDefault(); dropHandler(event)">
@@ -74,6 +74,7 @@
                 <br>
                 Size: <input type="number" style="width: 40px" id="txtSize" onkeyup="saveBadge()" onchange="saveBadge()" min="0" value="60"> px &nbsp;
                 Color: <input type="color" id="txtColor" value="#ffffff" onchange="saveBadge()"><br>
+                Image: <input type="file" id="file" accept="image/*" data-intro="Use this to select the background image." /><br>
                 Image Scale: <input id='scale_slider' type='range' min='0.1' max='3.0' step='0.01' value='1.0' onchange="scaleImage(this.value)" /><br>
                 <button type="button" onclick="outputLayout()" data-intro="Click this button to save the current layout.">Save</button>
                 <button type="button" onclick="inputLayout()">Load</button>
@@ -91,33 +92,36 @@
         </div><!-- /container -->
         
         <script type='text/javascript'>
-            if (typeof jQuery == 'undefined') alert("jQuery not loaded.");
-			if (typeof introJs !== 'function') alert("Intro.js not loaded.");
+          if (typeof jQuery == 'undefined') alert("jQuery not loaded.");
+          if (typeof introJs !== 'function') alert("Intro.js not loaded.");
 
-            setEdit($('#TextMiddle')[0]); // "DTU" textbox selected as default
+          $(document).ready(function(){
+              setEdit($('#TextMiddle')[0]); // "DTU" textbox selected as default
 
-            if (typeof(localStorage) !== "undefined") {
-                // First time trying app? Lets run the introduction
-            	if (!localStorage.hasrun) {
-            		jsintro();
-            		localStorage.setItem("hasrun", true);
-            	}
+              if (typeof(localStorage) !== "undefined") {
+                  // First time trying app? Lets run the introduction
+                  if (!localStorage.hasrun) {
+            	    jsintro();
+            	    localStorage.setItem("hasrun", true);
+                  }
 
-                // Prompt to load if a badge previous has been saved (and isn't the default badge)
-                //outputLayout(true);
-                /*if (localStorage.savedBadge && localStorage.savedBadge != $('#outputTextField').val()) {
-                    if (confirm("Load previous saved badge?")) {
-                        $('#outputTextField').val(localStorage.savedBadge);
-                        loadSaved();
-                    } //else if (confirm("Delete previous saved badge?")) {
-                }*/
+                  // Prompt to load if a badge previous has been saved (and isn't the default badge)
+                  //outputLayout(true);
+                  /*if (localStorage.savedBadge && localStorage.savedBadge != $('#outputTextField').val()) {
+                      if (confirm("Load previous saved badge?")) {
+                          $('#outputTextField').val(localStorage.savedBadge);
+                          loadSaved();
+                      } //else if (confirm("Delete previous saved badge?")) {
+                  }*/
 
-                // Closing app? Lets save the current layout
-                window.onbeforeunload = function(e) {
-                    outputLayout(true); // Make sure "#outputTextField" is updated
-                    localStorage.savedBadge = $('#outputTextField').val();
-                }
-            }
+                  // Closing app? Lets save the current layout
+                  window.onbeforeunload = function(e) {
+                      outputLayout(true); // Make sure "#outputTextField" is updated
+                      localStorage.savedBadge = $('#outputTextField').val();
+                  }
+              }
+
+          });
         </script>
     </body>
 </html>

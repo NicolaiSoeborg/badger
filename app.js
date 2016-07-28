@@ -10,6 +10,22 @@ $(document).ready(function() {
     setInterval(function(){
         $("#lastSaveOutputTimer").text(parseInt($("#lastSaveOutputTimer").text()) + 1);
     }, 1000);
+
+
+    $( "#file" ).on('change', function(ev) {
+        var fileReader = new FileReader();
+        fileReader.readAsDataURL( $(this)[0].files[0] );
+        fileReader.onload = function(fileReaderEvent) {
+            $( "#fgImg" ).animate({opacity: 0}, 'slow', function(){
+                $(this).attr('xlink:href', fileReaderEvent.target.result).animate({opacity: 1}, 'slow');
+            });
+            $( "#bgImg" ).animate({opacity: 0}, 'slow', function(){
+                $(this).attr('xlink:href', fileReaderEvent.target.result).animate({opacity: 1}, 'slow');
+            });
+        }
+    });
+
+
 });
 
 function setEdit(elm) {
@@ -32,7 +48,7 @@ function saveBadge() {
     outputLayout(true);
 }
 
-function dropHandler(file) {
+function dropHandler(file) { // TODO: This only works for local files
     file.stopPropagation(); // don't change webpage to image file
     try {
         var localFilename = file.dataTransfer.files[0].name;
@@ -41,10 +57,9 @@ function dropHandler(file) {
         $('#bgImg:first')[0].href.baseVal = localFilename;
         $('#fgImg:first')[0].href.baseVal = localFilename;
     } catch(err) {
-        alert("Error in dropHandler:\n" + err);
+        console.log("Error in dropHandler: " + err);
     }
 }
-
 
 // Modificeret kode fra http://www.petercollingridge.co.uk/interactive-svg-components/draggable-svg-element
 var selectedElements = [];

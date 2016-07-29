@@ -1,31 +1,9 @@
 // This file requires jQuery
 
-if (window.navigator.userAgent.indexOf('Edge/') > -1)
-    alert("IE Edge not supported! Please use Firefox or Chrome instead.");
-
-if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent))
-    alert("Safari not supported! Please use Firefox or Chrome instead.");
-
 $(document).ready(function() {
     setInterval(function(){
         $("#lastSaveOutputTimer").text(parseInt($("#lastSaveOutputTimer").text()) + 1);
     }, 1000);
-
-
-    $( "#file" ).on('change', function(ev) {
-        var fileReader = new FileReader();
-        fileReader.readAsDataURL( $(this)[0].files[0] );
-        fileReader.onload = function(fileReaderEvent) {
-            $( "#fgImg" ).animate({opacity: 0}, 'slow', function(){
-                $(this).attr('xlink:href', fileReaderEvent.target.result).animate({opacity: 1}, 'slow');
-            });
-            $( "#bgImg" ).animate({opacity: 0}, 'slow', function(){
-                $(this).attr('xlink:href', fileReaderEvent.target.result).animate({opacity: 1}, 'slow');
-            });
-        }
-    });
-
-
 });
 
 function setEdit(elm) {
@@ -60,6 +38,22 @@ function dropHandler(file) { // TODO: This only works for local files
         console.log("Error in dropHandler: " + err);
     }
 }
+
+function changeBackground(files) {
+    if (files.length === 1) {
+        var fileReader = new FileReader();
+        fileReader.readAsDataURL( files[0] );
+        fileReader.onload = function(fileReaderEvent) {
+            $( "#fgImg" ).animate({opacity: 0}, 'slow', function(){
+                $(this).attr('xlink:href', fileReaderEvent.target.result).animate({opacity: 1}, 'slow');
+            });
+            $( "#bgImg" ).animate({opacity: 0}, 'slow', function(){
+                $(this).attr('xlink:href', fileReaderEvent.target.result).animate({opacity: 1}, 'slow');
+            });
+        }
+    }
+}
+
 
 // Modificeret kode fra http://www.petercollingridge.co.uk/interactive-svg-components/draggable-svg-element
 var selectedElements = [];

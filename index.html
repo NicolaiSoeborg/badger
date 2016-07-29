@@ -16,7 +16,7 @@
         <style type='text/css'>
             #container { width: 100%; overflow: hidden; }
             .draggable { cursor: move; }  /* Change mouse cursor */
-            .menu { display: inline-block; float: left; padding: 10px; background: rgb(90, 210, 135); }
+            .menu { display: inline-block; float: left; padding: 2px; border-radius: 3px; background: rgb(90, 210, 135); }
             .badge { float: left; }
             .closeBtn { float: right; position: relative; right: 25px; top: 25px; }
             .hidden { display: none; }
@@ -27,7 +27,7 @@
     </head>
     <body ondragover="event.preventDefault();" ondrop="event.preventDefault(); dropHandler(event)">
         <div id="container">
-            <div class="badge" data-position="bottom-right-aligned" data-intro="This is the current badge design.">
+            <div class="badge" data-position="bottom-right-aligned" data-intro="This is the current badge design. The innermost circle is the visible part of the badge, the outermost circle is the 'wrap around' part of the badge.">
                 <div style="float: left">
                     <button class="closeBtn no-print" title="Delete badge" onclick="deleteBadge(this)">X</button>
                     <svg version="1.1" baseProfile="full" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
@@ -57,44 +57,71 @@
             </div><!-- /badge -->
             <div class="menu no-print" data-intro="Select a textfield on the badge and use this box to change properties.">
                 <input type="hidden" id="txtItem">
-                Text: <input type="text" id="txtText" onkeyup="saveBadge()"><br>
-                Font:
-                <select id="txtFont" onchange="saveBadge()">
-                    <option style="font-family: 'Times New Roman'" value="Times New Roman" selected>Times New Roman</option>
-                    <option style="font-family: 'Helvetica'" value="Helvetica">Helvetica</option>
-                    <option style="font-family: 'Arial'" value="Arial">Arial</option>
-                    <option style="font-family: 'Comic Sans MS'" value="Comic Sans MS">Comic Sans MS</option><!-- Muhahaha -->
-                    <option style="font-family: 'Segoe Print'" value="Segoe Print">Segoe Print</option>
-                    <option style="font-family: 'Terminal'" value="Terminal">Terminal</option>
-                    <option style="font-family: 'Impact'" value="Impact">Impact</option>
-                    <option style="font-family: 'Tahoma'" value="Tahoma">Tahoma</option>
-                    <option style="font-family: 'Wingdings'" value="Wingdings">Wingdings</option>
-                    <!-- TODO: How well does this work on Mac? Add option 'write name on own font'. -->
-                </select>
-                <br>
-                Size: <input type="number" style="width: 40px" id="txtSize" onkeyup="saveBadge()" onchange="saveBadge()" min="0" value="60"> px &nbsp;
-                Color: <input type="color" id="txtColor" value="#ffffff" onchange="saveBadge()"><br>
-                <hr>
-                Image: <input type="file" id="file" accept="image/*" data-intro="Use this to select the background image." /><br>
-                Image Scale: <input id='scale_slider' type='range' min='0.1' max='3.0' step='0.01' value='1.0' onchange="scaleImage(this.value)" /><br>
-                <button type="button" onclick="outputLayout()" data-intro="Click this button to save the current layout.">Save</button>
-                <button type="button" onclick="inputLayout()">Load</button>
-                <button type="button" onclick="jsintro()">?</button>
-                <button type="button" onclick="saveBadge(); cloneBadge()" style="float: right" data-intro="When the design is ready, use this button to clone (copy) the current badge design. This allows you to easily change e.g. the name of a <i>rus</i> on your team.">Clone</button><br>
-                <div class="menu no-print hidden" id="outputBox">
-            		Save this code: <input type="textbox" id="outputTextField" onclick="this.select()" placeholder="If this box is empty, something is wrong!" style="width: 100%" readonly/><br>
-            		<small>Last updated <label id="lastSaveOutputTimer">999</label> sec ago.</small>
-            	</div>
-				<div class="menu no-print hidden" id="inputBox">
-            		Insert saved code: <input type="textbox" id="inputTextField" style="width: 100%" /><br>
-            		<button onclick="loadSaved();">Load</button>&nbsp;<small><b>WARNING:</b> Do not load untrusted code!</small>
-            	</div>
+                <fieldset>
+                    <legend>Properties</legend>
+                    <label>
+                        Text: <input type="text" id="txtText" onkeyup="saveBadge()">
+                    </label>
+                    <br>
+                    <label>Font:
+                        <select id="txtFont" onchange="saveBadge()">
+                            <option style="font-family: 'Times New Roman'" value="Times New Roman" selected>Times New Roman</option>
+                            <option style="font-family: 'Helvetica'" value="Helvetica">Helvetica</option>
+                            <option style="font-family: 'Arial'" value="Arial">Arial</option>
+                            <option style="font-family: 'Comic Sans MS'" value="Comic Sans MS">Comic Sans MS</option><!-- Muhahaha -->
+                            <option style="font-family: 'Segoe Print'" value="Segoe Print">Segoe Print</option>
+                            <option style="font-family: 'Terminal'" value="Terminal">Terminal</option>
+                            <option style="font-family: 'Impact'" value="Impact">Impact</option>
+                            <option style="font-family: 'Tahoma'" value="Tahoma">Tahoma</option>
+                            <option style="font-family: 'Wingdings'" value="Wingdings">Wingdings</option>
+                            <!-- TODO: How well does this work on Mac? Add option 'write name on own font'. -->
+                        </select>
+                    </label>
+                    <br>
+                    <label>
+                        Size: <input type="number" style="width: 40px" id="txtSize" onkeyup="saveBadge()" onchange="saveBadge()" min="0" value="60"> px &nbsp;
+                    </label>
+                    <label>
+                        Color: <input type="color" id="txtColor" value="#ffffff" onchange="saveBadge()">
+                    </label>
+                    <br>
+                    <hr>
+                    <label>
+                        Image: <input type="file" id="file" accept="image/*" onchange="changeBackground(this.files)" data-intro="Use this to select the background image." />
+                    </label>
+                    <br>
+                    <label>
+                        Image Scale: <input id='scale_slider' type='range' min='0.1' max='3.0' step='0.01' value='1.0' onchange="scaleImage(this.value)" />
+                    </label>
+                    <br>
+                    <button type="button" onclick="outputLayout()" data-intro="Click this button to save the current layout.">Save</button>
+                    <button type="button" onclick="inputLayout()">Load</button>
+                    <button type="button" onclick="jsintro()">?</button>
+                    <button type="button" onclick="saveBadge(); cloneBadge()" style="float: right" data-intro="When the design is ready, use this button to clone (copy) the current badge design. This allows you to easily change e.g. the name of a <i>rus</i> on your team.">Clone</button><br>
+                    <div class="menu no-print hidden" id="outputBox">
+                        <label>
+                            Save this code: <input type="textbox" id="outputTextField" onclick="this.select()" placeholder="If this box is empty, something is wrong!" style="width: 100%" readonly/>
+                        </label>
+                        <br>
+                        <small>Last updated <label id="lastSaveOutputTimer">999</label> sec ago.</small>
+                    </div>
+                    <div class="menu no-print hidden" id="inputBox">
+                        <label>
+                            Insert saved code: <input type="textbox" id="inputTextField" style="width: 100%" /><br>
+                        </label>
+                        <button onclick="loadSaved();">Load</button>&nbsp;<small><b>WARNING:</b> Do not load untrusted code!</small>
+                    </div>
+                </fieldset>
             </div>
         </div><!-- /container -->
         
         <script type='text/javascript'>
           if (typeof jQuery == 'undefined') alert("jQuery not loaded.");
           if (typeof introJs !== 'function') alert("Intro.js not loaded.");
+          if (window.navigator.userAgent.indexOf('Edge/') > -1)
+              alert("IE Edge not supported! Please use Firefox or Chrome instead.");
+          if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent))
+              alert("Safari not supported! Please use Firefox or Chrome instead.");
 
           $(document).ready(function(){
               setEdit($('#TextMiddle')[0]); // "DTU" textbox selected as default
@@ -102,8 +129,8 @@
               if (typeof(localStorage) !== "undefined") {
                   // First time trying app? Lets run the introduction
                   if (!localStorage.hasrun) {
-            	    jsintro();
-            	    localStorage.setItem("hasrun", true);
+                    jsintro();
+                    localStorage.setItem("hasrun", true);
                   }
 
                   // Prompt to load if a badge previous has been saved (and isn't the default badge)

@@ -17,8 +17,9 @@ function setEdit(elm) {
 function saveBadge() {
     // hack til at vaelge det valgte tekstfeltet i svg billedet:
     var elm = $("#" + $("#txtItem").val() )[0];
-    
+
     elm.textContent = $("#txtText").val(); // tekst
+    if (elm.textContent == "") elm.innerHTML = "&nbsp;&nbsp;"; // make sure textfield still can be selected
     $(elm).css('font-family', $("#txtFont").val()); // font
     $(elm).css('font-size', $("#txtSize").val() + "px"); // size
     $(elm).css('fill', $("#txtColor").val()); // farve

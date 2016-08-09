@@ -9,9 +9,9 @@ $(document).ready(function() {
 function setEdit(elm) {
     $("#txtItem").val( elm.id );
     $("#txtText").val( elm.textContent );
-    $("#txtFont option[value=" + $(elm).css('font-family') + "]").prop('selected', true);
-    $("#txtSize").val( $(elm).css('font-size').replace("px", "") );
-    $("#txtColor").val( rgbToHex($(elm).css('fill')) );
+    $("#txtFont option[value=" + $(elm).css("font-family") + "]").prop("selected", true);
+    $("#txtSize").val( $(elm).css("font-size").replace("px", "") );
+    $("#txtColor").val( rgbToHex($(elm).css("fill")) );
 }
 
 function saveBadge() {
@@ -20,9 +20,9 @@ function saveBadge() {
 
     elm.textContent = $("#txtText").val(); // tekst
     if (elm.textContent == "") elm.innerHTML = "&nbsp;&nbsp;"; // make sure textfield still can be selected
-    $(elm).css('font-family', $("#txtFont").val()); // font
-    $(elm).css('font-size', $("#txtSize").val() + "px"); // size
-    $(elm).css('fill', $("#txtColor").val()); // farve
+    $(elm).css("font-family", $("#txtFont").val()); // font
+    $(elm).css("font-size", $("#txtSize").val() + "px"); // size
+    $(elm).css("fill", $("#txtColor").val()); // farve
 
     outputLayout(true);
 }
@@ -33,8 +33,8 @@ function dropHandler(file) { // TODO: This only works for local files
         var localFilename = file.dataTransfer.files[0].name;
         console.log(file.dataTransfer.files[0].webkitRelativePath);
         // change bagground
-        $('#bgImg:first')[0].href.baseVal = localFilename;
-        $('#fgImg:first')[0].href.baseVal = localFilename;
+        $("#bgImg:first")[0].href.baseVal = localFilename;
+        $("#fgImg:first")[0].href.baseVal = localFilename;
     } catch(err) {
         console.log("Error in dropHandler: " + err);
     }
@@ -45,11 +45,11 @@ function changeBackground(files) {
         var fileReader = new FileReader();
         fileReader.readAsDataURL( files[0] );
         fileReader.onload = function(fileReaderEvent) {
-            $( "#fgImg" ).animate({opacity: 0}, 'slow', function(){
-                $(this).attr('xlink:href', fileReaderEvent.target.result).animate({opacity: 1}, 'slow');
+            $( "#fgImg" ).animate({opacity: 0}, "slow", function(){
+                $(this).attr("xlink:href", fileReaderEvent.target.result).animate({opacity: 1}, "slow");
             });
-            $( "#bgImg" ).animate({opacity: 0}, 'slow', function(){
-                $(this).attr('xlink:href', fileReaderEvent.target.result).animate({opacity: 1}, 'slow');
+            $( "#bgImg" ).animate({opacity: 0}, "slow", function(){
+                $(this).attr("xlink:href", fileReaderEvent.target.result).animate({opacity: 1}, "slow");
             });
         }
     }
@@ -64,7 +64,7 @@ function selectElement(evt) {
     selectedElements = [evt.target];
     
     // Special case, if user selects front- or background then make sure to select both:
-    var fgAndBg = [ $('#fgImg')[0], $('#bgImg')[0] ];
+    var fgAndBg = [ $("#fgImg")[0], $("#bgImg")[0] ];
     if ( $.inArray(evt.target, fgAndBg) != -1) {
         selectedElements = fgAndBg;
     }
@@ -117,53 +117,53 @@ function fullUncut() { // Add border again
 }
 
 function scaleImage(val) {
-    [ $('#fgImg:first'), $('#bgImg:first') ].forEach(function(img) {
-        //$(img).css('transform', 'scale('+val+', '+val+')');
-        newHeight = parseInt($(img).attr('height'),10) * val;
-        newWidth = parseInt($(img).attr('width'),10) * val;
-        $(img).css('max-width', newWidth); $(img).css('width', newWidth);
-        $(img).css('max-height', newHeight); $(img).css('height', newHeight);
+    [ $("#fgImg:first"), $("#bgImg:first") ].forEach(function(img) {
+        //$(img).css("transform", "scale("+val+", "+val+")");
+        newHeight = parseInt($(img).attr("height"),10) * val;
+        newWidth = parseInt($(img).attr("width"),10) * val;
+        $(img).css("max-width", newWidth); $(img).css("width", newWidth);
+        $(img).css("max-height", newHeight); $(img).css("height", newHeight);
     });
     fullUncut(); // TODO: This is dumb, but kinda works
 }
 
 function cloneBadge() {
-    $('.badge:first').clone().removeAttr('data-intro').appendTo('#container');
+    $(".badge:first").clone().removeAttr("data-intro").appendTo("#container");
 }
 
 function deleteBadge(badge) {
-    if (confirm('Are you sure you want to delete this badge?')) {
+    if (confirm("Are you sure you want to delete this badge?")) {
         $(badge).parent().detach();
     }
 }
 
 function hideAndToggle(hide, toggle) {
     $(hide).each(function() {
-        $(this).addClass('hidden');
+        $(this).addClass("hidden");
     });
     $(toggle).each(function() {
-        if ($(this).hasClass('hidden')) {
-            $(this).removeClass('hidden');
+        if ($(this).hasClass("hidden")) {
+            $(this).removeClass("hidden");
         } else {
-            $(this).addClass('hidden');
+            $(this).addClass("hidden");
         }
     });
 }
 
 function outputLayout(justReload = false) {
-    $('#outputTextField').val( btoa($("body").html()) ); // TODO: Improve this!
-    $("#lastSaveOutputTimer").text('0');
+    $("#outputTextField").val( btoa($("body").html()) ); // TODO: Improve this!
+    $("#lastSaveOutputTimer").text("0");
 
     if (!justReload)
-        hideAndToggle($('#inputBox'), $('#outputBox'));
+        hideAndToggle($("#inputBox"), $("#outputBox"));
 }
 
 function inputLayout() {
-    hideAndToggle($('#outputBox'), $('#inputBox'));
+    hideAndToggle($("#outputBox"), $("#inputBox"));
 }
 
 function loadSaved() {
-    var decoded = atob( $('#inputTextField').val() );
+    var decoded = atob( $("#inputTextField").val() );
     if (decoded.length > 0) { // TODO: Better sanity checking?
         $("body").html(decoded);
         outputLayout(true);
@@ -172,8 +172,8 @@ function loadSaved() {
 
 
 // Hack for browsers that doesn't support "beforeprint" (everyone but IE !)
-if ('matchMedia' in window) {
-    window.matchMedia('print').addListener(function(media) {
+if ("matchMedia" in window) {
+    window.matchMedia("print").addListener(function(media) {
         if (media.matches) {
             fullCut(); // TODO: Detect when printing is done and call fullUncut()
         }
@@ -188,7 +188,7 @@ function componentToHex(c) {
 
 function rgbToHex(rgb) {
     // split from rbg(x, y,z) to [x, y, z]
-    rgb = rgb.replace(/[^\d,]/g, '').split(',');
+    rgb = rgb.replace(/[^\d,]/g, "").split(",");
     
     // assign r = x, g = y, b = z
     var r = rgb[0], g = rgb[1], b = rgb[2];

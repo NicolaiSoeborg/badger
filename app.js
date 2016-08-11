@@ -6,12 +6,21 @@ $(document).ready(function() {
     }, 1000);
 });
 
+var selectedTextField = "#text-upper-path";
 function setEdit(elm) {
     $("#txtItem").val( elm.id );
     $("#txtText").val( elm.textContent );
     $("#txtFont option[value=" + $(elm).css("font-family") + "]").prop("selected", true);
     $("#txtSize").val( $(elm).css("font-size").replace("px", "") );
     $("#txtColor").val( rgbToHex($(elm).css("fill")) );
+
+	if ($(elm).attr("xlink:href")) {
+		selectedTextField = $(elm).attr("xlink:href");
+		$("#TextLocSlider").val( $(selectedTextField)[0].attributes["d"].nodeValue.split(",")[2] );
+		$("#TextLoc").removeClass("hidden");
+	} else {
+		$("#TextLoc").addClass("hidden");
+	}
 }
 
 function saveBadge() {
@@ -81,8 +90,8 @@ function selectElement(evt) {
 
 function moveElement(evt) {
     var dx = evt.clientX - currentX;
-    var dy = evt.clientY - currentY;   
-    
+    var dy = evt.clientY - currentY;
+
     selectedElements.forEach(function(selectedElement) {
         selectedElement.setAttributeNS(null, "x", parseInt(selectedElement.getAttributeNS(null, "x")) + dx );
         selectedElement.setAttributeNS(null, "y", parseInt(selectedElement.getAttributeNS(null, "y")) + dy );
@@ -178,6 +187,14 @@ if ("matchMedia" in window) {
             fullCut(); // TODO: Detect when printing is done and call fullUncut()
         }
     });
+}
+
+function moveText(val) {
+    val = parseInt(val, 10);
+    var oldVal = $(selectedTextField)[0].attributes["d"].nodeValue.split(",");
+    oldVal[2] = val;
+    oldVal[4] = val;
+    $(selectedTextField)[0].attributes["d"].nodeValue = oldVal.join();
 }
 
 

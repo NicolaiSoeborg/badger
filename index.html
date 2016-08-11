@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+[B<!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -85,7 +85,13 @@
                         Color: <input type="color" id="txtColor" value="#ffffff" onchange="saveBadge()">
                     </label>
                     <br>
+                    <label id="TextLoc" class="hidden">
+                        Text Location: <input id="TextLocSlider" type="range" min="-200" max="200" step="1" value="-100.0" onchange="moveText(this.value);" />
+                    </label>
+                    <br>
+
                     <hr>
+
                     <label>
                         Image: <input type="file" id="file" accept="image/*" onchange="changeBackground(this.files)" data-intro="Use this to select the background image." />
                     </label>
@@ -119,9 +125,10 @@
           if (typeof jQuery == "undefined") alert("jQuery not loaded.");
           if (typeof introJs !== "function") alert("Intro.js not loaded.");
           if (window.navigator.userAgent.indexOf("Edge/") > -1)
-              alert("IE Edge not supported! Please use Firefox or Chrome instead.");
+              alert("IE Edge not supported! Please use Chrome instead.");
           if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent))
-              alert("Safari not supported! Please use Firefox or Chrome instead.");
+              alert("Safari not supported! Please use Chrome instead.");
+
 
           $(document).ready(function(){
               setEdit($("#TextMiddle")[0]); // "DTU" textbox selected as default

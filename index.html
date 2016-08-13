@@ -23,6 +23,8 @@
             @media print { .no-print, .no-print * { display: none !important; } } /* Don't print menu */
         </style>
 
+        <script type="text/javascript" src="lz-string/libs/lz-string.min.js"></script>
+        <script type="text/javascript" src="lz-string/libs/base64-string.js"></script>
         <script type="text/javascript" src="app.js"></script>
     </head>
     <body ondragover="event.preventDefault();" ondrop="event.preventDefault(); dropHandler(event)">
@@ -100,7 +102,7 @@
                         Image Scale: <input type="range" min="0.1" max="3.0" step="0.01" value="1.0" onchange="scaleImage(this.value);" />
                     </label>
                     <br>
-                    <button type="button" onclick="outputLayout()" data-intro="Click this button to save the current layout.">Save</button>
+                    <button type="button" onclick="outputLayout()" data-intro="Click this button to save the current layout. <b>WARNING: This feature is still quite buggy.</b> You should use CTRL+P to print, and then select 'save as PDF'.">Save</button>
                     <button type="button" onclick="inputLayout()">Load</button>
                     <button type="button" onclick="jsintro()">?</button>
                     <button type="button" onclick="saveBadge(); cloneBadge()" style="float: right" data-intro="When the design is ready, use this button to clone (copy) the current badge design. This allows you to easily change e.g. the name of a <i>rus</i> on your team.">Clone</button><br>
@@ -154,6 +156,9 @@
                       outputLayout(true); // Make sure "#outputTextField" is updated
                       localStorage.savedBadge = $("#outputTextField").val();
                   }
+
+                  if (localStorage.savedBadge)
+                      $("#inputTextField").val(localStorage.savedBadge);
               }
 
           });

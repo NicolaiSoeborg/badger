@@ -36,7 +36,7 @@ header("X-XSS-Protection: 1; mode=block");
         <div id="container">
             <form action="recover.php" method="post">
                 Badge code: &nbsp;
-                <input type="text" name="code">
+                <input type="text" name="code" id="code">
                 <button type="button" id="recover1">Genskab 1</button>
                 <input type="submit" value="Genskab 2">
             </form>

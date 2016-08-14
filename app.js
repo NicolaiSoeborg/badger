@@ -162,7 +162,6 @@ function hideAndToggle(hide, toggle) {
 
 
 function getBadgeCode() {
-	console.log("TESTING");
 	$("#inputTextField,#outputTextField").val(""); // clear textfiels before saving
 	return "v2!" + LZString.compressToBase64( $("body").html() ); // TODO: Improve this!
 }

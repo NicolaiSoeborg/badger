@@ -53,16 +53,19 @@
                 </ul>
             </div>
         </nav>
-        <div id="container-badges">Loading...</div>
+        <div id="container-badges">Loading..</div>
 
         <script>
-            $(document).ready(function(){
+            //$(document).ready(function(){
                 var badges = new BadgeCollection([ new Badge() ]);
                 var badgeView = new BadgeView({ collection: badges, el: $("#container-badges") });
                 $( "#newBadgeBtn" ).click(function() { badges.add(new Badge()); badgeView.render(); });
-                function deleteBadge(_id) { console.log(_id); console.log(badges); };
+                function deleteBadge(id) {
+					badges.remove( badges.where({_id: id}) );
+					badgeView.render();
+				};
                 badgeView.render();
-            })
+            //})
         </script>
         </div>
     </body>

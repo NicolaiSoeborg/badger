@@ -12,10 +12,16 @@ var Badge = Backbone.Model.extend({
 	}
 });
 
+var BadgeCollection = Backbone.Collection.extend({ model: Badge });
+
+
 var BadgeView = Backbone.View.extend({
-	template: _.template( $.get("badge.tpl").responseText ),
+	template: _.template( "Loading..." ),
 	initialize: function () {
-		//console.log("BadgeView initialize");
+		var self = this;
+		$.get("badge.tpl", function(tpl) {
+			self.template = _.template( tpl );
+		})
 	},
 	render: function () {
 		var self = this;
@@ -26,5 +32,3 @@ var BadgeView = Backbone.View.extend({
 		return this;
 	}
 });
-
-var BadgeCollection = Backbone.Collection.extend({ model: Badge });

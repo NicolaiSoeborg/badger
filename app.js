@@ -1,20 +1,21 @@
 var Badge = Backbone.Model.extend({
-	// defauls
 	defaults: {
+		_id: 0,
 		upper_text: "Harebo '16",
 		upper_path: "M 80, 150 c 0, -100, 140, -100, 140, 0",
-
 		middle_text: "Søborg",
-
 		lower_text: "C. Software",
 		lower_path: "M 60, 150 c 0, 120, 180, 120, 180, 0"
+	},
+	initialize: function() {
+		this.set("_id", ((Math.random() * 1e9) | 0)); // TODO: should be a nonce
 	}
 });
 
 var BadgeView = Backbone.View.extend({
-	template: _.template( $("#template-badge").html() ),
+	template: _.template( $.get("badge.tpl").responseText ),
 	initialize: function () {
-		console.log("BadgeView initialize");
+		//console.log("BadgeView initialize");
 	},
 	render: function () {
 		var self = this;

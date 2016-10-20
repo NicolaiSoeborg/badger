@@ -25,10 +25,14 @@
             #container { width: 100%; overflow: hidden; }
             .draggable { cursor: move; }
             /*.menu { display: inline-block; float: left; padding: 2px; border-radius: 3px; background: rgb(90, 210, 135); }*/
-            .badge { float: left; }
+            .badgeHolder { float: left; } /* 'badge' styled by Bootstrap, so we use a "holder" */
             .closeBtn { float: right; position: relative; right: 25px; top: 25px; }
             .hidden { display: none; }
             @media print { .no-print, .no-print * { display: none !important; } }
+
+            /* Bootstrap fixes */
+            body { padding-top: 60px; }
+            @media (max-width: 979px) { body { padding-top: 0px; } }
         </style>
     </head>
     <body>
@@ -50,7 +54,7 @@
         <div id="container-badges">Loading...</div>
 
         <script type="text/template" id="template-badge">
-<div class="badge">
+<div class="badgeHolder">
 <button class="closeBtn no-print" title="Delete badge">X</button>
 <svg version="1.1" baseProfile="full" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
     <defs>

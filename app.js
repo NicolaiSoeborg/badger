@@ -16,14 +16,14 @@ var BadgeView = Backbone.View.extend({
 	initialize: function () {
 		console.log("BadgeView initialize");
 	},
-    render: function () {
-    	var self = this;
-    	this.$el.html(""); // clear html
-    	this.collection.each(function(badge) {
-    		self.$el.html( self.$el.html() + self.template(badge.toJSON()) );
+	render: function () {
+		var self = this;
+		this.$el.html(""); // clear html
+		this.collection.each(function(badge) {
+			self.$el.html( self.$el.html() + self.template(badge.toJSON()) );
 		});
 		return this;
-    }
+	}
 });
 
 var BadgeCollection = Backbone.Collection.extend({ model: Badge });

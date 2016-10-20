@@ -1,230 +1,29 @@
-// This file requires jQuery
+var Badge = Backbone.Model.extend({
+	// defauls
+	defaults: {
+		upper_text: "Harebo '16",
+		upper_path: "M 80, 150 c 0, -100, 140, -100, 140, 0",
 
-$(document).ready(function() {
-	setInterval(function(){
-		$("#lastSaveOutputTimer").text(parseInt($("#lastSaveOutputTimer").text()) + 1);
-	}, 1000);
+		middle_text: "Søborg",
+
+		lower_text: "C. Software",
+		lower_path: "M 60, 150 c 0, 120, 180, 120, 180, 0"
+	}
 });
 
-var selectedTextField = "#text-upper-path";
-function setEdit(elm) {
-	$("#txtItem").val( elm.id );
-	$("#txtText").val( elm.textContent );
-	$("#txtFont option[value=" + $(elm).css("font-family") + "]").prop("selected", true);
-	$("#txtSize").val( $(elm).css("font-size").replace("px", "") );
-	$("#txtColor").val( rgbToHex($(elm).css("fill")) );
+var BadgeView = Backbone.View.extend({
+	template: _.template( $("#template-badge").html() ),
+	initialize: function () {
+		console.log("BadgeView initialize");
+	},
+    render: function () {
+    	var self = this;
+    	this.$el.html(""); // clear html
+    	this.collection.each(function(badge) {
+    		self.$el.html( self.$el.html() + self.template(badge.toJSON()) );
+		});
+		return this;
+    }
+});
 
-	if ($(elm).attr("xlink:href")) {
-		selectedTextField = $(elm).attr("xlink:href");
-		$("#TextLocSlider").val( $(selectedTextField)[0].attributes["d"].nodeValue.split(",")[2] );
-		$("#TextLoc").removeClass("hidden");
-	} else {
-		$("#TextLoc").addClass("hidden");
-	}
-}
-
-function saveBadge() {
-	// hack til at vaelge det valgte tekstfeltet i svg billedet:
-	var elm = $("#" + $("#txtItem").val() )[0];
-
-	elm.textContent = $("#txtText").val(); // tekst
-	if (elm.textContent == "") elm.innerHTML = "&nbsp;&nbsp;"; // textfield width > 0 => can still be selected
-	$(elm).css("font-family", $("#txtFont").val()); // font
-	$(elm).css("font-size", $("#txtSize").val() + "px"); // size
-	$(elm).css("fill", $("#txtColor").val()); // farve
-
-	if (!($("#outputBox").hasClass("hidden")))
-		outputLayout(true); // update saved code, if "save" field is visible
-}
-
-function dropHandler(file) { // TODO: This only works for local files
-	file.stopPropagation(); // don't change webpage to image file
-	try {
-		var localFilename = file.dataTransfer.files[0].name;
-		console.log(file.dataTransfer.files[0].webkitRelativePath);
-		// change bagground
-		$("#bgImg:first")[0].href.baseVal = localFilename;
-		$("#fgImg:first")[0].href.baseVal = localFilename;
-	} catch(err) {
-		console.log("Error in dropHandler: " + err);
-	}
-}
-
-function changeBackground(files) {
-	if (files.length === 1) {
-		var fileReader = new FileReader();
-		fileReader.readAsDataURL( files[0] );
-		fileReader.onload = function(fileReaderEvent) {
-			$( "#fgImg" ).animate({opacity: 0}, "slow", function(){
-				$(this).attr("xlink:href", fileReaderEvent.target.result).animate({opacity: 1}, "slow");
-			});
-			$( "#bgImg" ).animate({opacity: 0}, "slow", function(){
-				$(this).attr("xlink:href", fileReaderEvent.target.result).animate({opacity: 1}, "slow");
-			});
-		}
-	}
-}
-
-
-// Modificeret kode fra http://www.petercollingridge.co.uk/interactive-svg-components/draggable-svg-element
-var selectedElements = [];
-var currentX = 0, currentY = 0;
-
-function selectElement(evt) {
-	selectedElements = [evt.target];
-
-	// Special case, if user selects front- or background then make sure to select both:
-	var fgAndBg = [ $("#fgImg")[0], $("#bgImg")[0] ];
-	if ( $.inArray(evt.target, fgAndBg) != -1) {
-		selectedElements = fgAndBg;
-	}
-
-	currentX = evt.clientX;
-	currentY = evt.clientY;
-
-	selectedElements.forEach(function(selectedElement) {
-		selectedElement.setAttributeNS(null, "onmousemove", "moveElement(evt)");
-		selectedElement.setAttributeNS(null, "onmouseout", "deselectElement(evt)");
-		selectedElement.setAttributeNS(null, "onmouseup", "deselectElement(evt)");
-	});
-}
-
-function moveElement(evt) {
-	var dx = evt.clientX - currentX;
-	var dy = evt.clientY - currentY;
-
-	selectedElements.forEach(function(selectedElement) {
-		selectedElement.setAttributeNS(null, "x", parseInt(selectedElement.getAttributeNS(null, "x")) + dx );
-		selectedElement.setAttributeNS(null, "y", parseInt(selectedElement.getAttributeNS(null, "y")) + dy );
-	});
-
-	currentX = evt.clientX;
-	currentY = evt.clientY;
-}
-
-function deselectElement(evt) {
-	selectedElements.forEach(function(selectedElement) {
-		if (selectedElement != []) {
-			selectedElement.removeAttributeNS(null, "onmousemove");
-			selectedElement.removeAttributeNS(null, "onmouseout");
-			selectedElement.removeAttributeNS(null, "onmouseup");
-			selectedElement = [];
-		}
-	});
-}
-
-
-function fullCut() { // Prepair border of background for printing
-	$("[id=fgImg]").each(function(_,elm) {
-		$(elm).attr("clip-path", "url(#badge-full)");
-	});
-}
-
-function fullUncut() { // Add border again
-	$("[id=fgImg]").each(function(_,elm) {
-		$(elm).attr("clip-path", "url(#badge-cutoff)");
-	});
-}
-
-function scaleImage(val) {
-	[ $("#fgImg:first"), $("#bgImg:first") ].forEach(function(img) {
-		//$(img).css("transform", "scale("+val+", "+val+")");
-		newHeight = parseInt($(img).attr("height"),10) * val;
-		newWidth = parseInt($(img).attr("width"),10) * val;
-		$(img).css("max-width", newWidth); $(img).css("width", newWidth);
-		$(img).css("max-height", newHeight); $(img).css("height", newHeight);
-	});
-	fullUncut(); // TODO: This is dumb, but kinda works
-}
-
-function cloneBadge() {
-	$(".badge:first").clone().removeAttr("data-intro").appendTo("#container");
-}
-
-function deleteBadge(badge) {
-	if (confirm("Are you sure you want to delete this badge?")) {
-		$(badge).parent().detach();
-	}
-}
-
-function hideAndToggle(hide, toggle) {
-	$(hide).each(function() {
-		$(this).addClass("hidden");
-	});
-	$(toggle).each(function() {
-		if ($(this).hasClass("hidden")) {
-			$(this).removeClass("hidden");
-		} else {
-			$(this).addClass("hidden");
-		}
-	});
-}
-
-
-function getBadgeCode() {
-	$("#inputTextField,#outputTextField").val(""); // clear textfiels before saving
-	return "v2!" + LZString.compressToBase64( $("body").html() ); // TODO: Improve this!
-}
-
-function decodeBadgeCode(code) {
-	if (code.startsWith("CiA")) // "CiA" comes from encoding "<html>..."
-		return atob(code);
-	if (code.startsWith("v2!"))
-		return LZString.decompressFromBase64( code.substring(3) ); // remove "v2!"
-
-	alert("Can't decode badge code!");
-	return "";
-}
-
-function outputLayout(justReload = false) {
-	$("#outputTextField").val( getBadgeCode() );
-	$("#lastSaveOutputTimer").text("0");
-
-	if (!justReload)
-		hideAndToggle($("#inputBox"), $("#outputBox"));
-}
-
-function inputLayout() {
-	hideAndToggle($("#outputBox"), $("#inputBox"));
-}
-
-function loadSaved() {
-	var decoded = decodeBadgeCode( $("#inputTextField").val() );
-	if (decoded.length > 0) { // TODO: Better sanity checking?
-		$("body").html(decoded);
-		outputLayout(true);
-	}
-}
-
-
-// Hack for browsers that doesn't support "beforeprint" (everyone but IE !)
-if ("matchMedia" in window) {
-	window.matchMedia("print").addListener(function(media) {
-		if (media.matches) {
-			fullCut(); // TODO: Detect when printing is done and call fullUncut()
-		}
-	});
-}
-
-function moveText(val) {
-	val = parseInt(val, 10);
-	var oldVal = $(selectedTextField)[0].attributes["d"].nodeValue.split(",");
-	oldVal[2] = val;
-	oldVal[4] = val;
-	$(selectedTextField)[0].attributes["d"].nodeValue = oldVal.join();
-}
-
-
-function componentToHex(c) {
-	var hex = parseInt(c).toString(16);
-	return hex.length == 1 ? "0" + hex : hex;
-}
-
-function rgbToHex(rgb) {
-	// split from rbg(x, y,z) to [x, y, z]
-	rgb = rgb.replace(/[^\d,]/g, "").split(",");
-
-	// assign r = x, g = y, b = z
-	var r = rgb[0], g = rgb[1], b = rgb[2];
-	return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-}
+var BadgeCollection = Backbone.Collection.extend({ model: Badge });

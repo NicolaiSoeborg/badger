@@ -17,10 +17,10 @@
     <!-- Tekst -->
     <g font-size="25" fill="white" text-anchor="middle">
         <text>
-            <textPath xlink:href="#upper-path<%=_id%>" startOffset="50%"><%= upper_text %></textPath>
-            <textPath xlink:href="#lower-path<%=_id%>" startOffset="50%"><%= lower_text %></textPath>
+            <textPath xlink:href="#upper-path<%=_id%>" startOffset="50%" onclick="edit('upper_text', <%=_id%>)"><%= upper_text %></textPath>
+            <textPath xlink:href="#lower-path<%=_id%>" startOffset="50%" onclick="edit('lower_text', <%=_id%>)"><%= lower_text %></textPath>
         </text>
     </g>
-    <text x="150" y="175" font-size="60" text-anchor="middle" fill="white"><%= middle_text %></text>
+    <text x="150" y="175" font-size="60" text-anchor="middle" fill="white" onclick="edit('middle_text', <%=_id%>)"><%= middle_text %></text>
 </svg>
 </div>

@@ -14,7 +14,6 @@ var Badge = Backbone.Model.extend({
 
 var BadgeCollection = Backbone.Collection.extend({ model: Badge });
 
-
 var BadgeView = Backbone.View.extend({
 	template: _.template( "Loading..." ),
 	initialize: function () {

@@ -24,11 +24,12 @@ var BadgeView = Backbone.View.extend({
 		})
 	},
 	render: function () {
+		var _html = "";
 		var self = this;
-		this.$el.html(""); // clear html
 		this.collection.each(function(badge) {
-			self.$el.html( self.$el.html() + self.template(badge.toJSON()) );
+			_html += self.template(badge.toJSON());
 		});
+		this.$el.html(_html);
 		return this;
 	}
 });

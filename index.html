@@ -56,15 +56,15 @@
         <div id="container-badges">Loading..</div>
 
         <script>
-            //$(document).ready(function(){
-                var badges = new BadgeCollection([ new Badge() ]);
-                var badgeView = new BadgeView({ collection: badges, el: $("#container-badges") });
-                $( "#newBadgeBtn" ).click(function() { badges.add(new Badge()); badgeView.render(); });
-                function deleteBadge(id) {
-					badges.remove( badges.where({_id: id}) );
-					badgeView.render();
-				};
+            var badges = new BadgeCollection([ new Badge() ]);
+            var badgeView = new BadgeView({ collection: badges, el: $("#container-badges") });
+            $( "#newBadgeBtn" ).click(function() { badges.add(new Badge()); badgeView.render(); });
+            function deleteBadge(id) {
+                badges.remove( badges.where({_id: id}) );
                 badgeView.render();
+            };
+            //$(document).ready(function(){
+            window.setTimeout("badgeView.render()", 500);
             //})
         </script>
         </div>

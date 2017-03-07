@@ -1,4 +1,3 @@
-<div class="badgeHolder">
 <button class="closeBtn no-print" onclick="deleteBadge(<%=_id%>);" title="Delete badge">X</button>
 <svg version="1.1" baseProfile="full" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -17,10 +16,9 @@
     <!-- Tekst -->
     <g font-size="25" fill="white" text-anchor="middle">
         <text>
-            <textPath xlink:href="#upper-path<%=_id%>" startOffset="50%" onclick="edit('upper_text', <%=_id%>)"><%= upper_text %></textPath>
-            <textPath xlink:href="#lower-path<%=_id%>" startOffset="50%" onclick="edit('lower_text', <%=_id%>)"><%= lower_text %></textPath>
+            <textPath xlink:href="#upper-path<%=_id%>" startOffset="50%" id="upper_text<%=_id%>" onclick="edit(<%=_id%>, 'upper_text')"><%= upper_text %></textPath>
+            <textPath xlink:href="#lower-path<%=_id%>" startOffset="50%" id="lower_text<%=_id%>" onclick="edit(<%=_id%>, 'lower_text')"><%= lower_text %></textPath>
         </text>
     </g>
-    <text x="150" y="175" font-size="60" text-anchor="middle" fill="white" onclick="edit('middle_text', <%=_id%>)"><%= middle_text %></text>
+    <text x="150" y="175" font-size="60" text-anchor="middle" fill="white" id="middle_text<%=_id%>" onclick="edit(<%=_id%>, 'middle_text')"><%= middle_text %></text>
 </svg>
-</div>

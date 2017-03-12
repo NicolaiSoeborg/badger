@@ -19,7 +19,7 @@
             @media print { .no-print, .no-print * { display: none !important; } }
         </style>
 
-    <script type='text/javascript' src='http://knockoutjs.com/downloads/knockout-3.2.0.js'></script>
+    <script type='text/javascript' src="http://knockoutjs.com/downloads/knockout-3.2.0.js" integrity="sha384-BfEcYlFlmy59EmR8p6lVNayGRn4Vzo2Y1T6V3xZdD5cVel+d7NobZlyxT3RkNUaW" crossorigin="anonymous"></script>
     <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
 </head>
 <body>
@@ -31,7 +31,7 @@
             (person rendered at <span data-bind='text: new Date().getSeconds()' > </span>)
         </span>-->
         
-        <div class='badge' data-bind='html: html()'></div>
+        <div class='badge' data-bind='html: getHtml()'>Loading..</div>
         <div class='menu no-print' data-bind='visible: showMenu'>
             <input data-bind='attr: {id: "editor" + data._id}' type='text' placeholder='Select field to edit'>
         </div>
@@ -52,27 +52,28 @@ var Badge = function() {
         lower_path: "M 60, 150 c 0, 120, 180, 120, 180, 0"
     };
     console.log('New badge with id: ' + this.data._id);
-    this.html = function() {
+    this.getHtml = function() {
         return defaultBadgeTpl(this.data);
     }
-
 }
 
 var viewModel = {
-    badges: ko.observableArray([ /* empty as newBadge is called (when rendering?) */ ]),
-    newBadge: function() { this.badges.push(new Badge()) }
+    badges: ko.observableArray([ /* empty as newBadge is called (when rendering?!) */ ]),
+    newBadge: function() {
+    	this.badges.push(new Badge());
+    },
+    deleteBadge: function (id) {
+    	_.each(this.badges, function(badge) {
+    		if (badge.data()._id == id) {
+            	//TODO: Remove 'badge'
+            	console.log("TODO: Remove " + badge);
+        	}
+    	});
+	}
 };
 
 
 // Helper functions:
-function deleteBadge(id) {
-    _.each(viewModel.badges, function(badge){
-        if (badge.data()._id == id) {
-            //TODO: Remove 'badge'
-        }
-    });
-}
-
 function edit(id, attr) {
     var editor = document.getElementById('editor' + id);
     //var elm = document.getElementById(attr + id);

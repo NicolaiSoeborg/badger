@@ -1,4 +1,4 @@
-<button class="closeBtn no-print" onclick="deleteBadge(<%=_id%>);" title="Delete badge">X</button>
+<button class="closeBtn no-print" data-bind="click: deleteBadge(<%=_id%>)" onclick="deleteBadge(<%=_id%>);" title="Delete badge">X</button>
 <svg version="1.1" baseProfile="full" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
     <defs>
         <clipPath id="badge-cutoff<%=_id%>">

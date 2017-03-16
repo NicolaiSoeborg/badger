@@ -12,8 +12,8 @@
         <style type="text/css">
             #container { width: 100%; overflow: hidden; }
             #menu {
-                background-color: #EEEEDD; border: 1px solid #CCC;
-                display: inline-block; padding: 2px; border-radius: 3px; }
+                background-color: #EEEEDD; border: 1px solid #CCC; width: 200px;
+                display: inline-block; padding: 5px; border-radius: 3px; }
             .badge { float: left; }
             .draggable { cursor: move; }
             .closeBtn { float: right; position: relative; right: 25px; top: 25px; }
@@ -169,13 +169,14 @@ var viewModel = {
 			// Create an input form for changing value (TODO: nicer menu)
 			var label = document.createElement("LABEL");
 			label.setAttribute("for", elmName);
-			label.textContent = elmName;
+			label.textContent = elmName + ": ";
 
 			var input = document.createElement("INPUT");
 			input.setAttribute("name", elmName);
 			input.setAttribute("value", elmVal);
 			var valType = elmVal[0] == "#" ? "color" : isNaN(attr[i].value) ? "string" : "number"; // sorry!
 			input.setAttribute("type", valType);
+			input.style.width = "100%";
 
 			// Make sure to userinput will update visible design:
 			for (fuckJS of ["onchange", "onkeydown", "onpaste", "oninput"]) {
@@ -190,7 +191,7 @@ var viewModel = {
 			// Append 'input line' to menu:
 			menu.appendChild(label);
 			menu.appendChild(input);
-			menu.appendChild(document.createElement("BR"))
+			menu.appendChild(document.createElement("BR"));
 		}
 
 		menu.appendChild(document.createElement("BR"));

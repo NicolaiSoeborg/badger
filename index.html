@@ -70,7 +70,7 @@
                 <text data-bind="attr: middle_attr" onclick="viewModel.editBadge(this)">Søborg</text>
             </svg>
             <br /> <!-- Scale image slider -->
-            <input type="range" min="-5" max="5" step="0.05" data-bind="value: imgScale" />
+            <input type="range" min="-5" max="5" step="0.05" data-bind="value: imgScale" class="hidden no-print" />
         </div>
     </div><!--/foreach badges-->
     <div id="menu" data-bind="visible: showMenu()" class="no-print">&larr; Click any element on the badge to change content.<br />

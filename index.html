@@ -27,7 +27,7 @@
 <div id="container">
 	<span class="no-print">
 		<strong>Badger!</strong>
-		<a href="#" data-bind="click: newBadge">add badge</a>,
+		<a href="#" data-bind="click: cloneBadge">clone badge</a>,
 		<a href="#" id="togglePrint" data-bind="click: togglePrint">prepare print</a>
 	</span>
 
@@ -165,8 +165,17 @@ var Badge = function(badgeId) {
 
 viewModel = {
 	badges: ko.observableArray([ new Badge(badgeCounter) ]),
-	newBadge: function() {
-		this.badges.push(new Badge(++badgeCounter) );
+	cloneBadge: function() {
+		var badge = new Badge(++badgeCounter);
+		// This ugly mess make sure to copy the background image from the first badge:
+		var hack = document.getElementsByClassName("draggable")[0];
+		badge.img.href(hack.href.baseVal);
+		badge.img.x(hack.x.baseVal.value);
+		badge.img.y(hack.y.baseVal.value);
+		badge.img.height(hack.height.baseVal.value);
+		badge.img.width(hack.width.baseVal.value);
+
+		this.badges.push(badge);
 	},
 	deleteBadge: function(b) {
 		if (viewModel.badges().length == 1) {

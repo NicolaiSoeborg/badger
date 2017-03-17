@@ -36,10 +36,10 @@
 	<svg version="1.1" width="0" height="0" xmlns="http://www.w3.org/2000/svg">
 		<defs>
 			<clipPath id="badge-cutoff">
-				<circle data-bind="attr: $root.badges()[0].circle" r="2.5cm" />
+				<circle data-bind="attr: $root.badges()[0].circle" r="2.5cm"></circle>
 			</clipPath>
 			<clipPath id="badge-full">
-				<circle data-bind="attr: $root.badges()[0].circle" r="3.0cm" />
+				<circle data-bind="attr: $root.badges()[0].circle" r="3.0cm"></circle>
 			</clipPath>
 		</defs>
 	</svg>
@@ -50,19 +50,19 @@
 			<button class="closeBtn no-print" data-bind="visible: $root.showMenu, click: $root.deleteBadge.bind()" title="Delete badge">X</button>
 			<svg version="1.1" baseProfile="full" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
 				<defs>
-					<path data-bind="attr: {id: 'upper-path' + _id, d: upper_attr.d}" />
-					<path data-bind="attr: {id: 'lower-path' + _id, d: lower_attr.d}" />
+					<path data-bind="attr: {id: 'upper-path' + _id, d: upper_attr.d}"></path>
+					<path data-bind="attr: {id: 'lower-path' + _id, d: lower_attr.d}"></path>
 				</defs>
 
 				<!-- 'Actual' badge (when designing): -->
-				<image data-bind="attr: img, visible: $root.showMenu" clip-path="url(#badge-cutoff)" />
+				<image data-bind="attr: img, visible: $root.showMenu" clip-path="url(#badge-cutoff)"></image>
 				<!-- Actual badge (when printing): -->
-				<image data-bind="attr: img, visible: !$root.showMenu()" clip-path="url(#badge-full)" />
+				<image data-bind="attr: img, visible: !$root.showMenu()" clip-path="url(#badge-full)"></image>
 				<!-- Badge background: -->
-				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print" />
+				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print"></image>
 
 				<!-- The outermost circle (always visible): -->
-				<circle data-bind="attr: circle" ondblclick="viewModel.changeBackground(this.parentElement.parentElement)" r="3cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent" />
+				<circle data-bind="attr: circle, click: $root.ondblclickFix.bind()" ondblclick="viewModel.changeBackground(this.parentElement.parentElement.attributes.badgeId.value)" r="3cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent"></circle>
 
 				<text>
 					<textPath data-bind="attr: upper_attr" onclick="viewModel.editBadge(this)">Harebo '16</textPath>
@@ -191,18 +191,21 @@ viewModel = {
 	editBadge: function(elm) {
 		var attr = elm.attributes;
 		var menu = document.getElementById("menu");
-		var disabledElms = ["onclick", "data-bind", "href", "d"];
+		var disabledElms = ["onclick", "data-bind", "href", "d", "text-anchor"];
 
-		menu.innerHTML = "<center><strong>MENU</strong></center>"; // delete old menu
+		// delete old menu:
+		menu.innerHTML = "<center><strong>MENU</strong></center>";
 
 		for (i = 0; i < attr.length; i++) {
-			var elmName = attr[i].name, elmVal = attr[i].value;
+			var elmName = attr[i].name,
+				elmVal = attr[i].value;
 
-			// Skip stuff user shouldn't change:
-			if (disabledElms.indexOf(elmName) > -1)
+			// Skip stuff user shouldn't change
+			// For some reason elmName is uppercase in IE, but lowercase elsewhere:
+			if (disabledElms.indexOf(elmName.toLowerCase()) > -1)
 				continue;
 
-			// Create an input form for changing value (TODO: nicer menu)
+			// Create an input form for changing value
 			var label = document.createElement("LABEL");
 			label.setAttribute("for", elmName);
 			label.textContent = elmName + ": ";
@@ -259,8 +262,7 @@ viewModel = {
 		// Toggle value:
 		this.showMenu(!showMenu);
 	},
-	changeBackground: function(b) {
-		var badgeId = b.attributes.badgeId.value;
+	changeBackground: function(badgeId) {
 		this.badges().forEach(function(badge) {
 			if (badge._id == badgeId) {
 				var f = document.getElementById("fileSelect" + badgeId);
@@ -273,10 +275,20 @@ viewModel = {
 					// Begin loading data (async)
 					reader.readAsDataURL(this.files[0]);
 				};
+
 				f.click(); // activate "select file" diag
 			}
 		});
 	},
+	ondblclickFix: function(badge, event) {
+		// 'ondblclick' isn't actually defined on svg elements,
+		// but just happens to work in Chrome and IE, but not FF.
+		// Link: https://bugzilla.mozilla.org/show_bug.cgi?id=360145
+		if (navigator.userAgent.indexOf("Firefox") > -1
+			&& event.detail >= 2) {
+			viewModel.changeBackground(badge._id);
+		}
+	}
 };
 
 ko.applyBindings(viewModel);

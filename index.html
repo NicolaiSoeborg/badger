@@ -81,7 +81,8 @@
 </div>
 <script type="text/javascript">
 var badgeCounter = 0,
-	viewModel = null; // needed to defined before imgScale
+	viewModel = null, // needed to defined before imgScale
+	FONTS = ["Times New Roman", "Helvetica", "Arial", "Comic Sans MS", "Segoe Print", "Terminal", "Impact", "Tahoma", "Wingdings"];
 
 var Badge = function() {
 	var obj = {
@@ -93,7 +94,6 @@ var Badge = function() {
     	},
     	middle_attr: {
     		textContent: "Søborg",
-    		fill: "#FFFFFF", // white
     		x: 150,
     		y: 175,
     	},
@@ -143,11 +143,13 @@ var Badge = function() {
 	for (attr of [obj.upper_attr, obj.lower_attr]) {
 		attr["font-size"] = 25;
 		attr["startOffset"] = "50%";
-		attr["fill"] = "#FFFFFF"; // white
-		attr["text-anchor"] = "middle";
 	};
 	obj.middle_attr["font-size"] = 60;
-	obj.middle_attr["text-anchor"] = "middle";
+	for (attr of [obj.upper_attr, obj.middle_attr, obj.lower_attr]) {
+		attr["fill"] = "#FFFFFF"; // white
+		attr["text-anchor"] = "middle";
+		attr["font-family"] = "Tahoma";
+	}
 	return obj;
 }
 
@@ -172,7 +174,7 @@ viewModel = {
 	editBadge: function(elm) {
 		var attr = elm.attributes;
 		var menu = document.getElementById("menu");
-		var disabledElms = ["onclick", "data-bind", "href"];
+		var disabledElms = ["onclick", "data-bind", "href", "d"];
 
 		menu.innerHTML = "<center><strong>MENU</strong></center>"; // delete old menu
 
@@ -189,19 +191,38 @@ viewModel = {
 			label.textContent = elmName + ": ";
 
 			var input = document.createElement("INPUT");
+			if (elmName == "font-family") {
+				input = document.createElement("SELECT");
+				for (font of FONTS) {
+					var opt = document.createElement("OPTION");
+					opt.text = font;
+					opt.style.fontFamily = font;
+					opt.setAttribute("value", font);
+					if (font == elmVal)
+						opt.setAttribute("selected", true);
+
+					input.appendChild(opt);
+				}
+			} else {
+				input.setAttribute("value", elmVal);
+			}
+
 			input.setAttribute("name", elmName);
-			input.setAttribute("value", elmVal);
-			var valType = elmVal[0] == "#" ? "color" : isNaN(attr[i].value) ? "string" : "number"; // sorry!
+			var valType = elmVal[0] == "#" ? "color" : isNaN(attr[i].value) ? "string" : "number";
 			input.setAttribute("type", valType);
 			input.style.width = "100%";
 
 			// Make sure to userinput will update visible design:
 			for (fuckJS of ["onchange", "onkeydown", "onpaste", "oninput"]) {
 				input[fuckJS] = function() {
-					if (this.name == "textContent")
+					if (this.name == "textContent") {
 						elm.textContent = this.value;
-					else
+						// Make sure "deleted" textfields still can be selected:
+						if (elm.textContent == "")
+							elm.innerHTML = "&nbsp;&nbsp;";
+					} else {
 						elm.attributes[this.name].value = this.value;
+					}
 				}
 			}
 

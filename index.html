@@ -47,7 +47,7 @@
 	<!-- Create badges -->
 	<div data-bind="foreach: badges">
 		<div data-bind="attr: {badgeId: _id}" class="badge">
-			<button class="closeBtn no-print" data-bind="visible: $root.showMenu /*, click: $root.deleteBadge(_id)*/" onclick="viewModel.deleteBadge(this.parentElement)" title="Delete badge">X</button>
+			<button class="closeBtn no-print" data-bind="visible: $root.showMenu, click: $root.deleteBadge.bind()" title="Delete badge">X</button>
 			<svg version="1.1" baseProfile="full" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
 				<defs>
 					<path data-bind="attr: {id: 'upper-path' + _id, d: upper_attr.d}" />
@@ -166,18 +166,16 @@ var Badge = function(badgeId) {
 viewModel = {
 	badges: ko.observableArray([ new Badge(badgeCounter) ]),
 	newBadge: function() {
-		this.badges.push(new Badge(badgeCounter++) );
+		this.badges.push(new Badge(++badgeCounter) );
 	},
 	deleteBadge: function(b) {
-		if (this.badges().length == 1) {
+		if (viewModel.badges().length == 1) {
 			document.getElementById("menu").innerHTML = "Can't delete the last badge!";
 			return;
 		}
-
-		var badgeId = b.attributes.badgeId.value, vm = this;
-		this.badges().forEach(function(badge) {
-			if (badge._id == badgeId) {
-				vm.badges.remove(badge);
+		viewModel.badges().forEach(function(badge) {
+			if (badge._id == b._id) {
+				return viewModel.badges.remove(badge);
 			}
 		});
 	},

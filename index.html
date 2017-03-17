@@ -69,7 +69,10 @@
                 </text>
                 <text data-bind="attr: middle_attr" onclick="viewModel.editBadge(this)">Søborg</text>
             </svg>
-            <br /> <!-- Scale image slider -->
+            <!-- Hidden field to allow JS to open a file picker: -->
+            <input type="file" accept="image/*" data-bind="attr: {id: 'fileSelect' + _id}" class="hidden no-print" />
+            <br />
+            <!-- Scale image slider: -->
             <input type="range" min="-5" max="5" step="0.05" data-bind="value: imgScale" class="hidden no-print" />
         </div>
     </div><!--/foreach badges-->
@@ -102,9 +105,9 @@ var Badge = function() {
     		cy: 150,
     		stroke: "black",
     	},
-    	imgScale: ko.observable(0).subscribe(function(newVal){ console.log("WA") }),
+    	imgScale: ko.observable(0).subscribe(function(newVal){ console.log("TODO") }),
     	img: {
-    		href: "picture_bg.jpg",
+    		href: ko.observable("picture_bg.jpg"),
     		x: ko.observable(-50),
     		y: ko.observable(-50),
     		height: 400,
@@ -209,10 +212,20 @@ var viewModel = {
     	var badgeId = b.attributes.badgeId.value;
     	this.badges().forEach(function(badge) {
     		if (badge._id == badgeId) {
-            	alert("TODO: CHANGE " + badge.img.href);
+    			var f = document.getElementById("fileSelect" + badgeId);
+    			f.onchange = function(){
+    				var reader = new FileReader();
+    				// What to do when loading of data is done:
+					reader.onload = function(event) {
+						badge.img.href(event.target.result);
+					}
+					// Begin loading data (async)
+					reader.readAsDataURL(this.files[0]);
+    			};
+    			f.click(); // activate "select file" diag
         	}
     	});
-	}
+	},
 };
 ko.applyBindings(viewModel);
 

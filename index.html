@@ -129,12 +129,12 @@ var Badge = function(badgeId) {
 		},
 		mouseCoord: {x: 0, y: 0}, // "private" holder for mouse movement
 		isMouseMoving: false,
-		beginMove: function() {
+		beginMove: function(_, event) {
 			this.mouseCoord.x = event.clientX;
 			this.mouseCoord.y = event.clientY;
 			this.isMouseMoving = true;
 		},
-		doMove: function() {
+		doMove: function(_, event) {
 			if (this.isMouseMoving) {
 				var diffX = event.clientX - this.mouseCoord.x,
 					diffY = event.clientY - this.mouseCoord.y;

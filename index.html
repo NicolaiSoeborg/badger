@@ -31,7 +31,8 @@
 		<a href="#" id="togglePrint" data-bind="click: togglePrint">prepare print</a>
 	</span>
 
-	<!-- Define globale styles for badges (every elm. with a "id" attribute) -->
+	<!-- Define globale styles for badges
+	Every elm. with a non-unique "id" attribute should be listed below -->
 	<svg version="1.1" width="0" height="0" xmlns="http://www.w3.org/2000/svg">
 		<defs>
 			<clipPath id="badge-cutoff">
@@ -53,12 +54,12 @@
 					<path data-bind="attr: {id: 'lower-path' + _id, d: lower_attr.d}" />
 				</defs>
 
-				<!-- 'Actual' badge when designing: -->
+				<!-- 'Actual' badge (when designing): -->
 				<image data-bind="attr: img, visible: $root.showMenu" clip-path="url(#badge-cutoff)" />
 				<!-- Actual badge (when printing): -->
 				<image data-bind="attr: img, visible: !$root.showMenu()" clip-path="url(#badge-full)" />
 				<!-- Badge background: -->
-				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print" />
+				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print" />
 
 				<!-- The outermost circle (always visible): -->
 				<circle ondblclick="viewModel.changeBackground(this.parentElement.parentElement)" cx="150" cy="150" r="3cm" stroke="black" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent" />
@@ -127,15 +128,25 @@ var Badge = function(badgeId) {
 			width: ko.observable(400),
 		},
 		mouseCoord: {x: 0, y: 0}, // "private" holder for mouse movement
+		isMouseMoving: false,
 		beginMove: function() {
 			this.mouseCoord.x = event.clientX;
 			this.mouseCoord.y = event.clientY;
+			this.isMouseMoving = true;
+		},
+		doMove: function() {
+			if (this.isMouseMoving) {
+				var diffX = event.clientX - this.mouseCoord.x,
+					diffY = event.clientY - this.mouseCoord.y;
+				this.img.x(this.img.x() + diffX);
+				this.img.y(this.img.y() + diffY);
+				// Reset mouse coords:
+				this.mouseCoord.x = event.clientX;
+				this.mouseCoord.y = event.clientY;
+			}
 		},
 		stopMove: function() {
-			var diffX = event.clientX - this.mouseCoord.x,
-				diffY = event.clientY - this.mouseCoord.y;
-			this.img.x(this.img.x() + diffX);
-			this.img.y(this.img.y() + diffY);
+			this.isMouseMoving = false;
 		}
 	};
 	// Please fix this:

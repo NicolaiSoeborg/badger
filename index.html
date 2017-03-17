@@ -62,7 +62,7 @@
 				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print" />
 
 				<!-- The outermost circle (always visible): -->
-				<circle ondblclick="viewModel.changeBackground(this.parentElement.parentElement)" cx="150" cy="150" r="3cm" stroke="black" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent" />
+				<circle data-bind="attr: circle" ondblclick="viewModel.changeBackground(this.parentElement.parentElement)" r="3cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent" />
 
 				<text>
 					<textPath data-bind="attr: upper_attr" onclick="viewModel.editBadge(this)">Harebo '16</textPath>
@@ -218,7 +218,7 @@ viewModel = {
 			}
 
 			input.setAttribute("name", elmName);
-			var valType = elmVal[0] == "#" ? "color" : isNaN(attr[i].value) ? "string" : "number";
+			var valType = elmVal[0] == "#" ? "color" : (!isNaN(elmVal) && elmVal !== "") ? "number" : "string";
 			input.setAttribute("type", valType);
 			input.style.width = "100%";
 

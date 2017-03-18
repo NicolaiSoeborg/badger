@@ -12,14 +12,18 @@
 	<style type="text/css">
 		#container { width: 100%; overflow: hidden; }
 		#menu {
-			background-color: #EEEEDD; border: 1px solid #CCC; width: 200px;
-			display: inline-block; padding: 5px; border-radius: 3px; }
-		.badge { float: left; }
+			background-color: #EEEEDD; border: 1px solid #CCC; border-radius: 3px;
+			width: 200px; float: left; display: inline-block; padding: 5px; margin-top: 1em; }
+		#badgeContainer { display: inline-block; }
+		.badge { float: left; display: inline-block; }
 		.draggable { cursor: move; }
 		.closeBtn { float: right; position: relative; right: 25px; top: 25px; }
 		.hidden { display: none; }
 		@media print { .no-print, .no-print * { display: none !important; } }
 	</style>
+
+	<!-- Extra fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Amatic+SC|Clicker+Script|Diplomata+SC|Griffy|Indie+Flower|Kaushan+Script|Lobster|Orbitron|Permanent+Marker|Poiret+One|Roboto|Satisfy" rel="stylesheet">
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js" integrity="sha384-/EjRuG6YTb6zCFou+DBnYCi5u9E1RjUMJanyGOL7DUYLp6wSCUuHNhd58uoGj7jh" crossorigin="anonymous"></script> 
 </head>
@@ -30,6 +34,9 @@
 		<a href="#" data-bind="click: cloneBadge">clone badge</a>,
 		<a href="#" id="togglePrint" data-bind="click: togglePrint">prepare print</a>
 	</span>
+	<br />
+	<div id="menu" data-bind="visible: showMenu()" class="no-print">&larr; Click any element on the badge to change content.<br />
+	Tips: double-click inside the badge (not on the text) to change background.</div>
 
 	<!-- Define globale styles for badges
 	Every elm. with a non-unique "id" attribute should be listed below -->
@@ -45,7 +52,7 @@
 	</svg>
 
 	<!-- Create badges -->
-	<div data-bind="foreach: badges">
+	<div data-bind="foreach: badges" id="badgeContainer">
 		<div data-bind="attr: {badgeId: _id}" class="badge">
 			<button class="closeBtn no-print" data-bind="visible: $root.showMenu, click: $root.deleteBadge.bind()" title="Delete badge">X</button>
 			<svg version="1.1" baseProfile="full" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
@@ -77,14 +84,12 @@
 			</span>
 		</div>
 	</div><!--/foreach badges-->
-	<div id="menu" data-bind="visible: showMenu()" class="no-print">&larr; Click any element on the badge to change content.<br />
-	Tips: double-click inside the badge (not on the text) to change background.</div>
 </div>
 <script type="text/javascript">
 var badgeCounter = 0,
 	viewModel = null, // needed to defined before imgScale
-	FONTS = ["Times New Roman", "Helvetica", "Arial", "Comic Sans MS",
-			 "Segoe Print", "Terminal", "Impact", "Tahoma", "Wingdings"];
+	FONTS = ["Times New Roman", "Helvetica", "Arial", "Comic Sans MS", "Segoe Print", "Terminal", "Impact", "Tahoma", "Wingdings",
+	"Griffy", "Roboto", "Diplomata SC", "Indie Flower", "Lobster", "Amatic SC", "Clicker Script", "Orbitron", "Poiret One", "Satisfy", "Kaushan Script", "Permanent Marker"];
 
 var Badge = function(badgeId) {
 	var obj = {
@@ -159,14 +164,16 @@ var Badge = function(badgeId) {
 		attr["fill"] = "#FFFFFF"; // white
 		attr["text-anchor"] = "middle";
 		attr["font-family"] = "Tahoma";
-	}
+	};
 	return obj;
 }
 
 viewModel = {
 	badges: ko.observableArray([ new Badge(badgeCounter) ]),
+	showMenu: ko.observable(true),
 	cloneBadge: function() {
 		var badge = new Badge(++badgeCounter);
+
 		// This ugly mess make sure to copy the background image from the first badge:
 		var hack = document.getElementsByClassName("draggable")[0];
 		badge.img.href(hack.href.baseVal);
@@ -175,16 +182,17 @@ viewModel = {
 		badge.img.height(hack.height.baseVal.value);
 		badge.img.width(hack.width.baseVal.value);
 
-		this.badges.push(badge);
+		// Push to beginning of array:
+		this.badges.unshift(badge);
 	},
-	deleteBadge: function(b) {
+	deleteBadge: function(badge) {
 		if (viewModel.badges().length == 1) {
 			document.getElementById("menu").innerHTML = "Can't delete the last badge!";
 			return;
 		}
-		viewModel.badges().forEach(function(badge) {
-			if (badge._id == b._id) {
-				return viewModel.badges.remove(badge);
+		viewModel.badges().forEach(function(b) {
+			if (b._id == badge._id) {
+				viewModel.badges.remove(b);
 			}
 		});
 	},
@@ -253,7 +261,6 @@ viewModel = {
 
 		menu.appendChild(document.createElement("BR"));
 	},
-	showMenu: ko.observable(true),
 	togglePrint: function() {
 		var showMenu = this.showMenu();
 		// Update text

@@ -12,10 +12,10 @@
 	<style type="text/css">
 		#container { width: 100%; overflow: hidden; }
 		#menu {
-			background-color: #EEEEDD; border: 1px solid #CCC; border-radius: 3px;
-			width: 200px; float: left; display: inline-block; padding: 5px; margin-top: 1em; }
-		#badgeContainer { display: inline-block; }
-		.badge { float: left; display: inline-block; }
+			background-color: #EEEEDD; border: 1px solid #CCC; border-radius: 3px; position: fixed;
+			width: 200px; padding: 5px; margin-top: 1em; }
+		#badgeContainer { display: table-cell; position: absolute; margin-left: 220px /*menu width + padding, etc*/; }
+		.badge { float: left; }
 		.draggable { cursor: move; }
 		.closeBtn { float: right; position: relative; right: 25px; top: 25px; }
 		.hidden { display: none; }
@@ -282,8 +282,12 @@ viewModel = {
 	},
 	togglePrint: function() {
 		var showMenu = this.showMenu();
-		// Update text
+
+		// Update text:
 		document.getElementById("togglePrint").textContent = showMenu ? "show menu" : "prepare print";
+
+		// Update CSS:
+		document.getElementById("badgeContainer").style.position = showMenu ? "relative" : "absolute";
 
 		// Toggle value:
 		this.showMenu(!showMenu);

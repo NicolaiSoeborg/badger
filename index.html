@@ -86,13 +86,14 @@
 	</div><!--/foreach badges-->
 </div>
 <script type="text/javascript">
-var badgeCounter = 0,
-	viewModel = null, // needed to be defined before imgScale
-	FONTS = ["Times New Roman", "Helvetica", "Arial", "Comic Sans MS", "Segoe Print", "Terminal", "Impact", "Tahoma", "Wingdings",
+"use strict";
+let badgeCounter = 0,
+	viewModel = null; // needed to be defined before imgScale
+const FONTS = ["Times New Roman", "Helvetica", "Arial", "Comic Sans MS", "Segoe Print", "Terminal", "Impact", "Tahoma", "Wingdings",
 	"Griffy", "Roboto", "Diplomata SC", "Indie Flower", "Lobster", "Amatic SC", "Clicker Script", "Orbitron", "Poiret One", "Satisfy", "Kaushan Script", "Permanent Marker"];
 
-var Badge = function(badgeId) {
-	var obj = {
+let Badge = function(badgeId) {
+	let obj = {
 		_id: badgeId,
 		upper_attr: {
 			d: "M 80, 150 c 0, -100, 140, -100, 140, 0",
@@ -143,7 +144,7 @@ var Badge = function(badgeId) {
 		},
 		doMove: function(_, event) {
 			if (this.isMouseMoving) {
-				var diffX = event.clientX - this.mouseCoord.x,
+				let diffX = event.clientX - this.mouseCoord.x,
 					diffY = event.clientY - this.mouseCoord.y;
 				this.img.x(this.img.x() + diffX);
 				this.img.y(this.img.y() + diffY);
@@ -160,7 +161,7 @@ var Badge = function(badgeId) {
 	obj.upper_attr["font-size"] = 25;
 	obj.lower_attr["font-size"] = 25;
 	obj.middle_attr["font-size"] = 60;
-	for (attr of [obj.upper_attr, obj.middle_attr, obj.lower_attr]) {
+	for (let attr of [obj.upper_attr, obj.middle_attr, obj.lower_attr]) {
 		attr["fill"] = "#FFFFFF"; // white
 		attr["text-anchor"] = "middle";
 		attr["font-family"] = "Tahoma";
@@ -172,21 +173,21 @@ viewModel = {
 	badges: ko.observableArray([ new Badge(badgeCounter) ]),
 	showMenu: ko.observable(true),
 	cloneBadge: function() {
-		var badge = new Badge(++badgeCounter);
+		let badge = new Badge(++badgeCounter);
 
 		// This ugly mess make sure to copy the background image from the first badge:
-		/*var hack = document.getElementsByClassName("draggable")[0];
+		/*let hack = document.getElementsByClassName("draggable")[0];
 		badge.img.href(hack.href.baseVal);
 		badge.img.x(hack.x.baseVal.value);
 		badge.img.y(hack.y.baseVal.value);
 		badge.img.height(hack.height.baseVal.value);
 		badge.img.width(hack.width.baseVal.value);*/
 
-		var stdBadge = this.badges()[0]; // clone properties from this badge:
-		var protected = ["_id", "imgScale", "beginMove", "doMove", "stopMove"]; // don't clone these
-		for (var key in stdBadge) {
+		let stdBadge = this.badges()[0]; // clone properties from this badge:
+		let dontClone = ["_id", "imgScale", "beginMove", "doMove", "stopMove"];
+		for (let key in stdBadge) {
 			if (stdBadge.hasOwnProperty(key) // http://stackoverflow.com/a/559002
-				&& protected.indexOf(key) == -1) { 
+				&& dontClone.indexOf(key) == -1) { 
 					badge[key] = stdBadge[key];
 			}
 		}
@@ -206,15 +207,15 @@ viewModel = {
 		});
 	},
 	editBadge: function(elm) {
-		var attr = elm.attributes;
-		var menu = document.getElementById("menu");
-		var disabledElms = ["onclick", "data-bind", "href", "d", "text-anchor"];
+		let attr = elm.attributes;
+		let menu = document.getElementById("menu");
+		let disabledElms = ["onclick", "data-bind", "href", "d", "text-anchor"];
 
 		// delete old menu:
 		menu.innerHTML = "<center><strong>MENU</strong></center>";
 
-		for (i = 0; i < attr.length; i++) {
-			var elmName = attr[i].name,
+		for (let i = 0; i < attr.length; i++) {
+			let elmName = attr[i].name,
 				elmVal = attr[i].value;
 
 			// Skip stuff user shouldn't change
@@ -223,15 +224,15 @@ viewModel = {
 				continue;
 
 			// Create an input form for changing value
-			var label = document.createElement("LABEL");
+			let label = document.createElement("LABEL");
 			label.setAttribute("for", elmName);
 			label.textContent = elmName + ": ";
 
-			var input = document.createElement("INPUT");
+			let input = document.createElement("INPUT");
 			if (elmName == "font-family") {
 				input = document.createElement("SELECT");
-				for (font of FONTS) {
-					var opt = document.createElement("OPTION");
+				for (let font of FONTS) {
+					let opt = document.createElement("OPTION");
 					opt.text = font;
 					opt.style.fontFamily = font;
 					opt.setAttribute("value", font);
@@ -245,12 +246,12 @@ viewModel = {
 			}
 
 			input.setAttribute("name", elmName);
-			var valType = elmVal[0] == "#" ? "color" : (!isNaN(elmVal) && elmVal !== "") ? "number" : "string";
+			let valType = elmVal[0] == "#" ? "color" : (!isNaN(elmVal) && elmVal !== "") ? "number" : "string";
 			input.setAttribute("type", valType);
 			input.style.width = "100%";
 
 			// Make sure to userinput will update visible design:
-			for (fuckJS of ["onchange", "onkeydown", "onpaste", "oninput"]) {
+			for (let fuckJS of ["onchange", "onkeydown", "onpaste", "oninput"]) {
 				input[fuckJS] = function() {
 					if (this.name == "textContent") {
 						elm.textContent = this.value;
@@ -261,8 +262,8 @@ viewModel = {
 
 					// TODO: This seems a bit hacky:
 					// I can't remember what the idea is, but it seems to work:
-					var self = this;
-					var attr_name = attr["data-bind"].value.replace("attr: ", "");
+					let self = this;
+					let attr_name = attr["data-bind"].value.replace("attr: ", "");
 					viewModel.badges().forEach(function(badge) {
 						badge[attr_name][self.name] = self.value;
 					});
@@ -281,7 +282,7 @@ viewModel = {
 		menu.appendChild(document.createElement("BR"));
 	},
 	togglePrint: function() {
-		var showMenu = this.showMenu();
+		let showMenu = this.showMenu();
 
 		// Update text:
 		document.getElementById("togglePrint").textContent = showMenu ? "show menu" : "prepare print";
@@ -295,9 +296,9 @@ viewModel = {
 	changeBackground: function(badgeId) {
 		this.badges().forEach(function(badge) {
 			if (badge._id == badgeId) {
-				var f = document.getElementById("fileSelect" + badgeId);
+				let f = document.getElementById("fileSelect" + badgeId);
 				f.onchange = function(){
-					var reader = new FileReader();
+					let reader = new FileReader();
 					// What to do when loading of data is done:
 					reader.onload = function(event) {
 						badge.img.href(event.target.result);

@@ -175,27 +175,18 @@ viewModel = {
 	cloneBadge: function() {
 		let badge = new Badge(++badgeCounter);
 
-		// This ugly mess make sure to copy the background image from the first badge:
-		/*let hack = document.getElementsByClassName("draggable")[0];
-		badge.img.href(hack.href.baseVal);
-		badge.img.x(hack.x.baseVal.value);
-		badge.img.y(hack.y.baseVal.value);
-		badge.img.height(hack.height.baseVal.value);
-		badge.img.width(hack.width.baseVal.value);*/
-
-		let stdBadge = this.badges()[0]; // clone properties from this badge:
-		let dontClone = ["_id", "imgScale", "beginMove", "doMove", "stopMove"];
+		let stdBadge = this.badges()[0], // clone properties from the first badge
+			dontClone = ["_id", "imgScale", "beginMove", "doMove", "stopMove"];
 		for (let key in stdBadge) {
 			if (stdBadge.hasOwnProperty(key) // http://stackoverflow.com/a/559002
 				&& dontClone.indexOf(key) == -1) { 
 					badge[key] = stdBadge[key];
-				if (typeof badge[key] === "object" && "textContent" in badge[key])
-					console.log("FIXME: " + badge[key]["textContent"]);
 			}
 		}
 
 		// Push to beginning of array:
 		this.badges.unshift(badge);
+		this.textContentFix(badgeCounter);
 	},
 	deleteBadge: function(badge) {
 		if (viewModel.badges().length == 1) {
@@ -321,6 +312,26 @@ viewModel = {
 		if (navigator.userAgent.indexOf("Firefox") > -1
 			&& event.detail >= 2) {
 			viewModel.changeBackground(badge._id);
+		}
+	},
+	textContentFix: function(badgeId) {
+		let walkDOM = function (node,func) {
+			func(node);
+			node = node.firstChild;
+			while(node) {
+				walkDOM(node,func);
+				node = node.nextSibling;
+			}
+		}
+		for (let badge of document.getElementsByClassName("badge")) {
+			if (badge.attributes["badgeid"].value != badgeId)
+				continue;
+			
+			// Fix mismatches between textContent and innerHTML:
+			walkDOM(badge, function(node) {
+				if (typeof node.attributes === "object" && "textContent" in node.attributes)
+					node.innerHTML = "" + node.attributes.textContent.value;
+			});
 		}
 	}
 };

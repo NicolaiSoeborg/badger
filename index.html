@@ -46,7 +46,7 @@
 				<circle data-bind="attr: $root.badges()[0].circle" r="2.5cm"></circle>
 			</clipPath>
 			<clipPath id="badge-full">
-				<circle data-bind="attr: $root.badges()[0].circle" r="3.0cm"></circle>
+				<circle data-bind="attr: $root.badges()[0].circle" r="3.05cm"></circle>
 			</clipPath>
 		</defs>
 	</svg>
@@ -69,7 +69,7 @@
 				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print"></image>
 
 				<!-- The outermost circle (always visible): -->
-				<circle data-bind="attr: circle, click: $root.ondblclickFix.bind()" ondblclick="viewModel.changeBackground(this.parentElement.parentElement.attributes.badgeId.value)" r="3cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent"></circle>
+				<circle data-bind="attr: circle, click: $root.ondblclickFix.bind()" ondblclick="viewModel.changeBackground(this.parentElement.parentElement.attributes.badgeId.value)" r="3.05cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent"></circle>
 
 				<text>
 					<textPath data-bind="attr: upper_attr" onclick="viewModel.editBadge(this)">Harebo '16</textPath>
@@ -189,6 +189,8 @@ viewModel = {
 			if (stdBadge.hasOwnProperty(key) // http://stackoverflow.com/a/559002
 				&& dontClone.indexOf(key) == -1) { 
 					badge[key] = stdBadge[key];
+				if (typeof badge[key] === "object" && "textContent" in badge[key])
+					console.log("FIXME: " + badge[key]["textContent"]);
 			}
 		}
 
@@ -266,6 +268,7 @@ viewModel = {
 					let attr_name = attr["data-bind"].value.replace("attr: ", "");
 					viewModel.badges().forEach(function(badge) {
 						badge[attr_name][self.name] = self.value;
+						//console.log("Updating badges["+attr_name+"]["+self.name+"] = " + self.value);
 					});
 
 					// Update HTML:
@@ -287,7 +290,7 @@ viewModel = {
 		// Update text:
 		document.getElementById("togglePrint").textContent = showMenu ? "show menu" : "prepare print";
 
-		// Update CSS:
+		// Update CSS (remove menu span):
 		document.getElementById("badgeContainer").style.position = showMenu ? "relative" : "absolute";
 
 		// Toggle value:

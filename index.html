@@ -205,6 +205,13 @@ viewModel = {
 		});
 	},
 	editBadge: function(elm) {
+		let badgeId = 0; // keep looking at parent elm to find badgeid:
+		for (var e2 = elm; e2 != null; e2 = e2.parentElement) {
+			if (e2.attributes.hasOwnProperty("badgeid")) {
+				badgeId = e2.attributes.badgeid.value;
+			}
+		};
+
 		let attr = elm.attributes;
 		let menu = document.getElementById("menu");
 		let disabledElms = ["onclick", "data-bind", "href", "d", "text-anchor"];
@@ -224,7 +231,7 @@ viewModel = {
 			// Create an input form for changing value
 			let label = document.createElement("LABEL");
 			label.setAttribute("for", elmName);
-			label.textContent = elmName + ": ";
+			label.textContent = (elmName == "textContent" ? "text" : elmName) + ":";
 
 			let input = document.createElement("INPUT");
 			if (elmName == "font-family") {
@@ -244,11 +251,12 @@ viewModel = {
 			}
 
 			input.setAttribute("name", elmName);
-			let valType = elmVal[0] == "#" ? "color" : (!isNaN(elmVal) && elmVal !== "") ? "number" : "string";
+			let isColor = new RegExp("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
+			let valType = isColor.test(elmVal) ? "color" : (!isNaN(elmVal) && elmVal !== "") ? "number" : "string";
 			input.setAttribute("type", valType);
 			input.style.width = "100%";
 
-			// Make sure to userinput will update visible design:
+			// Make sure any input will update visible design:
 			for (let fuckJS of ["onchange", "onkeydown", "onpaste", "oninput"]) {
 				input[fuckJS] = function() {
 					if (this.name == "textContent") {
@@ -258,13 +266,14 @@ viewModel = {
 							elm.innerHTML = "&nbsp;&nbsp;";
 					}
 
-					// TODO: This seems a bit hacky:
-					// I can't remember what the idea is, but it seems to work:
+					// TODO: I need an easy way to find which of [upper|middle|lower]_attr i'm editing.
 					let self = this;
 					let attr_name = attr["data-bind"].value.replace("attr: ", "");
 					viewModel.badges().forEach(function(badge) {
-						badge[attr_name][self.name] = self.value;
-						//console.log("Updating badges["+attr_name+"]["+self.name+"] = " + self.value);
+						if (badge._id == badgeId) {
+							badge[attr_name][self.name] = self.value;
+							console.log("Updating badges["+badgeId+"]["+attr_name+"]["+self.name+"] = " + self.value);
+						}
 					});
 
 					// Update HTML:
@@ -281,20 +290,23 @@ viewModel = {
 		menu.appendChild(document.createElement("BR"));
 	},
 	saveBadges: function() {
-		let textarea = document.createElement("textarea");
+		let textarea = document.createElement("TEXTAREA");
 		textarea.textContent = ko.toJSON(viewModel);
 		textarea.onclick = function() { this.select() };
-		menu.innerHTML = "Save this text somewhere:<br>";
+		menu.innerHTML = "Save this text somewhere:<BR>";
 		document.getElementById("menu").appendChild(textarea);
 	},
 	loadBadges: function() {
-		let textarea = document.createElement("textarea"); textarea.id = "loadtxt";
-		let btn = document.createElement("button"); btn.textContent = "Load";
+		let textarea = document.createElement("TEXTAREA"); textarea.id = "loadtxt";
+		let btn = document.createElement("BUTTON"); btn.textContent = "Load";
 		btn.onclick = function() {
 			document.getElementById("shareBg").checked = false;
 			let json = JSON.parse(document.getElementById("loadtxt").value);
+
+			// Delete everything, but the last badge (or else we will lose the template)
 			while (viewModel.badges().length > 1)
 				viewModel.badges.pop();
+
 			for (let i = 0; i < json["badges"].length; i++) {
 				let badgeProps = json["badges"][i];
 				
@@ -307,9 +319,9 @@ viewModel = {
 				}
 				viewModel.badges.unshift(badge);
 				viewModel.textContentFix(badgeProps._id);
-				console.log("Adding badge " + badgeProps._id);
 			}
-			viewModel.badges.pop();
+			viewModel.badgeCounter = json["badges"].length;
+			viewModel.badges.pop(); // now we can delete the 'last badge' from before
 		}
 		//textarea.textContent = ko.toJSON(viewModel);
 		menu.innerHTML = "Paste loaded badges:<br>";

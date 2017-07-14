@@ -25,6 +25,7 @@
 	<!-- Extra fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Amatic+SC|Clicker+Script|Diplomata+SC|Griffy|Indie+Flower|Kaushan+Script|Lobster|Orbitron|Permanent+Marker|Poiret+One|Roboto|Satisfy" rel="stylesheet">
 
+	<!-- Knockout.js -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js" integrity="sha384-/EjRuG6YTb6zCFou+DBnYCi5u9E1RjUMJanyGOL7DUYLp6wSCUuHNhd58uoGj7jh" crossorigin="anonymous"></script> 
 </head>
 <body>
@@ -54,7 +55,7 @@
 
 	<!-- Create badges -->
 	<div data-bind="foreach: badges" id="badgeContainer">
-		<div data-bind="attr: {badgeId: _id}" class="badge">
+		<div data-bind="attr: {badgeid: _id}" class="badge"><!-- contenteditable="true" -->
 			<button class="closeBtn no-print" data-bind="visible: $root.showMenu, click: $root.deleteBadge.bind()" title="Delete badge">X</button>
 			<svg version="1.1" baseProfile="full" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
 				<defs>
@@ -70,28 +71,36 @@
 				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print"></image>
 
 				<!-- The outermost circle (always visible): -->
-				<circle data-bind="attr: circle, click: $root.ondblclickFix.bind()" ondblclick="viewModel.changeBackground(this.parentElement.parentElement.attributes.badgeId.value)" r="3.05cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent"></circle>
+				<circle data-bind="attr: circle, click: $root.ondblclickFix.bind()" ondblclick="viewModel.changeBackground(this.parentElement.parentElement.attributes.badgeid.value)" r="3.05cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent"></circle>
 
 				<text>
-					<textPath data-bind="attr: upper_attr" onclick="viewModel.editBadge(this)">Harebo '16</textPath>
-					<textPath data-bind="attr: lower_attr" onclick="viewModel.editBadge(this)">C. Software</textPath>
+					<textPath attrname="upper_attr" data-bind="attr: upper_attr" onclick="viewModel.editBadge(this)">Harebo '16</textPath>
+					<textPath attrname="lower_attr" data-bind="attr: lower_attr" onclick="viewModel.editBadge(this)">C. Software</textPath>
 				</text>
-				<text data-bind="attr: middle_attr" onclick="viewModel.editBadge(this)">Søborg</text>
+				<text attrname="middle_attr" data-bind="attr: middle_attr" onclick="viewModel.editBadge(this)">Søborg</text>
 			</svg>
 			<br />
 			<input type="file" accept="image/*" data-bind="attr: {id: 'fileSelect' + _id}" class="hidden" />
-			<span class="no-print" data-bind="visible: $root.showMenu">
-				Scale: <input type="range" min="0.1" max="5" step="0.1" data-bind="value: imgScale"/>
+			<span class="no-print" data-bind="visible: $root.showMenu, attr: {id: 'imgSlider' + _id}" contenteditable="false">
+				Scale: <input type="range" min="0.01" max="5" step="0.01" data-bind="value: imgScale, valueUpdate: 'input'"/>
 			</span>
 		</div>
 	</div><!--/foreach badges-->
 </div>
 <script type="text/javascript">
+if (/Trident/.test(navigator.userAgent)) {
+	alert("Internet Explorer isn't supported.\nPlease use any other browser.");
+}
+</script>
+<script type="text/javascript">
 "use strict";
+
+// Constants and global variables:
 let badgeCounter = 0,
 	viewModel = null; // needed to be defined before imgScale
 const FONTS = ["Times New Roman", "Helvetica", "Arial", "Comic Sans MS", "Segoe Print", "Terminal", "Impact", "Tahoma", "Wingdings",
-	"Griffy", "Roboto", "Diplomata SC", "Indie Flower", "Lobster", "Amatic SC", "Clicker Script", "Orbitron", "Poiret One", "Satisfy", "Kaushan Script", "Permanent Marker"];
+	"Griffy", "Roboto", "Diplomata SC", "Indie Flower", "Lobster", "Amatic SC", "Clicker Script", "Orbitron", "Poiret One", "Satisfy",
+	"Kaushan Script", "Permanent Marker"];
 
 let Badge = function(badgeId) {
 	let obj = {
@@ -123,8 +132,13 @@ let Badge = function(badgeId) {
 			write: function(value) {
 				viewModel.badges().forEach(function(badge) {
 					if (badge._id == badgeId) {
-						badge.img.height( 400 * value );
-						badge.img.width( 400 * value );
+						let newSize = 400 * value;
+						// Make sure the image zooms in on the middle, and not down-right:
+						badge.img.x( badge.img.x() + (badge.img.width() - newSize)/2 );
+						badge.img.y( badge.img.y() + (badge.img.height() - newSize)/2 );
+						// The scale image:
+						badge.img.width(newSize);
+						badge.img.height(newSize);
 					}
 				});
 			}
@@ -136,26 +150,29 @@ let Badge = function(badgeId) {
 			height: ko.observable(400),
 			width: ko.observable(400),
 		},
-		mouseCoord: {x: 0, y: 0}, // "private" holder for mouse movement
-		isMouseMoving: false,
+		mouse: {
+			moving: false,
+			x: 0,
+			y: 0,
+		},
 		beginMove: function(_, event) {
-			this.mouseCoord.x = event.clientX;
-			this.mouseCoord.y = event.clientY;
-			this.isMouseMoving = true;
+			this.mouse.x = event.clientX;
+			this.mouse.y = event.clientY;
+			this.mouse.moving = true;
 		},
 		doMove: function(_, event) {
-			if (this.isMouseMoving) {
-				let diffX = event.clientX - this.mouseCoord.x,
-					diffY = event.clientY - this.mouseCoord.y;
+			if (this.mouse.moving) {
+				let diffX = event.clientX - this.mouse.x,
+					diffY = event.clientY - this.mouse.y;
 				this.img.x(this.img.x() + diffX);
 				this.img.y(this.img.y() + diffY);
 				// Reset mouse coords:
-				this.mouseCoord.x = event.clientX;
-				this.mouseCoord.y = event.clientY;
+				this.mouse.x = event.clientX;
+				this.mouse.y = event.clientY;
 			}
 		},
 		stopMove: function() {
-			this.isMouseMoving = false;
+			this.mouse.moving = false;
 		}
 	};
 	// Please fix this:
@@ -177,10 +194,11 @@ viewModel = {
 		let badge = new Badge(++badgeCounter);
 
 		let stdBadge = this.badges()[0], // clone properties from the first badge
-			dontClone = ["_id", "imgScale", "beginMove", "doMove", "stopMove"];
+			dontClone = ["_id", "imgScale", "beginMove", "doMove", "stopMove", "mouse"];
 		
 		// If 'img' is cloned, then the badges will share the same background image:
-		if (!document.getElementById("shareBg").checked) dontClone.push("img");
+		if (!document.getElementById("shareBg").checked)
+			dontClone.push("img");
 
 		for (let key in stdBadge) {
 			if (stdBadge.hasOwnProperty(key) // http://stackoverflow.com/a/559002
@@ -189,13 +207,25 @@ viewModel = {
 			}
 		}
 
-		// Push to beginning of array:
+		// Push to beginning of array (KO.js will create html):
 		this.badges.unshift(badge);
+
+		// Fix mismatch between innerHTML and textContent / viewModel:
 		this.textContentFix(badgeCounter);
+
+		// Remove extra image scale slider, if needed:
+		if (document.getElementById("shareBg").checked) {
+			let imgSlider = document.getElementById("imgSlider" + badgeCounter);
+			imgSlider.parentElement.removeChild(imgSlider);
+		}
+
+		// Set 'menu focus' on new badge:
+		// TODO: This will automatic select middle_text
+		document.getElementsByClassName("badge")[0].children[1].children[6].onclick();
 	},
 	deleteBadge: function(badge) {
 		if (viewModel.badges().length == 1) {
-			document.getElementById("menu").innerHTML = "Can't delete the last badge!";
+			document.getElementById("menu").innerHTML = "Can't delete the last badge!<br>Press F5 to reset layout.";
 			return;
 		}
 		viewModel.badges().forEach(function(b) {
@@ -205,30 +235,33 @@ viewModel = {
 		});
 	},
 	editBadge: function(elm) {
-		let badgeId = 0; // keep looking at parent elm to find badgeid:
+		// 'elm' is an element inside the badge, lets first find the badgeid:
+		let badgeId = 0;
 		for (var e2 = elm; e2 != null; e2 = e2.parentElement) {
 			if (e2.attributes.hasOwnProperty("badgeid")) {
 				badgeId = e2.attributes.badgeid.value;
+				break;
 			}
-		};
+		}
 
 		let attr = elm.attributes;
 		let menu = document.getElementById("menu");
-		let disabledElms = ["onclick", "data-bind", "href", "d", "text-anchor"];
 
-		// delete old menu:
+		// Reset (delete) old menu:
 		menu.innerHTML = "<center><strong>MENU</strong></center>";
+
+		// Don't allow the user to change these attributes:
+		let disabledElms = ["onclick", "data-bind", "href", "d", "text-anchor", "attrname"];
 
 		for (let i = 0; i < attr.length; i++) {
 			let elmName = attr[i].name,
 				elmVal = attr[i].value;
 
-			// Skip stuff user shouldn't change
 			// For some reason elmName is uppercase in IE, but lowercase elsewhere:
 			if (disabledElms.indexOf(elmName.toLowerCase()) > -1)
 				continue;
 
-			// Create an input form for changing value
+			// Create an input form for changing value:
 			let label = document.createElement("LABEL");
 			label.setAttribute("for", elmName);
 			label.textContent = (elmName == "textContent" ? "text" : elmName) + ":";
@@ -243,21 +276,20 @@ viewModel = {
 					opt.setAttribute("value", font);
 					if (font == elmVal)
 						opt.setAttribute("selected", true);
-
 					input.appendChild(opt);
 				}
 			} else {
 				input.setAttribute("value", elmVal);
 			}
-
 			input.setAttribute("name", elmName);
+			input.style.width = "100%";
+
 			let isColor = new RegExp("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
 			let valType = isColor.test(elmVal) ? "color" : (!isNaN(elmVal) && elmVal !== "") ? "number" : "string";
 			input.setAttribute("type", valType);
-			input.style.width = "100%";
 
 			// Make sure any input will update visible design:
-			for (let fuckJS of ["onchange", "onkeydown", "onpaste", "oninput"]) {
+			for (const fuckJS of ["onchange", "onkeydown", "onpaste", "oninput"]) {
 				input[fuckJS] = function() {
 					if (this.name == "textContent") {
 						elm.textContent = this.value;
@@ -266,18 +298,17 @@ viewModel = {
 							elm.innerHTML = "&nbsp;&nbsp;";
 					}
 
-					// TODO: I need an easy way to find which of [upper|middle|lower]_attr i'm editing.
 					let self = this;
-					let attr_name = attr["data-bind"].value.replace("attr: ", "");
 					viewModel.badges().forEach(function(badge) {
 						if (badge._id == badgeId) {
-							badge[attr_name][self.name] = self.value;
-							console.log("Updating badges["+badgeId+"]["+attr_name+"]["+self.name+"] = " + self.value);
+							let prop = attr['attrname'].value; // [lower|middle|upper]_attr
+							badge[prop][self.name] = self.value;
+							//console.log("Updating badges["+badgeId+"]["+prop+"]["+self.name+"] = " + self.value);
 						}
 					});
 
-					// Update HTML:
-					attr[this.name].value = this.value;
+					// Update HTML. TODO: this shouldn't be needed (but it doesn't work without...)
+					attr[elmName].value = this.value;
 				}
 			}
 
@@ -286,8 +317,17 @@ viewModel = {
 			menu.appendChild(input);
 			menu.appendChild(document.createElement("BR"));
 		}
-
 		menu.appendChild(document.createElement("BR"));
+
+		// Set focus AND MOVE CURSOR TO LAST POSITION
+		// ... yes this is really ugly, because Chrome: https://stackoverflow.com/a/10576409
+		let textInput = document.getElementsByName("textContent")[0];
+		if (textInput.addEventListener) {
+			textInput.addEventListener("focus", function() {
+				setTimeout(function(){ textInput.selectionStart = textInput.selectionEnd = 10000; }, 0);
+			}, false);
+		}
+		textInput.focus();
 	},
 	saveBadges: function() {
 		let textarea = document.createElement("TEXTAREA");
@@ -311,7 +351,7 @@ viewModel = {
 				let badgeProps = json["badges"][i];
 				
 				let badge = new Badge(badgeProps._id);
-				let dontClone = ["_id" ,"mouseCoord", "isMouseMoving"];
+				let dontClone = ["_id", "mouse"];
 				for (let prop in badgeProps) {
 					if (dontClone.indexOf(prop) !== -1) continue;
 
@@ -320,13 +360,20 @@ viewModel = {
 				viewModel.badges.unshift(badge);
 				viewModel.textContentFix(badgeProps._id);
 			}
+
+			// Fix badge counter:
 			viewModel.badgeCounter = json["badges"].length;
-			viewModel.badges.pop(); // now we can delete the 'last badge' from before
+
+			// Now we can delete the 'last badge' (from before):
+			viewModel.badges.pop();
+
+			// Select first badge (changes to 'edit menu'):
+			document.getElementsByClassName("badge")[0].children[1].children[6].onclick();
 		}
 		//textarea.textContent = ko.toJSON(viewModel);
 		menu.innerHTML = "Paste loaded badges:<br>";
 		document.getElementById("menu").appendChild(textarea);
-		document.getElementById("menu").appendChild(document.createElement("br"));
+		document.getElementById("menu").appendChild(document.createElement("BR"));
 		document.getElementById("menu").appendChild(btn);
 	},
 	togglePrint: function() {
@@ -379,17 +426,35 @@ viewModel = {
 		for (let badge of document.getElementsByClassName("badge")) {
 			if (badge.attributes["badgeid"].value != badgeId)
 				continue;
-			
+
 			// Fix mismatches between textContent and innerHTML:
 			walkDOM(badge, function(node) {
-				if (typeof node.attributes === "object" && "textContent" in node.attributes)
-					node.innerHTML = "" + node.attributes.textContent.value;
+				if (typeof node.attributes === "object" && "textContent" in node.attributes) {
+					node.innerHTML = node.attributes.textContent.value;
+				}
 			});
 		}
 	}
 };
 
 ko.applyBindings(viewModel);
+/*
+document.addEventListener('DOMContentLoaded', function () {
+	for (let badge of document.getElementsByClassName("badge")) {
+		if (badge.addEventListener) {
+			// input or DOMCharacterDataModified ?
+			badge.addEventListener("DOMCharacterDataModified", function () {
+				let badgeId = badge.attributes.badgeid.value;
+				console.log("Found change in badge", badgeId, "(", badge, ")");
+				//viewModel.textContentFix(badge.attributes.badgeid.value, true);
+				document.getElementsByClassName("badge")[0].children[1].children[5].children[0].innerHTML
+				document.getElementsByClassName("badge")[0].children[1].children[5].children[1].innerHTML
+				document.getElementsByClassName("badge")[0].children[1].children[6].innerHTML
+			}, false);
+		}
+	}
+}, false);
+*/
 </script>
 </body>
 </html>

@@ -193,9 +193,9 @@ const Badge = function(badgeId) {
 		attr["fill"] = "#FFFFFF"; // white
 		attr["text-anchor"] = "middle";
 		attr["font-family"] = "Tahoma";
-	};
+	}
 	return obj;
-}
+};
 
 viewModel = {
 	badges: ko.observableArray([ new Badge(badgeCounter) ]),
@@ -247,7 +247,7 @@ viewModel = {
 	editBadge: function(elm) {
 		// 'elm' is an element inside the badge, lets first find the badgeid:
 		let badgeId = 0;
-		for (var e2 = elm; e2 != null; e2 = e2.parentElement) {
+		for (var e2 = elm; e2 !== null; e2 = e2.parentElement) {
 			if (e2.attributes.hasOwnProperty("badgeid")) {
 				badgeId = e2.attributes.badgeid.value;
 				break;
@@ -319,7 +319,7 @@ viewModel = {
 
 					// Update HTML. TODO: this shouldn't be needed (but it doesn't work without...)
 					attr[elmName].value = this.value;
-				}
+				};
 			}
 
 			// Append 'input line' to menu:
@@ -340,11 +340,12 @@ viewModel = {
 		textInput.focus();
 	},
 	saveBadges: function() {
-		let textarea = document.createElement("TEXTAREA");
+		let textarea = document.createElement("TEXTAREA"),
+			menu = document.getElementById("menu");
 		textarea.textContent = ko.toJSON(viewModel);
-		textarea.onclick = function() { this.select() };
+		textarea.onclick = function() { this.select(); };
 		menu.innerHTML = "Save this text somewhere:<BR>";
-		document.getElementById("menu").appendChild(textarea);
+		menu.appendChild(textarea);
 	},
 	loadBadges: function() {
 		let textarea = document.createElement("TEXTAREA"); textarea.id = "loadtxt";
@@ -379,12 +380,13 @@ viewModel = {
 
 			// Select first badge (changes to 'edit menu'):
 			document.getElementsByClassName("badge")[0].children[1].children[6].onclick();
-		}
+		};
 		//textarea.textContent = ko.toJSON(viewModel);
+		let menu = document.getElementById("menu");
 		menu.innerHTML = "Paste loaded badges:<br>";
-		document.getElementById("menu").appendChild(textarea);
-		document.getElementById("menu").appendChild(document.createElement("BR"));
-		document.getElementById("menu").appendChild(btn);
+		menu.appendChild(textarea);
+		menu.appendChild(document.createElement("BR"));
+		menu.appendChild(btn);
 	},
 	togglePrint: function() {
 		let showMenu = this.showMenu();
@@ -407,7 +409,7 @@ viewModel = {
 					// What to do when loading of data is done:
 					reader.onload = function(event) {
 						badge.img.href(event.target.result);
-					}
+					};
 					// Begin loading data (async)
 					reader.readAsDataURL(this.files[0]);
 				};
@@ -432,7 +434,7 @@ viewModel = {
 				walkDOM(node,func);
 				node = node.nextSibling;
 			}
-		}
+		};
 		for (let badge of document.getElementsByClassName("badge")) {
 			if (badge.attributes["badgeid"].value != badgeId)
 				continue;

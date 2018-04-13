@@ -20,7 +20,10 @@
 		.draggable { cursor: move; }
 		.closeBtn { float: right; position: relative; right: 25px; top: 25px; }
 		.hidden { display: none; }
-		@media print { .no-print, .no-print * { display: none !important; } }
+		@media print {
+			.no-print, .no-print * { display: none !important; }
+			.at-print, .at-print * { display: block !important; }
+		}
 	</style>
 
 	<!-- Extra fonts -->
@@ -35,20 +38,21 @@
 </head>
 <body>
 <div id="container">
+	<h1 id="warningBanner" class="hidden at-print">YOU FORGOT TO PRESS 'prepare print'</h1>
 	<span class="no-print" data-bind="visible: showMenu()">
 		<strong>Badger!</strong>
 		<span id="clone">
 			<a href="#" data-bind="click: cloneBadge">clone badge</a>
-			<input id="shareBg" type="checkbox" checked="checked" title="If checked, then new (cloned) badges will share the same background image" />
+			<input id="shareBg" type="checkbox" checked="checked" title="If checked, then new (cloned) badges will share the same background image (you probably want this to be checked)." />
 		</span>
-		<a href="#" class="vLine" data-bind="click: saveBadges">save badges</a>
+		<a href="#" class="vLine" data-bind="click: saveBadges">save badges</a><sup><small>BETA</small></sup>
 		<a href="#" class="vLine" data-bind="click: loadBadges">load badges</a>
 		<a href="#" class="vLine" onclick="startIntro()">help</a>
 	</span>
 	<a href="#" id="togglePrint" class="vLine no-print" data-bind="click: togglePrint">prepare print</a>
 	<br />
 	<div id="menu" data-bind="visible: showMenu()" class="no-print">Click any element on the badge to change content. &rarr;<br />
-	<strong>Tip:</strong> double-click inside the badge (not on the text) to change background.</div>
+	<strong>Tip:</strong> double-click <em>inside</em> the badge (not on the text) to change background image.</div>
 
 	<!-- Define globale styles for badges
 	Every elm. with a non-unique "id" attribute should be listed below -->
@@ -58,7 +62,7 @@
 				<circle data-bind="attr: $root.badges()[0].circle" r="2.5cm"></circle>
 			</clipPath>
 			<clipPath id="badge-full">
-				<circle data-bind="attr: $root.badges()[0].circle" r="3.05cm"></circle>
+				<circle data-bind="attr: $root.badges()[0].circle" r="3.1cm"></circle>
 			</clipPath>
 		</defs>
 	</svg>
@@ -81,7 +85,7 @@
 				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print"></image>
 
 				<!-- The outermost circle (always visible): -->
-				<circle data-bind="attr: circle, click: $root.ondblclickFix.bind()" ondblclick="viewModel.changeBackground(this.parentElement.parentElement.attributes.badgeid.value)" r="3.05cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent"></circle>
+				<circle data-bind="attr: circle, click: $root.ondblclickFix.bind()" ondblclick="viewModel.changeBackground(this.parentElement.parentElement.attributes.badgeid.value)" r="3.1cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent"></circle>
 
 				<text>
 					<textPath attrname="upper_attr" data-bind="attr: upper_attr" onclick="viewModel.editBadge(this)">Harebo '16</textPath>
@@ -108,9 +112,11 @@ if (/Trident/.test(navigator.userAgent)) {
 // Constants and global variables:
 let badgeCounter = 0,
 	viewModel = null; // needed to be defined before imgScale
-const FONTS = ["Times New Roman", "Helvetica", "Arial", "Comic Sans MS", "Segoe Print", "Terminal", "Impact", "Tahoma", "Wingdings",
-	"Griffy", "Roboto", "Diplomata SC", "Indie Flower", "Lobster", "Amatic SC", "Clicker Script", "Orbitron", "Poiret One", "Satisfy",
-	"Kaushan Script", "Permanent Marker"];
+const FONTS = ["Times New Roman", "Helvetica", "Arial", "Comic Sans MS", "Segoe Print",
+			"Terminal", "Impact", "Tahoma", "Wingdings", "Griffy", "Roboto", "Diplomata SC",
+			"Indie Flower", "Lobster", "Amatic SC", "Clicker Script", "Orbitron", "Poiret One",
+			"Satisfy", "Kaushan Script", "Permanent Marker"],
+	isColor = new RegExp("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
 
 const Badge = function(badgeId) {
 	let obj = {
@@ -136,6 +142,7 @@ const Badge = function(badgeId) {
 			cx: 150,
 			cy: 150,
 			stroke: "black",
+			backgroundColor: "#FFFFFF", // white background
 		},
 		imgScale: ko.computed({
 			read: function() { return 1; },
@@ -190,7 +197,7 @@ const Badge = function(badgeId) {
 	obj.lower_attr["font-size"] = 25;
 	obj.middle_attr["font-size"] = 60;
 	for (let attr of [obj.upper_attr, obj.middle_attr, obj.lower_attr]) {
-		attr["fill"] = "#FFFFFF"; // white
+		attr["fill"] = "#FFFFFF"; // white text
 		attr["text-anchor"] = "middle";
 		attr["font-family"] = "Tahoma";
 	}
@@ -247,12 +254,27 @@ viewModel = {
 	editBadge: function(elm) {
 		// 'elm' is an element inside the badge, lets first find the badgeid:
 		let badgeId = 0;
+		let bgColor;
 		for (var e2 = elm; e2 !== null; e2 = e2.parentElement) {
 			if (e2.attributes.hasOwnProperty("badgeid")) {
 				badgeId = e2.attributes.badgeid.value;
+				bgColor = e2.style.backgroundColor;
 				break;
 			}
 		}
+
+		// Create fake 'background color attribute'
+		if (!isColor.test(bgColor)) {
+			bgColor = '#' + bgColor
+								.split("(")[1].split(")")[0]
+								.split(",")
+								.map(function(x) {
+									x = parseInt(x).toString(16);
+									return (x.length==1) ? "0" + x : x;
+								})
+								.join('');
+		}
+		elm.setAttribute("backgroundColor", bgColor);
 
 		let attr = elm.attributes;
 		let menu = document.getElementById("menu");
@@ -294,7 +316,6 @@ viewModel = {
 			input.setAttribute("name", elmName);
 			input.style.width = "100%";
 
-			let isColor = new RegExp("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
 			let valType = isColor.test(elmVal) ? "color" : (!isNaN(elmVal) && elmVal !== "") ? "number" : "string";
 			input.setAttribute("type", valType);
 
@@ -311,14 +332,20 @@ viewModel = {
 					let self = this;
 					viewModel.badges().forEach(function(badge) {
 						if (badge._id == badgeId) {
-							let prop = attr['attrname'].value; // [lower|middle|upper]_attr
+							let prop = attr["attrname"].value; // [lower|middle|upper]_attr
+
+							if (elmName == 'backgroundColor')
+								prop = 'circle';
+
 							badge[prop][self.name] = self.value;
-							//console.log("Updating badges["+badgeId+"]["+prop+"]["+self.name+"] = " + self.value);
+							console.log("Updating badges["+badgeId+"]["+prop+"]["+self.name+"] = " + self.value);
 						}
 					});
 
-					// Update HTML. TODO: this shouldn't be needed (but it doesn't work without...)
-					attr[elmName].value = this.value;
+					if (elmName != 'backgroundColor') {
+						// Update HTML. TODO: this shouldn't be needed (but it doesn't work without...)
+						attr[elmName].value = this.value;
+					}
 				};
 			}
 
@@ -326,7 +353,8 @@ viewModel = {
 			menu.appendChild(label);
 			menu.appendChild(input);
 			menu.appendChild(document.createElement("BR"));
-		}
+		} // Done adding dynamic items.
+
 		menu.appendChild(document.createElement("BR"));
 
 		// Set focus AND MOVE CURSOR TO LAST POSITION
@@ -343,16 +371,26 @@ viewModel = {
 		let textarea = document.createElement("TEXTAREA"),
 			menu = document.getElementById("menu");
 		textarea.textContent = ko.toJSON(viewModel);
-		textarea.onclick = function() { this.select(); };
+		textarea.onclick = function() { this.select(); };  // TODO: why doesn't this work anymore?
 		menu.innerHTML = "Save this text somewhere:<BR>";
 		menu.appendChild(textarea);
+		menu.innerHTML += "<BR><strong>WARNING:</strong> the text is very long and this feature is a bit buggy! Try not to rely on it. When your design is finished, use <strong>menu &rarr; print &rarr; save to file</strong>";
 	},
 	loadBadges: function() {
+		let menu = document.getElementById("menu");
 		let textarea = document.createElement("TEXTAREA"); textarea.id = "loadtxt";
 		let btn = document.createElement("BUTTON"); btn.textContent = "Load";
 		btn.onclick = function() {
 			document.getElementById("shareBg").checked = false;
-			let json = JSON.parse(document.getElementById("loadtxt").value);
+			let json;
+			try {
+				json = JSON.parse(document.getElementById("loadtxt").value);
+			} catch(e) {
+				const msg = "Can't load badges!";
+				menu.innerHTML += "<BR>" + msg;
+				console.log(msg, e);
+				return;
+			}
 
 			// Delete everything, but the last badge (or else we will lose the template)
 			while (viewModel.badges().length > 1)
@@ -382,8 +420,7 @@ viewModel = {
 			document.getElementsByClassName("badge")[0].children[1].children[6].onclick();
 		};
 		//textarea.textContent = ko.toJSON(viewModel);
-		let menu = document.getElementById("menu");
-		menu.innerHTML = "Paste loaded badges:<br>";
+		menu.innerHTML = "Paste saved badges:<br>";
 		menu.appendChild(textarea);
 		menu.appendChild(document.createElement("BR"));
 		menu.appendChild(btn);
@@ -396,6 +433,12 @@ viewModel = {
 
 		// Update CSS (remove menu span):
 		document.getElementById("badgeContainer").style.position = showMenu ? "relative" : "absolute";
+
+		// Hide warning banner:
+		if (showMenu)
+			document.getElementById("warningBanner").classList.remove('at-print');
+		else
+			document.getElementById("warningBanner").classList.add('at-print');
 
 		// Toggle value:
 		this.showMenu(!showMenu);
@@ -455,7 +498,7 @@ const startIntro = function () {
 	const intro = introJs();
 	intro.setOptions({
 		showStepNumbers: false,
-		showProgress: true,
+		showProgress: false,
 		showBullets: false,
 		skipLabel: "Exit",
 		steps: [
@@ -472,8 +515,11 @@ const startIntro = function () {
 				element: document.getElementById("clone")
 			},
 			{
-				intro: "When everything is done, click this button and select menu -> print (Ctrl+P). Make sure the webpage isn't zoomed and the printer setting is set to print A4.",
+				intro: "When everything is done, click this button and select 'browser menu &rarr; print' (not Ctrl + P). Make sure the webpage isn't zoomed and the printer setting is set to print A4.",
 				element: document.getElementById("togglePrint")
+			},
+			{
+				intro: "Happy badging!  Please report any errors/feedback to: <a href='mailto:badger@xn--sb-lka.org'>badger@søb.org</a>"
 			}
 		]
 	});
@@ -483,7 +529,7 @@ const startIntro = function () {
 // Run guide once, when DOM is ready:
 document.addEventListener("DOMContentLoaded", function(event) {
 	if (!localStorage.getItem("runOnce")) {
-		localStorage.setItem('runOnce', true);
+		localStorage.setItem("runOnce", true);
 		startIntro();
 	}
 });

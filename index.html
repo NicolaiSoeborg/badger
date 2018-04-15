@@ -79,9 +79,9 @@
 
 				<!-- 'Actual' badge (when designing): -->
 				<image data-bind="attr: img, visible: $root.showMenu" clip-path="url(#badge-cutoff)"></image>
-				<!-- Actual badge (when printing): -->
+				<!-- Full badge (when printing): -->
 				<image data-bind="attr: img, visible: !$root.showMenu()" clip-path="url(#badge-full)"></image>
-				<!-- Badge background: -->
+				<!-- Badge background image: -->
 				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print"></image>
 
 				<!-- The outermost circle (always visible): -->
@@ -142,7 +142,6 @@ const Badge = function(badgeId) {
 			cx: 150,
 			cy: 150,
 			stroke: "black",
-			backgroundColor: "#FFFFFF", // white background
 		},
 		imgScale: ko.computed({
 			read: function() { return 1; },
@@ -195,7 +194,7 @@ const Badge = function(badgeId) {
 	// Please fix this:
 	obj.upper_attr["font-size"] = 25;
 	obj.lower_attr["font-size"] = 25;
-	obj.middle_attr["font-size"] = 60;
+	obj.middle_attr["font-size"] = 55;
 	for (let attr of [obj.upper_attr, obj.middle_attr, obj.lower_attr]) {
 		attr["fill"] = "#FFFFFF"; // white text
 		attr["text-anchor"] = "middle";
@@ -254,17 +253,17 @@ viewModel = {
 	editBadge: function(elm) {
 		// 'elm' is an element inside the badge, lets first find the badgeid:
 		let badgeId = 0;
-		let bgColor;
+		//let bgColor;
 		for (var e2 = elm; e2 !== null; e2 = e2.parentElement) {
 			if (e2.attributes.hasOwnProperty("badgeid")) {
 				badgeId = e2.attributes.badgeid.value;
-				bgColor = e2.style.backgroundColor;
+				//bgColor = e2.style.backgroundColor;
 				break;
 			}
 		}
 
 		// Create fake 'background color attribute'
-		if (!isColor.test(bgColor)) {
+		/*if (!isColor.test(bgColor)) {
 			bgColor = '#' + bgColor
 								.split("(")[1].split(")")[0]
 								.split(",")
@@ -274,7 +273,7 @@ viewModel = {
 								})
 								.join('');
 		}
-		elm.setAttribute("backgroundColor", bgColor);
+		elm.setAttribute("backgroundColor", bgColor);*/
 
 		let attr = elm.attributes;
 		let menu = document.getElementById("menu");
@@ -314,7 +313,7 @@ viewModel = {
 				input.setAttribute("value", elmVal);
 			}
 			input.setAttribute("name", elmName);
-			input.style.width = "100%";
+			input.style.width = "90%";
 
 			let valType = isColor.test(elmVal) ? "color" : (!isNaN(elmVal) && elmVal !== "") ? "number" : "string";
 			input.setAttribute("type", valType);
@@ -338,13 +337,15 @@ viewModel = {
 								prop = 'circle';
 
 							badge[prop][self.name] = self.value;
-							console.log("Updating badges["+badgeId+"]["+prop+"]["+self.name+"] = " + self.value);
+							//console.log("Updating badges["+badgeId+"]["+prop+"]["+self.name+"] = " + self.value);
 						}
 					});
 
 					if (elmName != 'backgroundColor') {
 						// Update HTML. TODO: this shouldn't be needed (but it doesn't work without...)
 						attr[elmName].value = this.value;
+					/*} else {
+						document.getElementsByClassName("badge")[badgeId].style.backgroundColor = this.value;*/
 					}
 				};
 			}
@@ -420,7 +421,7 @@ viewModel = {
 			document.getElementsByClassName("badge")[0].children[1].children[6].onclick();
 		};
 		//textarea.textContent = ko.toJSON(viewModel);
-		menu.innerHTML = "Paste saved badges:<br>";
+		menu.innerHTML = "Paste saved badges:<BR>";
 		menu.appendChild(textarea);
 		menu.appendChild(document.createElement("BR"));
 		menu.appendChild(btn);
@@ -435,10 +436,7 @@ viewModel = {
 		document.getElementById("badgeContainer").style.position = showMenu ? "relative" : "absolute";
 
 		// Hide warning banner:
-		if (showMenu)
-			document.getElementById("warningBanner").classList.remove('at-print');
-		else
-			document.getElementById("warningBanner").classList.add('at-print');
+		document.getElementById("warningBanner").classList = "hidden" + (showMenu ? " at-print" : "");
 
 		// Toggle value:
 		this.showMenu(!showMenu);
@@ -486,6 +484,7 @@ viewModel = {
 			walkDOM(badge, function(node) {
 				if (typeof node.attributes === "object" && "textContent" in node.attributes) {
 					node.innerHTML = node.attributes.textContent.value;
+					console.log("WAT: ", node.attributes.textContent.value);
 				}
 			});
 		}
@@ -515,7 +514,7 @@ const startIntro = function () {
 				element: document.getElementById("clone")
 			},
 			{
-				intro: "When everything is done, click this button and select 'browser menu &rarr; print' (not Ctrl + P). Make sure the webpage isn't zoomed and the printer setting is set to print A4.",
+				intro: "When everything is done, click this button and select 'menu &rarr; print' (not Ctrl + P). Make sure the webpage isn't zoomed in, and that the printer setting is set to A4.",
 				element: document.getElementById("togglePrint")
 			},
 			{

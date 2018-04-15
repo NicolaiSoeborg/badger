@@ -436,7 +436,7 @@ viewModel = {
 		document.getElementById("badgeContainer").style.position = showMenu ? "relative" : "absolute";
 
 		// Hide warning banner:
-		document.getElementById("warningBanner").classList = "hidden" + (showMenu ? " at-print" : "");
+		document.getElementById("warningBanner").classList = "hidden" + (showMenu ? "" : " at-print");
 
 		// Toggle value:
 		this.showMenu(!showMenu);

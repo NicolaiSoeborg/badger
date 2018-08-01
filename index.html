@@ -177,7 +177,7 @@ const Badge = function(badgeId) {
 			}
 		}),
 		img: {
-			href: ko.observable("picture_bg.png"),
+			href: ko.observable("picture_bg.jpg"),
 			x: ko.observable(-50),
 			y: ko.observable(-50),
 			height: ko.observable(400),
@@ -435,7 +435,7 @@ viewModel = {
 				viewModel.badges.pop();
 
 			const dontClone = ["_id", "mouse"];
-			for (const i = 0; i < json["badges"].length; i++) {
+			for (let i = 0; i < json["badges"].length; i++) {
 				const badgeProps = json["badges"][i];
 				const badge = new Badge(badgeProps._id);
 

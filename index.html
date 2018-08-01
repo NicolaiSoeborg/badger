@@ -39,7 +39,7 @@
 <body>
 <div id="container">
 	<h1 id="warningBanner" class="hidden at-print">YOU FORGOT TO PRESS 'prepare print'</h1>
-	<span class="no-print" data-bind="visible: showMenu()">
+	<span class="no-print" data-bind="visible: showMenu">
 		<strong>Badger!</strong>
 		<span id="clone">
 			<a href="#" data-bind="click: cloneBadge">clone badge</a>
@@ -51,7 +51,7 @@
 	</span>
 	<a href="#" id="togglePrint" class="vLine no-print" data-bind="click: togglePrint">prepare print</a>
 	<br />
-	<div id="menu" data-bind="visible: showMenu()" class="no-print">Click any element on the badge to change content. &rarr;<br />
+	<div id="menu" data-bind="visible: showMenu" class="no-print">Click any element on the badge to change content. &rarr;<br />
 	<strong>Tip:</strong> double-click <em>inside</em> the badge (not on the text) to change background image.</div>
 
 	<!-- Define globale styles for badges
@@ -70,7 +70,7 @@
 	<!-- Create badges -->
 	<div data-bind="foreach: badges" id="badgeContainer">
 		<div data-bind="attr: {badgeid: _id}" class="badge"><!-- contenteditable="true" -->
-			<button class="closeBtn no-print" data-bind="visible: $root.showMenu, click: $root.deleteBadge.bind()" title="Delete badge">X</button>
+			<button class="closeBtn no-print" data-bind="visible: $root.showMenu, click: $root.deleteBadge" title="Delete badge">X</button>
 			<svg version="1.1" baseProfile="full" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
 				<defs>
 					<path data-bind="attr: {id: 'upper-path' + _id, d: upper_attr.d}"></path>
@@ -85,13 +85,21 @@
 				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print"></image>
 
 				<!-- The outermost circle (always visible): -->
-				<circle data-bind="attr: circle, click: $root.ondblclickFix.bind()" ondblclick="viewModel.changeBackground(this.parentElement.parentElement.attributes.badgeid.value)" r="3.1cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent"></circle>
+				<circle data-bind="attr: circle, click: $root.changeBackground.bind(null, _id), event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" r="3.1cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent" class="draggable"></circle>
 
 				<text>
 					<textPath attrname="upper_attr" data-bind="attr: upper_attr" onclick="viewModel.editBadge(this)">Harebo '16</textPath>
+					<!--<textPath data-bind="attr: upper_attr, click: $root.editBadge.bind(this, _id, 'upper_attr'), clickBubble: false">Harebo '16</textPath>-->
+
 					<textPath attrname="lower_attr" data-bind="attr: lower_attr" onclick="viewModel.editBadge(this)">C. Software</textPath>
+					<!--<textPath data-bind="attr: lower_attr, click: $root.editBadge.bind(this, _id, 'lower_attr'), clickBubble: false">C. Software</textPath>-->
 				</text>
-				<text attrname="middle_attr" data-bind="attr: middle_attr" onclick="viewModel.editBadge(this)">Søborg</text>
+				<text>
+					<tspan attrname="middle_attr1" data-bind="attr: middle_attr1" onclick="viewModel.editBadge(this)">Søborg</tspan>
+					<tspan attrname="middle_attr2" data-bind="attr: middle_attr2, visible: show_middle2" onclick="viewModel.editBadge(this)">[more text]</tspan>
+					<!--<tspan data-bind="attr: middle_attr1, click: $root.editBadge.bind(this, _id, 'middle_attr1'), clickBubble: false">Langt</tspan>
+					<tspan data-bind="attr: middle_attr2, click: $root.editBadge.bind(this, _id, 'middle_attr2'), clickBubble: false">navn</tspan>-->
+				</text>
 			</svg>
 			<br />
 			<input type="file" accept="image/*" data-bind="attr: {id: 'fileSelect' + _id}" class="hidden" />
@@ -111,14 +119,17 @@ if (/Trident/.test(navigator.userAgent)) {
 
 // Constants and global variables:
 let badgeCounter = 0,
-	viewModel = null; // needed to be defined before imgScale
-const FONTS = ["Times New Roman", "Helvetica", "Arial", "Comic Sans MS", "Segoe Print",
-			"Terminal", "Impact", "Tahoma", "Wingdings", "Griffy", "Roboto", "Diplomata SC",
-			"Indie Flower", "Lobster", "Amatic SC", "Clicker Script", "Orbitron", "Poiret One",
-			"Satisfy", "Kaushan Script", "Permanent Marker"],
-	isColor = new RegExp("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
+    fonts = ["Times New Roman", "Helvetica", "Arial", "Comic Sans MS", "Segoe Print",
+		"Terminal", "Impact", "Tahoma", "Wingdings", "Griffy", "Roboto", "Diplomata SC",
+		"Indie Flower", "Lobster", "Amatic SC", "Clicker Script", "Orbitron", "Poiret One",
+		"Satisfy", "Kaushan Script", "Permanent Marker", "[Add new font]"],
+	viewModel = null; // need to be defined before imgScale
+
+// Each font needs to be installed or included from "Extra fonts" stylesheet url above
+const isColor = new RegExp("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
 
 const Badge = function(badgeId) {
+	//console.log(`Creating new badge with id=${badgeId}`);
 	let obj = {
 		_id: badgeId,
 		upper_attr: {
@@ -127,10 +138,16 @@ const Badge = function(badgeId) {
 			textContent: "Harebo '16",
 			startOffset: "50%",
 		},
-		middle_attr: {
+		middle_attr1: {
 			textContent: "Søborg",
 			x: 150,
 			y: 175,
+		},
+		show_middle2: ko.observable(false),
+		middle_attr2: {
+			textContent: "[more text]",
+			x: 150,
+			dy: 50,
 		},
 		lower_attr: {
 			d: "M 60, 150 c 0, 120, 180, 120, 180, 0",
@@ -152,7 +169,7 @@ const Badge = function(badgeId) {
 						// Make sure the image zooms in on the middle, and not down-right:
 						badge.img.x( badge.img.x() + (badge.img.width() - newSize)/2 );
 						badge.img.y( badge.img.y() + (badge.img.height() - newSize)/2 );
-						// The scale image:
+						// Then scale image:
 						badge.img.width(newSize);
 						badge.img.height(newSize);
 					}
@@ -160,7 +177,7 @@ const Badge = function(badgeId) {
 			}
 		}),
 		img: {
-			href: ko.observable("picture_bg.jpg"),
+			href: ko.observable("picture_bg.png"),
 			x: ko.observable(-50),
 			y: ko.observable(-50),
 			height: ko.observable(400),
@@ -194,8 +211,9 @@ const Badge = function(badgeId) {
 	// Please fix this:
 	obj.upper_attr["font-size"] = 25;
 	obj.lower_attr["font-size"] = 25;
-	obj.middle_attr["font-size"] = 55;
-	for (let attr of [obj.upper_attr, obj.middle_attr, obj.lower_attr]) {
+	obj.middle_attr1["font-size"] = 50;
+	obj.middle_attr2["font-size"] = 50;
+	for (let attr of [obj.upper_attr, obj.middle_attr1, obj.middle_attr2, obj.lower_attr]) {
 		attr["fill"] = "#FFFFFF"; // white text
 		attr["text-anchor"] = "middle";
 		attr["font-family"] = "Tahoma";
@@ -205,6 +223,15 @@ const Badge = function(badgeId) {
 
 viewModel = {
 	badges: ko.observableArray([ new Badge(badgeCounter) ]),
+	getBadge: function(badgeId) {
+		let foundBadge;
+		this.badges().forEach(function (badge) {
+			if (badge._id == badgeId) {
+				foundBadge = badge;
+			}
+		});
+		return foundBadge;
+	},
 	showMenu: ko.observable(true),
 	cloneBadge: function() {
 		let badge = new Badge(++badgeCounter);
@@ -222,6 +249,9 @@ viewModel = {
 					badge[key] = stdBadge[key];
 			}
 		}
+		// Fix wrong 'href' is wrong on cloned badges:
+		badge.upper_attr.href = "#upper-path" + badgeCounter;
+		badge.lower_attr.href = "#lower-path" + badgeCounter;
 
 		// Push to beginning of array (KO.js will create html):
 		this.badges.unshift(badge);
@@ -234,58 +264,35 @@ viewModel = {
 			const imgSlider = document.getElementById("imgSlider" + badgeCounter);
 			imgSlider.parentElement.removeChild(imgSlider);
 		}
-
-		// Set 'menu focus' on new badge:
-		// TODO: This will automatic select middle_text
-		document.getElementsByClassName("badge")[0].children[1].children[6].onclick();
 	},
 	deleteBadge: function(badge) {
 		if (viewModel.badges().length == 1) {
-			document.getElementById("menu").innerHTML = "Can't delete the last badge!<br>Press F5 to reset layout.";
+			document.getElementById("menu").innerHTML = "Can't delete the last badge!<BR/>Press F5 to reset layout.";
 			return;
 		}
-		viewModel.badges().forEach(function(b) {
-			if (b._id == badge._id) {
-				viewModel.badges.remove(b);
-			}
-		});
+		console.log(`Deleting badge ${JSON.stringify(badge)}`);
+		viewModel.badges.remove(badge);
 	},
 	editBadge: function(elm) {
-		// 'elm' is an element inside the badge, lets first find the badgeid:
-		let badgeId = 0;
-		//let bgColor;
-		for (var e2 = elm; e2 !== null; e2 = e2.parentElement) {
-			if (e2.attributes.hasOwnProperty("badgeid")) {
-				badgeId = e2.attributes.badgeid.value;
-				//bgColor = e2.style.backgroundColor;
-				break;
-			}
-		}
-
-		// Create fake 'background color attribute'
-		/*if (!isColor.test(bgColor)) {
-			bgColor = '#' + bgColor
-								.split("(")[1].split(")")[0]
-								.split(",")
-								.map(function(x) {
-									x = parseInt(x).toString(16);
-									return (x.length==1) ? "0" + x : x;
-								})
-								.join('');
-		}
-		elm.setAttribute("backgroundColor", bgColor);*/
-
-		let attr = elm.attributes;
-		let menu = document.getElementById("menu");
+		const menu = document.getElementById("menu"),
+			// Don't allow the user to (see &)change these attributes:
+			disabledElms = ["d", "href", "text-anchor", "style", "onclick", "data-bind", "attrname"],
+			attr = elm.attributes;
 
 		// Reset (delete) old menu:
 		menu.innerHTML = "<center><strong>MENU</strong></center>";
 
-		// Don't allow the user to change these attributes:
-		let disabledElms = ["onclick", "data-bind", "href", "d", "text-anchor", "attrname"];
+		let badgeId = 0;
+		for (var e2 = elm; e2 !== null; e2 = e2.parentElement) {
+			if (e2.attributes.hasOwnProperty("badgeid")) {
+				badgeId = e2.attributes.badgeid.value;
+				break;
+			}
+		}
 
+		//for (const [elmName, elmVal] of Object.entries(badge[attr_name])) {
 		for (let i = 0; i < attr.length; i++) {
-			let elmName = attr[i].name,
+			const elmName = attr[i].name,
 				elmVal = attr[i].value;
 
 			// For some reason elmName is uppercase in IE, but lowercase elsewhere:
@@ -293,17 +300,19 @@ viewModel = {
 				continue;
 
 			// Create an input form for changing value:
-			let label = document.createElement("LABEL");
+			const label = document.createElement("LABEL");
 			label.setAttribute("for", elmName);
-			label.textContent = (elmName == "textContent" ? "text" : elmName) + ":";
+			label.textContent = `${elmName == 'textContent' ? 'text' : elmName}:`;
 
 			let input = document.createElement("INPUT");
 			if (elmName == "font-family") {
 				input = document.createElement("SELECT");
-				for (let font of FONTS) {
-					let opt = document.createElement("OPTION");
+				input.setAttribute("id", "fonts");
+				// All predefined fonts:
+				for (const font of fonts) {
+					const opt = document.createElement("OPTION");
 					opt.text = font;
-					opt.style.fontFamily = font;
+					opt.style.fontFamily = font;  // doesn't work in Firefox :|
 					opt.setAttribute("value", font);
 					if (font == elmVal)
 						opt.setAttribute("selected", true);
@@ -321,11 +330,28 @@ viewModel = {
 			// Make sure any input will update visible design:
 			for (const fuckJS of ["onchange", "onkeydown", "onpaste", "oninput"]) {
 				input[fuckJS] = function() {
-					if (this.name == "textContent") {
+					// Special cases:
+					if (this.name === "textContent") {
+						// Set text value:
 						elm.textContent = this.value;
+
 						// Make sure "deleted" textfields still can be selected:
 						if (elm.textContent == "")
 							elm.innerHTML = "&nbsp;&nbsp;";
+					} else if (this.name === "font-family") {
+						// "New font" selected?
+						if (this.value === fonts[fonts.length-1]) {
+							const fontName = prompt("Font name:"),
+								selector = document.getElementById("fonts"),
+								fontElm = document.createElement("OPTION");
+							if (/.+/.test(fontName)) {
+								fontElm.text = fontName;
+								fontElm.style.fontFamily = fontName;  // doesn't work in Firefox :|
+								fontElm.setAttribute("value", fontName);
+								fontElm.setAttribute("selected", true);
+								selector.appendChild(fontElm);
+							}
+						}
 					}
 
 					let self = this;
@@ -333,49 +359,60 @@ viewModel = {
 						if (badge._id == badgeId) {
 							let prop = attr["attrname"].value; // [lower|middle|upper]_attr
 
-							if (elmName == 'backgroundColor')
-								prop = 'circle';
+							//if (elmName === 'backgroundColor')
+							//	prop = 'circle';
 
 							badge[prop][self.name] = self.value;
-							//console.log("Updating badges["+badgeId+"]["+prop+"]["+self.name+"] = " + self.value);
 						}
 					});
 
-					if (elmName != 'backgroundColor') {
-						// Update HTML. TODO: this shouldn't be needed (but it doesn't work without...)
-						attr[elmName].value = this.value;
-					/*} else {
-						document.getElementsByClassName("badge")[badgeId].style.backgroundColor = this.value;*/
-					}
-				};
+					// Update HTML. TODO: this shouldn't be needed (but it doesn't work without...)
+					// Probably because elms isn't observable?
+					attr[elmName].value = this.value;
+				}
 			}
-
-			// Append 'input line' to menu:
+			// Append all of it to the menu:
 			menu.appendChild(label);
-			menu.appendChild(input);
 			menu.appendChild(document.createElement("BR"));
-		} // Done adding dynamic items.
+			menu.appendChild(input);
+			menu.appendChild(document.createElement("HR"));
+		}; // Done adding dynamic items.
 
+		const extralabel = document.createElement("SPAN"),
+			extratxt = document.createElement("INPUT");
+		extratxt.setAttribute("type", "checkbox");
+		extralabel.textContent = "Add extra text field: ";
+		extratxt.checked = viewModel.getBadge(badgeId)['show_middle2']();
+		extratxt.onclick = function () {
+			viewModel.getBadge(badgeId)['show_middle2'](this.checked);
+		}
+		extralabel.appendChild(extratxt);
+		menu.appendChild(extralabel);
 		menu.appendChild(document.createElement("BR"));
 
 		// Set focus AND MOVE CURSOR TO LAST POSITION
-		// ... yes this is really ugly, because Chrome: https://stackoverflow.com/a/10576409
+		// ... yes this is really ugly, because of Chrome: https://stackoverflow.com/a/10576409
 		let textInput = document.getElementsByName("textContent")[0];
-		if (textInput.addEventListener) {
+		if (textInput && textInput.addEventListener) {
 			textInput.addEventListener("focus", function() {
 				setTimeout(function(){ textInput.selectionStart = textInput.selectionEnd = 10000; }, 0);
 			}, false);
+			textInput.focus();
 		}
-		textInput.focus();
 	},
 	saveBadges: function() {
 		let textarea = document.createElement("TEXTAREA"),
 			menu = document.getElementById("menu");
 		textarea.textContent = ko.toJSON(viewModel);
-		textarea.onclick = function() { this.select(); };  // TODO: why doesn't this work anymore?
-		menu.innerHTML = "Save this text somewhere:<BR>";
+		textarea.readOnly = true;
+		textarea.onclick = function() {
+			this.select();
+		};
+		menu.innerHTML = "<strong>WARNING:</strong> the text below is very long and this feature is a bit buggy! Try not to rely on it. When your design is finished and all badges has been made, use <strong>menu &rarr; print &rarr; save to file (pdf)</strong><BR/>... or save this long text:";
 		menu.appendChild(textarea);
-		menu.innerHTML += "<BR><strong>WARNING:</strong> the text is very long and this feature is a bit buggy! Try not to rely on it. When your design is finished, use <strong>menu &rarr; print &rarr; save to file</strong>";
+		// This *should work* but will break the onclick function (tested in Firefox v62):
+		//menu.innerHTML += "<BR/><strong>WARNING:</strong> the text is very long and this feature is a bit buggy! Try not to rely on it. When your design is finished, use <strong>menu &rarr; print &rarr; save to file</strong>";
+
 	},
 	loadBadges: function() {
 		let menu = document.getElementById("menu");
@@ -388,7 +425,7 @@ viewModel = {
 				json = JSON.parse(document.getElementById("loadtxt").value);
 			} catch(e) {
 				const msg = "Can't load badges!";
-				menu.innerHTML += "<BR>" + msg;
+				menu.innerHTML += "<BR/>" + msg;
 				console.log(msg, e);
 				return;
 			}
@@ -397,13 +434,15 @@ viewModel = {
 			while (viewModel.badges().length > 1)
 				viewModel.badges.pop();
 
-			for (let i = 0; i < json["badges"].length; i++) {
-				let badgeProps = json["badges"][i];
+			const dontClone = ["_id", "mouse"];
+			for (const i = 0; i < json["badges"].length; i++) {
+				const badgeProps = json["badges"][i];
+				const badge = new Badge(badgeProps._id);
 
-				let badge = new Badge(badgeProps._id);
-				let dontClone = ["_id", "mouse"];
 				for (let prop in badgeProps) {
-					if (dontClone.indexOf(prop) !== -1) continue;
+					if (badgeProps.hasOwnProperty(prop)  // http://stackoverflow.com/a/559002
+						&& dontClone.indexOf(prop) !== -1)
+							continue;
 
 					badge[prop] = badgeProps[prop];
 				}
@@ -416,18 +455,14 @@ viewModel = {
 
 			// Now we can delete the 'last badge' (from before):
 			viewModel.badges.pop();
-
-			// Select first badge (changes to 'edit menu'):
-			document.getElementsByClassName("badge")[0].children[1].children[6].onclick();
 		};
-		//textarea.textContent = ko.toJSON(viewModel);
-		menu.innerHTML = "Paste saved badges:<BR>";
+		menu.innerHTML = "Paste saved badges:<BR/>";
 		menu.appendChild(textarea);
 		menu.appendChild(document.createElement("BR"));
 		menu.appendChild(btn);
 	},
 	togglePrint: function() {
-		let showMenu = this.showMenu();
+		const showMenu = this.showMenu();
 
 		// Update text:
 		document.getElementById("togglePrint").textContent = showMenu ? "show menu" : "prepare print";
@@ -442,40 +477,36 @@ viewModel = {
 		this.showMenu(!showMenu);
 	},
 	changeBackground: function(badgeId) {
-		this.badges().forEach(function(badge) {
-			if (badge._id == badgeId) {
-				let f = document.getElementById("fileSelect" + badgeId);
-				f.onchange = function(){
-					let reader = new FileReader();
-					// What to do when loading of data is done:
-					reader.onload = function(event) {
-						badge.img.href(event.target.result);
-					};
-					// Begin loading data (async)
-					reader.readAsDataURL(this.files[0]);
-				};
-				f.click(); // activate "select file" diag
-			}
-		});
-	},
-	ondblclickFix: function(badge, event) {
 		// 'ondblclick' isn't actually defined on svg elements,
 		// but just happens to work in Chrome and IE, but not FF.
 		// Link: https://bugzilla.mozilla.org/show_bug.cgi?id=360145
-		if (navigator.userAgent.indexOf("Firefox") > -1
-			&& event.detail >= 2) {
-			viewModel.changeBackground(badge._id);
+		// So lets not rely on it, and just catch 'two clicks at once' (aka event.detail > 1)
+		if (event.detail >= 2) {
+			const badge = viewModel.getBadge(badgeId),
+				f = document.getElementById("fileSelect" + badgeId);
+			f.onchange = function() {
+				const reader = new FileReader();
+				// What to do when loading of data is done:
+				reader.onload = function(event) {
+					badge.img.href(event.target.result);
+				};
+				// Begin loading data (async)
+				reader.readAsDataURL(this.files[0]);
+			};
+			f.click(); // activate "select file" diag
 		}
 	},
 	textContentFix: function(badgeId) {
-		let walkDOM = function (node,func) {
+		let walkDOM = function (node, func) {
 			func(node);
 			node = node.firstChild;
 			while(node) {
-				walkDOM(node,func);
+				walkDOM(node, func);
 				node = node.nextSibling;
 			}
 		};
+		// Example:
+		//   <ELM textContent="A">B</ELM>
 		for (let badge of document.getElementsByClassName("badge")) {
 			if (badge.attributes["badgeid"].value != badgeId)
 				continue;
@@ -483,8 +514,10 @@ viewModel = {
 			// Fix mismatches between textContent and innerHTML:
 			walkDOM(badge, function(node) {
 				if (typeof node.attributes === "object" && "textContent" in node.attributes) {
-					node.innerHTML = node.attributes.textContent.value;
-					console.log("WAT: ", node.attributes.textContent.value);
+					if (node.innerHTML != node.attributes.textContent.value) {
+						console.log(`Fixing badge ${badge._id}: ${node.innerHTML} = ${node.attributes.textContent.value}`);
+						node.innerHTML = node.attributes.textContent.value;
+					}
 				}
 			});
 		}
@@ -509,6 +542,10 @@ const startIntro = function () {
 				intro: "To change background image, double click inside the badge circle (not on the text). Protip: make sure to select a image without too much 'noice' or the text might be hard to see on the print.",
 				element: document.getElementsByClassName("draggable")[0]
 			}*/
+			/*{
+				intro: "If you need additional fonts, you can install them on your computer and need to type the exact name of the font.",
+				element: document.getElementById("fonts")
+			},*/
 			{
 				intro: "When the badge design is done, use this button to clone the current badge. If the checkbox is checked, then moving/scaling the background image on one badge will also move/scale the background image on the other badges.",
 				element: document.getElementById("clone")
@@ -518,7 +555,7 @@ const startIntro = function () {
 				element: document.getElementById("togglePrint")
 			},
 			{
-				intro: "Happy badging!  Please report any errors/feedback to: <a href='mailto:badger@xn--sb-lka.org'>badger@søb.org</a>"
+				intro: "Happy badging!  Please report any errors/feedback to Nicolai Søborg" // <a href='mailto:badger@xn--sb-lka.org'>badger@søb.org</a>
 			}
 		]
 	});

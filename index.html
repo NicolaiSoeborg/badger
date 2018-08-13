@@ -85,7 +85,7 @@
 				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print"></image>
 
 				<!-- The outermost circle (always visible): -->
-				<circle data-bind="attr: circle, click: $root.changeBackground.bind(null, _id), event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" r="3.1cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent" class="draggable"></circle>
+				<circle data-bind="attr: circle, click: function(data, event) { viewModel.changeBackground(event, _id) }, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" r="3.1cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent" class="draggable"></circle>
 
 				<text>
 					<textPath attrname="upper_attr" data-bind="attr: upper_attr" onclick="viewModel.editBadge(this)">Harebo '16</textPath>
@@ -476,7 +476,7 @@ viewModel = {
 		// Toggle value:
 		this.showMenu(!showMenu);
 	},
-	changeBackground: function(badgeId) {
+	changeBackground: function(event, badgeId) {
 		// 'ondblclick' isn't actually defined on svg elements,
 		// but just happens to work in Chrome and IE, but not FF.
 		// Link: https://bugzilla.mozilla.org/show_bug.cgi?id=360145
@@ -515,8 +515,9 @@ viewModel = {
 			walkDOM(badge, function(node) {
 				if (typeof node.attributes === "object" && "textContent" in node.attributes) {
 					if (node.innerHTML != node.attributes.textContent.value) {
-						console.log(`Fixing badge ${badge._id}: ${node.innerHTML} = ${node.attributes.textContent.value}`);
+						console.log(`Fixing badge ${badgeId}: Setting ${node.innerHTML} = ${node.attributes.textContent.value}`);
 						node.innerHTML = node.attributes.textContent.value;
+						if (node.textContent === "") node.innerHTML = "&nbsp;&nbsp;";
 					}
 				}
 			});

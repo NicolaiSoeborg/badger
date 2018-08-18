@@ -38,7 +38,7 @@
 </head>
 <body>
 <div id="container">
-	<h1 id="warningBanner" class="hidden at-print">YOU FORGOT TO PRESS 'prepare print'</h1>
+	<h1 id="warningBanner" class="hidden at-print">You forgot to press 'prepare print'</h1>
 	<span class="no-print" data-bind="visible: showMenu">
 		<strong>Badger!</strong>
 		<span id="clone">
@@ -50,6 +50,17 @@
 		<a href="#" class="vLine" onclick="startIntro()">help</a>
 	</span>
 	<a href="#" id="togglePrint" class="vLine no-print" data-bind="click: togglePrint">prepare print</a>
+	<span data-bind="visible: showMenu" class="no-print" style="float: right;">
+		<a href="#" data-bind="click: function () { this.showChangelog(!this.showChangelog()); }">Changelog</a> (v2.1.X)
+		<div data-bind="visible: showChangelog">
+			<p>[v1.x] Idea by <a href="https://github.com/henrikh">Henrik Enggaard</a>.</p>
+			<p>[v2.0.0] Rebuild using knockout.js</p>
+			<p>[v2.1.0] Added 'add more text' and custom fonts</p>
+			<p>[v2.1.1] Fix 'upper + lower text' when deleting initial badge</p>
+			<p>[v2.1.2] Fix change background image in Firefox</p>
+			<p></p>
+		</div>
+	</span>
 	<br />
 	<div id="menu" data-bind="visible: showMenu" class="no-print">Click any element on the badge to change content. &rarr;<br />
 	<strong>Tip:</strong> double-click <em>inside</em> the badge (not on the text) to change background image.</div>
@@ -66,6 +77,12 @@
 			</clipPath>
 		</defs>
 	</svg>
+
+	<!-- Msg box that can be used for messages (hidden by default) -->
+	<dialog id="msgDiag" class="no-print" open onclick=" this.removeAttribute('open') ">
+		<a href="#" style="float: right;" title="Click to close dialog">X</a>
+		<p id="msg">[EMPTY]</p>
+	</dialog>
 
 	<!-- Create badges -->
 	<div data-bind="foreach: badges" id="badgeContainer">
@@ -125,7 +142,6 @@ let badgeCounter = 0,
 		"Satisfy", "Kaushan Script", "Permanent Marker", "[Add new font]"],
 	viewModel = null; // need to be defined before imgScale
 
-// Each font needs to be installed or included from "Extra fonts" stylesheet url above
 const isColor = new RegExp("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
 
 const Badge = function(badgeId) {
@@ -221,6 +237,27 @@ const Badge = function(badgeId) {
 	return obj;
 };
 
+// Helpers:
+const showMsg = function(msg) {
+	const elm = document.getElementById("msg"),
+		diag = document.getElementById("msgDiag");
+	if (typeof(msg) === 'string') {
+		elm.textContent = msg;
+	} else {
+		elm.appendChild(msg);
+	}
+	diag.setAttribute('open', 'true');
+}
+const elmBuilder = function(/*string*/type, child) {
+	const elm = document.createElement(type);
+	if (typeof(child) === "string") {
+		elm.textContent = child;
+	} else {
+		elm.appendChild(child);
+	}
+	return elm;
+}
+
 viewModel = {
 	badges: ko.observableArray([ new Badge(badgeCounter) ]),
 	getBadge: function(badgeId) {
@@ -233,6 +270,7 @@ viewModel = {
 		return foundBadge;
 	},
 	showMenu: ko.observable(true),
+	showChangelog: ko.observable(false),
 	cloneBadge: function() {
 		let badge = new Badge(++badgeCounter);
 
@@ -267,7 +305,7 @@ viewModel = {
 	},
 	deleteBadge: function(badge) {
 		if (viewModel.badges().length == 1) {
-			document.getElementById("menu").innerHTML = "Can't delete the last badge!<BR/>Press F5 to reset layout.";
+			showMsg("Can't delete the last badge!\nPress F5 to reset layout.");
 			return;
 		}
 		console.log(`Deleting badge ${JSON.stringify(badge)}`);
@@ -376,8 +414,16 @@ viewModel = {
 			menu.appendChild(document.createElement("BR"));
 			menu.appendChild(input);
 			menu.appendChild(document.createElement("HR"));
-		}; // Done adding dynamic items.
+		};
+		// ^ Done adding dynamic items.
 
+		// Add "ADVANCED" menu:
+		const detailsElm = document.createElement("DETAILS"),
+			summaryElm = document.createElement("SUMMARY");
+		summaryElm.textContent = "ADVANCED";
+		detailsElm.appendChild(summaryElm);
+
+		// Extra text field:
 		const extralabel = document.createElement("SPAN"),
 			extratxt = document.createElement("INPUT");
 		extratxt.setAttribute("type", "checkbox");
@@ -387,8 +433,13 @@ viewModel = {
 			viewModel.getBadge(badgeId)['show_middle2'](this.checked);
 		}
 		extralabel.appendChild(extratxt);
-		menu.appendChild(extralabel);
-		menu.appendChild(document.createElement("BR"));
+		detailsElm.appendChild(extralabel);
+		detailsElm.appendChild(document.createElement("BR"));
+
+		// detailsElm
+
+		menu.appendChild(detailsElm);
+		// ^ Done adding one-time items.
 
 		// Set focus AND MOVE CURSOR TO LAST POSITION
 		// ... yes this is really ugly, because of Chrome: https://stackoverflow.com/a/10576409
@@ -488,7 +539,11 @@ viewModel = {
 				const reader = new FileReader();
 				// What to do when loading of data is done:
 				reader.onload = function(event) {
-					badge.img.href(event.target.result);
+					const data = event.target.result;
+					if (data.slice(5, data.indexOf(';')) === 'image/gif') {
+						showMsg("WARNING: gifs might print weirdly");
+					}
+					badge.img.href(data);
 				};
 				// Begin loading data (async)
 				reader.readAsDataURL(this.files[0]);

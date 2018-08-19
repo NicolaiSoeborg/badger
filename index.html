@@ -51,14 +51,14 @@
 	</span>
 	<a href="#" id="togglePrint" class="vLine no-print" data-bind="click: togglePrint">prepare print</a>
 	<span data-bind="visible: showMenu" class="no-print" style="float: right;">
-		<a href="#" data-bind="click: function () { this.showChangelog(!this.showChangelog()); }">Changelog</a> (v2.1.X)
+		<a href="#" data-bind="click: function () { this.showChangelog(!this.showChangelog()); }">Changelog</a> (v2.1.3)
 		<div data-bind="visible: showChangelog">
 			<p>[v1.x] Idea by <a href="https://github.com/henrikh">Henrik Enggaard</a>.</p>
 			<p>[v2.0.0] Rebuild using knockout.js</p>
 			<p>[v2.1.0] Added 'add more text' and custom fonts</p>
 			<p>[v2.1.1] Fix 'upper + lower text' when deleting initial badge</p>
 			<p>[v2.1.2] Fix change background image in Firefox</p>
-			<p></p>
+			<p>[v2.1.3] Make badge cutoff slightly bigger <small>(+ easter egg)</small></p>
 		</div>
 	</span>
 	<br />
@@ -73,16 +73,19 @@
 				<circle data-bind="attr: $root.badges()[0].circle" r="2.5cm"></circle>
 			</clipPath>
 			<clipPath id="badge-full">
-				<circle data-bind="attr: $root.badges()[0].circle" r="3.1cm"></circle>
+				<circle data-bind="attr: $root.badges()[0].circle" r="3.2cm"></circle>
 			</clipPath>
 		</defs>
 	</svg>
 
 	<!-- Msg box that can be used for messages (hidden by default) -->
-	<dialog id="msgDiag" class="no-print" open onclick=" this.removeAttribute('open') ">
+	<dialog id="msgDiag" class="no-print" onclick=" this.removeAttribute('open') ">
 		<a href="#" style="float: right;" title="Click to close dialog">X</a>
 		<p id="msg">[EMPTY]</p>
 	</dialog>
+
+	<!-- Easter egg -->
+	<iframe id="player" allow="autoplay; encrypted-media" width="0" height="0"></iframe>
 
 	<!-- Create badges -->
 	<div data-bind="foreach: badges" id="badgeContainer">
@@ -102,7 +105,7 @@
 				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print"></image>
 
 				<!-- The outermost circle (always visible): -->
-				<circle data-bind="attr: circle, click: function(data, event) { viewModel.changeBackground(event, _id) }, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" r="3.1cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent" class="draggable"></circle>
+				<circle data-bind="attr: circle, click: function(data, event) { viewModel.changeBackground(event, _id) }, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" r="3.2cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent" class="draggable"></circle>
 
 				<text>
 					<textPath attrname="upper_attr" data-bind="attr: upper_attr" onclick="viewModel.editBadge(this)">Harebo '16</textPath>
@@ -248,7 +251,7 @@ const showMsg = function(msg) {
 	}
 	diag.setAttribute('open', 'true');
 }
-const elmBuilder = function(/*string*/type, child) {
+const elmBuilder = function(type, child) {
 	const elm = document.createElement(type);
 	if (typeof(child) === "string") {
 		elm.textContent = child;
@@ -338,9 +341,8 @@ viewModel = {
 				continue;
 
 			// Create an input form for changing value:
-			const label = document.createElement("LABEL");
+			const label = elmBuilder("LABEL", `${elmName == 'textContent' ? 'text' : elmName}:`);
 			label.setAttribute("for", elmName);
-			label.textContent = `${elmName == 'textContent' ? 'text' : elmName}:`;
 
 			let input = document.createElement("INPUT");
 			if (elmName == "font-family") {
@@ -348,8 +350,7 @@ viewModel = {
 				input.setAttribute("id", "fonts");
 				// All predefined fonts:
 				for (const font of fonts) {
-					const opt = document.createElement("OPTION");
-					opt.text = font;
+					const opt = elmBuilder("OPTION", font);
 					opt.style.fontFamily = font;  // doesn't work in Firefox :|
 					opt.setAttribute("value", font);
 					if (font == elmVal)
@@ -379,11 +380,10 @@ viewModel = {
 					} else if (this.name === "font-family") {
 						// "New font" selected?
 						if (this.value === fonts[fonts.length-1]) {
-							const fontName = prompt("Font name:"),
-								selector = document.getElementById("fonts"),
-								fontElm = document.createElement("OPTION");
+							const fontName = prompt("Full font name:"),
+								selector = document.getElementById("fonts");
 							if (/.+/.test(fontName)) {
-								fontElm.text = fontName;
+								const fontElm = elmBuilder("OPTION", fontName);
 								fontElm.style.fontFamily = fontName;  // doesn't work in Firefox :|
 								fontElm.setAttribute("value", fontName);
 								fontElm.setAttribute("selected", true);
@@ -418,27 +418,33 @@ viewModel = {
 		// ^ Done adding dynamic items.
 
 		// Add "ADVANCED" menu:
-		const detailsElm = document.createElement("DETAILS"),
-			summaryElm = document.createElement("SUMMARY");
-		summaryElm.textContent = "ADVANCED";
-		detailsElm.appendChild(summaryElm);
+		const advancedElm = elmBuilder("DETAILS", elmBuilder("SUMMARY", "ADVANCED"));
 
 		// Extra text field:
-		const extralabel = document.createElement("SPAN"),
+		const extralabel = elmBuilder("SPAN", "Add extra text field: "),
 			extratxt = document.createElement("INPUT");
 		extratxt.setAttribute("type", "checkbox");
-		extralabel.textContent = "Add extra text field: ";
 		extratxt.checked = viewModel.getBadge(badgeId)['show_middle2']();
 		extratxt.onclick = function () {
 			viewModel.getBadge(badgeId)['show_middle2'](this.checked);
 		}
 		extralabel.appendChild(extratxt);
-		detailsElm.appendChild(extralabel);
-		detailsElm.appendChild(document.createElement("BR"));
+		advancedElm.appendChild(extralabel);
+		advancedElm.appendChild(document.createElement("BR"));
 
-		// detailsElm
+		// Easter egg:
+		const youtubelabel = elmBuilder("SPAN", "Play music: "),
+			youtubetxt = document.createElement("INPUT");
+		youtubetxt.setAttribute("type", "checkbox");
+		youtubetxt.onclick = function () {
+			document.getElementById("player").src = this.checked ? "https://www.youtube-nocookie.com/embed/hGlyFc79BUE?rel=0&controls=0&showinfo=0&enablejsapi=1&autoplay=1&origin=https://xn--sb-lka.org" : "";
+			console.log("TEST");
+		}
+		youtubelabel.appendChild(youtubetxt);
+		advancedElm.appendChild(youtubelabel);
+		advancedElm.appendChild(document.createElement("BR"));
 
-		menu.appendChild(detailsElm);
+		menu.appendChild(advancedElm);
 		// ^ Done adding one-time items.
 
 		// Set focus AND MOVE CURSOR TO LAST POSITION
@@ -452,9 +458,8 @@ viewModel = {
 		}
 	},
 	saveBadges: function() {
-		let textarea = document.createElement("TEXTAREA"),
-			menu = document.getElementById("menu");
-		textarea.textContent = ko.toJSON(viewModel);
+		const menu = document.getElementById("menu"),
+			textarea = elmBuilder("TEXTAREA", ko.toJSON(viewModel));
 		textarea.readOnly = true;
 		textarea.onclick = function() {
 			this.select();
@@ -475,9 +480,7 @@ viewModel = {
 			try {
 				json = JSON.parse(document.getElementById("loadtxt").value);
 			} catch(e) {
-				const msg = "Can't load badges!";
-				menu.innerHTML += "<BR/>" + msg;
-				console.log(msg, e);
+				showMsg(`Can't load badges! (${msg})`);
 				return;
 			}
 

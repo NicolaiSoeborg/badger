@@ -139,6 +139,8 @@ if (/Trident/.test(navigator.userAgent)) {
 
 // Constants and global variables:
 let badgeCounter = 0,
+	badgerTimer = 0,
+	badgerInterval = null,
     fonts = ["Times New Roman", "Helvetica", "Arial", "Comic Sans MS", "Segoe Print",
 		"Terminal", "Impact", "Tahoma", "Wingdings", "Griffy", "Roboto", "Diplomata SC",
 		"Indie Flower", "Lobster", "Amatic SC", "Clicker Script", "Orbitron", "Poiret One",
@@ -437,8 +439,20 @@ viewModel = {
 			youtubetxt = document.createElement("INPUT");
 		youtubetxt.setAttribute("type", "checkbox");
 		youtubetxt.onclick = function () {
-			document.getElementById("player").src = this.checked ? "https://www.youtube-nocookie.com/embed/hGlyFc79BUE?rel=0&controls=0&showinfo=0&enablejsapi=1&autoplay=1&origin=https://xn--sb-lka.org" : "";
-			console.log("TEST");
+			if (this.checked) {
+				document.getElementById("player").src = "https://www.youtube-nocookie.com/embed/hGlyFc79BUE?rel=0&controls=0&showinfo=0&enablejsapi=1&autoplay=1&origin=https://xn--sb-lka.org";
+				if (badgerInterval == null) {
+					badgerInterval = setInterval(function () {
+						if ((++badgerTimer % (60*30)) == 0) {
+							showMsg(`You heard badger in: ${badgerTimer / 60} min`)
+						}
+					}, 1000);
+				} else {
+					clearInterval(badgerInterval);
+				}
+			} else {
+				document.getElementById("player").src = "";
+			}
 		}
 		youtubelabel.appendChild(youtubetxt);
 		advancedElm.appendChild(youtubelabel);

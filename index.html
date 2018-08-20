@@ -58,7 +58,7 @@
 			<p>[v2.1.0] Added 'add more text' and custom fonts</p>
 			<p>[v2.1.1] Fix 'upper + lower text' when deleting initial badge</p>
 			<p>[v2.1.2] Fix change background image in Firefox</p>
-			<p>[v2.1.3] Make badge cutoff slightly bigger <small>(+ easter egg)</small></p>
+			<p>[v2.1.3 + e] Make badge cutoff slightly bigger <small>(+ easter egg)</small></p>
 		</div>
 	</span>
 	<br />
@@ -73,7 +73,7 @@
 				<circle data-bind="attr: $root.badges()[0].circle" r="2.5cm"></circle>
 			</clipPath>
 			<clipPath id="badge-full">
-				<circle data-bind="attr: $root.badges()[0].circle" r="3.2cm"></circle>
+				<circle data-bind="attr: $root.badges()[0].circle" r="3.4cm"></circle>
 			</clipPath>
 		</defs>
 	</svg>
@@ -105,7 +105,7 @@
 				<image data-bind="attr: img, visible: $root.showMenu, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" style="opacity: 0.2" class="draggable no-print"></image>
 
 				<!-- The outermost circle (always visible): -->
-				<circle data-bind="attr: circle, click: function(data, event) { viewModel.changeBackground(event, _id) }, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" r="3.2cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent" class="draggable"></circle>
+				<circle data-bind="attr: circle, click: function(data, event) { viewModel.changeBackground(event, _id) }, event: { mousedown: beginMove, mousemove: doMove, mouseup: stopMove }" r="3.4cm" stroke-width="0.1mm" stroke-dasharray="5,5" fill="transparent" class="draggable"></circle>
 
 				<text>
 					<textPath attrname="upper_attr" data-bind="attr: upper_attr" onclick="viewModel.editBadge(this)">Harebo '16</textPath>

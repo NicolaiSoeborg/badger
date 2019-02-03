@@ -6,8 +6,13 @@ Badger
 
 The one true way to make badge sheets for printing
 
-The (old) badge app is located at <https://badger.soeborg.me/>.
+The (old) badge app is located at <https://nicolaisoeborg.github.io/badger/>.
 
-New version of Badger 2.0 is located at <https://badger.søb.org/>.
+New version of Badger 3.0 is located at <https://badger.søb.org/>.
 
 Feel free to create pull requests!
+
+
+# Run:
+ * `yarn` to download `node_modules`
+ * `yarn start` or `yarn build`

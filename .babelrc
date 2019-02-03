@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    ["@babel/plugin-transform-react-jsx", {
+      "pragma": "dom", // default pragma is React.createElement
+      "pragmaFrag": "DomFrag", // default is React.Fragment
+    }]
+  ]
+}
+

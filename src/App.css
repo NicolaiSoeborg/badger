@@ -1,0 +1,50 @@
+#container {
+  width: 100%;
+  overflow: hidden;
+}
+
+#menu {
+  background-color: #EEEEDD;
+  border: 1px solid #CCC;
+  border-radius: 3px;
+  position: fixed;
+  width: 200px;
+  padding: 5px;
+  margin-top: 1em;
+}
+
+#badgeContainer {
+  display: table-cell;
+  position: absolute;
+  margin-left: 220px /*menu width + padding, etc*/;
+}
+
+.vLine {
+  border-left: solid black;
+  padding-left: 0.5ch;
+  padding-right: 0.5ch;
+}
+
+.badge {
+  float: left;
+}
+
+.draggable {
+  cursor: move;
+}
+
+.closeBtn {
+  float: right;
+  position: relative;
+  right: 25px;
+  top: 25px;
+}
+
+.hidden {
+  display: none;
+}
+
+@media print {
+  .no-print, .no-print * { display: none !important; }
+  .at-print, .at-print * { display: block !important; }
+}

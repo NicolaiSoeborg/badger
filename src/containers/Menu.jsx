@@ -54,37 +54,43 @@ class Menu extends Component {
             return (<div id="menu" className="no-print">Click any element on the badge to change content. &rarr;<br />
             <strong>Tip:</strong> double-click <em>inside</em> the badge (not on the text) to change background image.</div>);
 
+        const commonProps = (name) => ({
+            name: name,
+            value: this.getVal(name),
+            onChange: this.setVal,
+            style: {width: "94%"},
+        });
         return (
             <div id="menu" className="no-print">
                 <center><strong>MENU</strong></center>
                 <label htmlFor="text">Text:</label><br/>
-                <input name="text" value={this.getVal("text")} onChange={this.setVal} style={{width: "94%"}} autoFocus />
+                <input {...commonProps("text")} autoFocus />
                 <hr/>
                 <label htmlFor="fontSize">Size:</label><br/>
-                <input name="fontSize" value={this.getVal("fontSize")} onChange={this.setVal} type="number" style={{width: "94%"}} />
+                <input {...commonProps("fontSize")} type="number" />
                 {this.hasVal("x") && this.hasVal("y") && <>
                     <hr/>
                     <label htmlFor="x">x:</label>
-                    <input name="x" value={this.getVal("x")} onChange={this.setVal} type="number" style={{width: "30%"}} />
+                    <input {...commonProps("x")} type="number" style={{width: "30%"}} />
                     <label htmlFor="y">y:</label>
-                    <input name="y" value={this.getVal("y")} onChange={this.setVal} type="number" style={{width: "30%"}} />
+                    <input {...commonProps("y")} type="number" style={{width: "30%"}} />
                 </>}
                 {this.props.focusedPropName === 'middle2' && <>
                     <hr/>
                     <label htmlFor="dx">dx:</label>
-                    <input name="dx" value={this.getVal("dx")} onChange={this.setVal} type="number" style={{width: "30%"}} />
+                    <input {...commonProps("dx")} type="number" style={{width: "30%"}} />
                     <label htmlFor="dy">dy:</label>
-                    <input name="dy" value={this.getVal("dy")} onChange={this.setVal} type="number" style={{width: "30%"}} />
+                    <input {...commonProps("dy")} type="number" style={{width: "30%"}} />
                 </>}
                 <hr/>
                 <label htmlFor="fill">Text color:</label><br/>
-                <input name="fill" value={this.getVal("fill")} onChange={this.setVal} type="color" style={{width: "94%"}} />
+                <input {...commonProps("fill")} type="color" />
                 <hr/>
                 <label htmlFor="stroke">Stroke color:</label><br/>
-                <input name="stroke" value={this.getVal("stroke")} onChange={this.setVal} type="color" style={{width: "94%"}} />
+                <input {...commonProps("stroke")} type="color" />
                 <hr/>
                 <label htmlFor="strokeWidth">Stroke width:</label><br/>
-                <input name="strokeWidth" value={this.getVal("strokeWidth")} onChange={this.setVal} type="number" style={{width: "94%"}} />
+                <input {...commonProps("strokeWidth")} type="number" />
                 <hr/>
                 <FontSelector selectedFont={this.getVal("fontFamily")} setFont={this.setFont} />
                 <hr/>

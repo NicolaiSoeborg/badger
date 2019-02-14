@@ -1,43 +1,4 @@
 import React, { Component } from 'react';
-import { load } from 'webfontloader';
-
-const FONTS = [
-    "Amatic SC",
-    "Architects Daughter",
-    "Arial",
-    "Black Ops One",
-    "Clicker Script",
-    "Comic Sans MS",
-    "Diplomata SC",
-    "Griffy",
-    "Helvetica",
-    "Impact",
-    "Indie Flower",
-    "Kaushan Script",
-    "Lobster",
-    "Marck Script",
-    "Monoton",
-    "Orbitron",
-    "Permanent Marker",
-    "Poiret One",
-    "Righteous",
-    "Roboto",
-    "Satisfy",
-    "Segoe Print",
-    "Tahoma",
-    "Terminal",
-    "Times New Roman",
-    "Wingdings",
-    "ZCOOL KuaiLe",
-];
-
-// Load web fonts from Google Font API
-load({
-    google: {
-        families: FONTS
-    },
-    timeout: 8000 // plenty of time!
-});
 
 /*const canvas = document.createElement("canvas"),
     context = canvas.getContext("2d"),
@@ -50,7 +11,36 @@ class FontSelector extends Component {
         super(props);
         this.state = {
             selectedFont: this.props.selectedFont || "Impact",
-            fonts: [...FONTS],
+            // MAKE SURE TO UPDATE public/index.html when adding/removing fonts!
+            fonts: [
+                "Amatic SC",
+                "Architects Daughter",
+                "Arial",
+                "Black Ops One",
+                "Clicker Script",
+                "Comic Sans MS",
+                "Diplomata SC",
+                "Griffy",
+                "Helvetica",
+                "Impact",
+                "Indie Flower",
+                "Kaushan Script",
+                "Lobster",
+                "Marck Script",
+                "Monoton",
+                "Orbitron",
+                "Permanent Marker",
+                "Poiret One",
+                "Righteous",
+                "Roboto",
+                "Satisfy",
+                "Segoe Print",
+                "Tahoma",
+                "Terminal",
+                "Times New Roman",
+                "Wingdings",
+                "ZCOOL KuaiLe",            
+            ],
         };
         this.changeFont = this.changeFont.bind(this);
     }

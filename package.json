@@ -1,20 +1,19 @@
 {
   "name": "badger",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "The one true way to make badge sheets for printing",
   "author": "Nicolai Søborg <badger@xn--sb-lka.org>",
   "license": "MIT",
   "private": true,
-  "homepage" : "https://badger.xn--sb-lka.org/",
+  "homepage": "https://badger.xn--sb-lka.org/",
   "dependencies": {
+    "deep-object-diff": "^1.1.0",
     "immer": "^1.12.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-redux": "^6.0.0",
     "react-scripts": "2.1.3",
-    "redux": "^4.0.1",
-    "webfontloader": "^1.6.28",
-    "deep-object-diff": "^1.1.0"
+    "redux": "^4.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -31,6 +30,5 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

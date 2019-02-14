@@ -7,7 +7,7 @@ document.onkeydown = function(e) {
         // Very modified from https://gist.github.com/devn/5007287
         (function () {
             function strobeLight() {
-                var e = document.createElement("div");
+                const e = document.createElement("div");
                 e.setAttribute("class", "mw-strobe_light");
                 document.body.appendChild(e);
                 setTimeout(function () {
@@ -37,33 +37,27 @@ document.onkeydown = function(e) {
                 const t = elmOffset(e);
                 return t >= window.pageYOffset && t <= bottomHeight() + window.pageYOffset;
             }
-            function run() {
-                /*var e = document.createElement("audio");
-                e.setAttribute("class", "mw_added_css");
-                e.src = "https://s3.amazonaws.com/moovweb-marketing/playground/harlem-shake.mp3";
-                e.loop = false;*/
-                var e = document.getElementById("harlem");
-                e.addEventListener("canplay", function () {
-                    setTimeout(function () {
-                        startingElm.classList.add("mw-harlem_shake_me", "im_first");
-                    }, 500);
-                    setTimeout(function () {
-                        cleanup();
-                        strobeLight();
-                        [...document.getElementsByTagName("*")]
-                            .filter(elm => hasGoodSize(elm) || Math.random() <= 0.3)
-                            .forEach(element => {
-                                shakeElm(element);
-                            });
-                    }, 15500);
-                }, true);
-                e.addEventListener("ended", function () {
+            function run(startingElm) {
+                const e = document.getElementById("harlem");
+                e.loop = false;
+                setTimeout(function () {
+                    startingElm.classList.add("mw-harlem_shake_me", "im_first");
+                }, 500);
+                setTimeout(function () {
+                    cleanup();
+                    strobeLight();
+                    [...document.getElementsByTagName("*")]
+                        .filter(elm => hasGoodSize(elm) || Math.random() <= 0.3)
+                        .forEach(element => {
+                            shakeElm(element);
+                        });
+                }, 15500);
+                e.onended = function () {
                     cleanup();
                     [...document.body.getElementsByClassName("mw_added_css")].forEach(element => {
                         document.body.removeChild(element);
                     });    
-                }, true);
-                document.body.appendChild(e);
+                };
                 e.play();
             }
             function shakeElm(e) {
@@ -79,13 +73,11 @@ document.onkeydown = function(e) {
                 n = 350,
                 t = 20,
                 r = 350;
-            const startingElm = [...document.getElementsByTagName("*")]
-                .filter(elm => hasGoodSize(elm) && isVisible(elm))[0];
-
-            run();
+            const badges = [...document.getElementsByClassName("badge")].filter(isVisible);
+            run(badges[Math.floor(Math.random()*badges.length)]);
         })();
 
         user_keys = [];
     }
-    if (user_keys.length > 1000) user_keys = [];
+    if (user_keys.length > 5000) user_keys = [];
 };

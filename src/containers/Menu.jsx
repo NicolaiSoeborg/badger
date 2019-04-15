@@ -30,6 +30,7 @@ class Menu extends Component {
 
     getVal = (prop) => {
         const idx = this.props.badges.findIndex(badge => badge.id === this.props.focusedBadgeId);
+        if (idx === -1) return "";
         return this.props.badges[idx][this.props.focusedPropName][prop];
     }
 
@@ -51,8 +52,10 @@ class Menu extends Component {
             return null;
         
         if (this.props.focusedBadgeId === -1)
-            return (<div id="menu" className="no-print">Click any element on the badge to change content. &rarr;<br />
-            <strong>Tip:</strong> double-click <em>inside</em> the badge (not on the text) to change background image.</div>);
+            return (
+                <div id="menu" className="no-print">Click any element on the badge to change content. &rarr;<br />
+                <strong>Tip:</strong> double-click <em>inside</em> the badge (not on the text) to change background image.</div>
+            );
 
         const commonProps = (name) => ({
             name: name,

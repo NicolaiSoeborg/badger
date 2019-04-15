@@ -9,13 +9,14 @@ const baselineSize = context.measureText(text).width;*/
 class FontSelector extends Component {
     constructor(props) {
         super(props);
+        const additionalWindowsFonts = (navigator.platform === 'Win32')
+            ? ["Segoe Print", "Tahoma", "Terminal", "Wingdings", "Arial"] : [];
         this.state = {
             selectedFont: this.props.selectedFont || "Impact",
             // MAKE SURE TO UPDATE public/index.html when adding/removing fonts!
             fonts: [
                 "Amatic SC",
                 "Architects Daughter",
-                "Arial",
                 "Black Ops One",
                 "Clicker Script",
                 "Comic Sans MS",
@@ -34,12 +35,9 @@ class FontSelector extends Component {
                 "Righteous",
                 "Roboto",
                 "Satisfy",
-                "Segoe Print",
-                "Tahoma",
-                "Terminal",
                 "Times New Roman",
-                "Wingdings",
-                "ZCOOL KuaiLe",            
+                "ZCOOL KuaiLe",
+                ...additionalWindowsFonts
             ],
         };
         this.changeFont = this.changeFont.bind(this);

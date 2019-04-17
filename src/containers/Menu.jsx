@@ -54,7 +54,7 @@ class Menu extends Component {
         
         if (this.props.focusedBadgeId === -1)
             return (
-                <div id="menu" className="no-print">Click any element on the badge to change content. &rarr;<br />
+                <div id="menu" className="menu no-print">Click any element on the badge to change content. &rarr;<br />
                 <strong>Tip:</strong> double-click <em>inside</em> the badge (not on the text) to change background image.</div>
             );
 
@@ -65,7 +65,7 @@ class Menu extends Component {
             style: {width: "94%"},
         });
         return (
-            <div id="menu" className="no-print">
+            <div id="menu" className="menu no-print">
                 <center><strong>MENU</strong></center>
                 <label htmlFor="text">Text:</label><br/>
                 <input {...commonProps("text")} autoFocus />

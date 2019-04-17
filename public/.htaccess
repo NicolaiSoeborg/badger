@@ -1,0 +1,7 @@
+Header add Tk "N"
+Header add X-Powered-By "Hamster in a wheel"
+Header set Cache-Control "max-age=60"
+
+<FilesMatch "static/*">
+  Header set Cache-Control "max-age=31536000, public"
+</FilesMatch>

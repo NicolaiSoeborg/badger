@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import preval from 'preval.macro';
+import { version } from '../../package.json';
+
 class TopBar extends Component {
     constructor(props) {
         super(props);
         this.state = {
             shareBg: true,
+            showChangelog: false,
         }
     }
 
@@ -16,6 +20,9 @@ class TopBar extends Component {
                 img_connected: this.state.shareBg,
             }
         });
+    }
+    toggleChangelog = (event) => {
+        this.setState({ showChangelog: !this.state.showChangelog });
     }
     toggleShareBg = (event) => {
         this.setState({ shareBg: !this.state.shareBg });
@@ -84,6 +91,17 @@ class TopBar extends Component {
                 </>)}
                 <a href="#help" onClick={this.showHelp} className="vLine">help</a>{/*onClick="startIntro()"*/}
                 <a href="#print" onClick={this.preparePrint} className="vLine">{this.props.showMenu ? "PREPARE FOR PRINT" : "SHOW MENU"}</a>
+                <a href="#changelog" onClick={this.toggleChangelog} style={{float: 'right'}}>v{version}</a>
+                {this.state.showChangelog && this.props.showMenu && <>
+                    <br />
+                    <div className="menu no-print" style={{float: 'right'}}>
+                        Build: <code>{preval`module.exports = new Date().toLocaleString();`}</code>
+                        <p>[v1.x] Idea by <a href="https://github.com/henrikh">Henrik Enggaard</a>.</p>
+                        <p>[v2.x] Rebuild using knockout.js</p>
+                        <p>[v3.0.0] Rebuild using React</p>
+                        <p>[v3.0.3] Bugfixes and easter eggs</p>
+                    </div>
+                </>}
             </span>
         )
     }

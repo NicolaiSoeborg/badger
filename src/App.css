@@ -3,20 +3,23 @@
   overflow: hidden;
 }
 
+#badgeContainer {
+  display: table-cell;
+  position: absolute;
+  margin-left: 220px /*menu width + padding, etc*/;
+}
+
 #menu {
-  background-color: #EEEEDD;
-  border: 1px solid #CCC;
-  border-radius: 3px;
   position: fixed;
   width: 200px;
   padding: 5px;
   margin-top: 1em;
 }
 
-#badgeContainer {
-  display: table-cell;
-  position: absolute;
-  margin-left: 220px /*menu width + padding, etc*/;
+.menu {
+  background-color: #EEEEDD;
+  border: 1px solid #CCC;
+  border-radius: 3px;
 }
 
 .vLine {

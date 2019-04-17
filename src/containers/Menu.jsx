@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import FontSelector from "../components/Font";
 import MusicPlayer from '../components/MusicPlayer';
+import EasterEgg from '../components/EasterEgg';
 
 class Menu extends Component {
 
@@ -104,6 +105,8 @@ class Menu extends Component {
                     <span>Add extra text field: <input type="checkbox" onChange={this.addExtraField} /></span>
                     <br/>
                     <MusicPlayer />
+                    <br/>
+                    <EasterEgg />
                 </details>
             </div>
         )

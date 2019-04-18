@@ -100,6 +100,7 @@ class TopBar extends Component {
                         <p>[v2.x] Rebuild using knockout.js</p>
                         <p>[v3.0.0] Rebuild using React</p>
                         <p>[v3.0.3] Bugfixes and easter eggs</p>
+                        <p>[v3.0.4] Add loading bar + better caching</p>
                     </div>
                 </>}
             </span>

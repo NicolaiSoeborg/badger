@@ -11,14 +11,29 @@ class EasterEgg extends Component {
         }
     }
 
+    youLost = (blink) => {
+        clearInterval(this.state.eggInterval);
+        if (blink === 0) {
+            window.location.hash = '⠀YOU⠀JUST⠀WASTED⠀20⠀SEC⠀OF⠀YOUR⠀LIFE,⠀CONGRATS';
+        } else if (blink % 2 === 0) {
+            window.location.hash = '⠀🏆⠀'.repeat(10);
+        } else {
+            window.location.hash = '⠀';
+        }
+        if (this.state.isRunning && blink > 0) {
+            this.setState({
+                eggInterval: setTimeout(this.youLost.bind(this, blink-1), 350)
+            });
+        }
+    }
+
     forrestGump = (time) => {
         const nonNeg = n => Math.max(0, n);
         const dist = 50;
 
         clearInterval(this.state.eggInterval);
         if (time === dist) {
-            window.location.hash = '⠀🏆⠀'.repeat(dist/3);
-            return;
+            return this.youLost(6);
         } else {
             window.location.hash = `⠀🍺🥂🍻${'⠀'.repeat(nonNeg(dist - time))}🏃`;
         }

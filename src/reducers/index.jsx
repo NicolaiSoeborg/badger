@@ -56,7 +56,7 @@ const initialState = {
       },
       img_connected: true,
       img: {
-        href: `${Math.floor(Math.random()*4) + 1}.png`,
+        href: `static/${Math.floor(Math.random()*4) + 1}.png`,
         x: -50,
         y: -50,
         scale: 1,

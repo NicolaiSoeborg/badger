@@ -89,6 +89,7 @@ class FontSelector extends Component {
               value={this.state.selectedFont}
               style={{width: "94%"}}
               onChange={this.changeFont}
+              data-intro="If you need additional fonts, you can install them on your computer and need to type the exact name of the font."
               >
                 {this.state.fonts/*.filter(this.doesFontExist)*/.map((name) => (
                     <option style={{fontFamily: name}} key={name}>{name}</option>

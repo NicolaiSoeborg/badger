@@ -73,7 +73,9 @@ class App extends Component {
             <path id="lower-path" d="M 60, 150 c 0,  120, 180,  120, 180, 0"></path>
           </defs>
         </svg>
-        <div id="badgeContainer" style={this.props.showMenu ? {} : {marginLeft: 0}}>
+        <div id="badgeContainer"
+          data-step="1" data-intro="This is the current badge design. The innermost circle is the visible part of the badge, the outermost circle is the 'wrap around' part of the badge."
+          style={this.props.showMenu ? {} : {marginLeft: 0}}>
           {this.props.badges.map((badge) => <Badge key={badge.id} data={badge} changeFocus={this.changeFocus} />)}
         </div>
       </>)

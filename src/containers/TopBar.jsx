@@ -34,32 +34,6 @@ class TopBar extends Component {
             showStepNumbers: false,
             showProgress: false,
             showBullets: false,
-            //skipLabel: "Imma Let You Finish",
-            steps: [
-                {
-                    intro: "This is the current badge design. The innermost circle is the visible part of the badge, the outermost circle is the 'wrap around' part of the badge.",
-                    element: document.getElementsByClassName("draggable")[2] || document.getElementsByClassName("draggable")[0]
-                },
-                /*{
-                    intro: "To change background image, double click inside the badge circle (not on the text). Protip: make sure to select a image without too much 'noice' or the text might be hard to see on the print.",
-                    element: document.getElementsByClassName("draggable")[0]
-                }*/
-                /*{
-                    intro: "If you need additional fonts, you can install them on your computer and need to type the exact name of the font.",
-                    element: document.getElementById("fonts")
-                },*/
-                {
-                    intro: "When the badge design is done, use this button to clone the current badge. If the checkbox is checked, then moving/scaling the background image on one badge will also move/scale the background image on the other badges.",
-                    element: document.getElementById("clone")
-                },
-                {
-                    intro: "When everything is done, click this button and select 'menu &rarr; print' (not Ctrl + P). Make sure the webpage isn't zoomed in, and that the printer setting is set to A4.",
-                    element: document.getElementById("togglePrint")
-                },
-                {
-                    intro: "Happy badging!  Please report any errors/feedback to Nicolai Søborg (<a href='mailto:badger@xn--sb-lka.org'>badger@søb.org</a>)."
-                }
-            ]
         });
         intro.start();
     }
@@ -75,14 +49,14 @@ class TopBar extends Component {
                 localStorage.setItem("runOnce", "true");
                 that.showHelp(event);
             }
-        }, 0);
+        }, 1);
     }
 
     render () {
         return (
             <span className="no-print">
                 <strong>Badger!</strong>&nbsp;&nbsp;
-                <span id="clone">
+                <span id="clone" data-step="997" data-intro="When the badge design is done, use this button to clone the current badge. If the checkbox is checked, then moving/scaling the background image on one badge will also move/scale the background image on the other badges.">
                     <a href="#clone" onClick={this.cloneBadge}>clone badge</a>
                     <input id="shareBg" type="checkbox" checked={this.state.shareBg} onChange={this.toggleShareBg} title="If checked, then new (cloned) badges will share the same background image (you probably want this to be checked)." />
         		</span>
@@ -91,8 +65,11 @@ class TopBar extends Component {
                     <a href="#load" className="vLine">load badges</a>
                 </>)}
                 <a href="#help" onClick={this.showHelp} className="vLine">help</a>{/*onClick="startIntro()"*/}
-                <a href="#print" onClick={this.preparePrint} className="vLine">{this.props.showMenu ? "PREPARE FOR PRINT" : "SHOW MENU"}</a>
-                <a href="#changelog" onClick={this.toggleChangelog} style={{float: 'right'}}>v{version}</a>
+                <a href="#print" onClick={this.preparePrint}
+                    data-step="998" data-intro="When everything is done, click this button and select 'browser-menu &rarr; print' (not <kbd>CTRL</kbd>+<kbd>P</kbd>). Make sure the webpage isn't zoomed in, and that the printer setting is set to A4."
+                    className="vLine">{this.props.showMenu ? "PREPARE FOR PRINT" : "SHOW MENU"}</a>
+                <a href="#changelog" data-step="999" data-intro="Happy badging!  Please report any errors/feedback to Nicolai Søborg (<a href='mailto:badger@xn--sb-lka.org'>badger@søb.org</a>)."
+                  onClick={this.toggleChangelog} style={{float: 'right'}}>v{version}</a>
                 {this.state.showChangelog && this.props.showMenu && <><br /><Changelog /></>}
             </span>
         )

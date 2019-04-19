@@ -116,12 +116,14 @@ class Menu extends Component {
 Menu.propTypes = {
     focusedBadgeId: PropTypes.number.isRequired,
     focusedPropName: PropTypes.string.isRequired,
+    badges: PropTypes.array.isRequired,
+    showMenu: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => {
     return {
-        showMenu: state.showMenu,
-        badges: state.badges,
+        badges: state.present.badges,
+        showMenu: state.present.showMenu,
     }
 }
 

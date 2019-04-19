@@ -1,3 +1,4 @@
+/*eslint no-case-declarations: off*/
 import produce from "immer";
 
 const getBadgeIndex = (badges, badgeId) => Math.max(0, badges.findIndex(badge => badge.id === badgeId));
@@ -73,8 +74,8 @@ export default function badgeReducer(state, action) {
       });
 
     default:
-      if (action.type.indexOf("@@redux/INIT") === -1)
-        console.log(`badge: Unknown type "${action.type}" returning state ${state}`);
+      if (!action.type.startsWith("@@"))
+        console.log(`Unknown type "${action.type}" returning state`, state);
       return state;
   }
 }

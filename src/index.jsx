@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
+import undoable, { ActionCreators, excludeAction } from 'redux-undo';
 import rootReducer from './reducers';
+import undoRedoGroup from './undo';
 
 import { diff } from 'deep-object-diff';
 
@@ -21,9 +23,21 @@ const logger = store => next => action => {
 };
 
 const store = createStore(
-    rootReducer,
-    applyMiddleware(logger)
+    undoable(rootReducer, {
+        filter: excludeAction(["TOGGLE_SHOW_MENU", "ADD_MSG", "REMOVE_ALL_MSG"]),
+        groupBy: undoRedoGroup,
+    }),
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+        window.__REDUX_DEVTOOLS_EXTENSION__() : applyMiddleware(logger)
 );
+
+window.onkeydown = function KeyPress(event) {
+  if (event.ctrlKey && event.key === 'z') {
+    store.dispatch(ActionCreators.undo());
+  } else if (event.ctrlKey && event.key === 'y') {
+    store.dispatch(ActionCreators.redo());
+  }
+}
 
 ReactDOM.render(
     <Provider store={store}>

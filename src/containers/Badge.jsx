@@ -128,11 +128,12 @@ class Badge extends Component {
 Badge.propTypes = {
     data: PropTypes.object.isRequired,
     changeFocus: PropTypes.func.isRequired,
+    showMenu: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => {
     return {
-        showMenu: state.showMenu,
+        showMenu: state.present.showMenu,
     }
 }
 

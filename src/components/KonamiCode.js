@@ -21,7 +21,7 @@ document.onkeydown = function(e) {
             function elmOffset(e) {
                 var t = e;
                 var n = 0;
-                while ( !! t) {
+                while (t) {
                     n += t.offsetTop;
                     t = t.offsetParent;
                 }

@@ -1,6 +1,6 @@
 {
   "name": "badger",
-  "version": "3.0.4",
+  "version": "3.1.0",
   "description": "The one true way to make badge sheets for printing",
   "author": "Nicolai Søborg <badger@xn--sb-lka.org>",
   "license": "MIT",
@@ -14,7 +14,8 @@
     "react-dom": "^16.8.6",
     "react-redux": "^6.0.1",
     "react-scripts": "2.1.8",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "redux-undo": "^1.0.0-beta9-9-7"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -29,6 +30,6 @@
     "not dead"
   ],
   "devDependencies": {
-    
+    "eslint-plugin-react": "^7.12.4"
   }
 }

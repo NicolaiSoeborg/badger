@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import './App.css';
+import './style.css';
 import './components/KonamiCode';
 import Badge from './containers/Badge';
 import Menu from './containers/Menu';
@@ -81,18 +81,17 @@ class App extends Component {
 }
 
 App.propTypes = {
+  badges: PropTypes.array.isRequired,  // arrayOf(Badge) ?
   messages: PropTypes.array.isRequired,
-  //badges: PropTypes.arrayOf(Badge).isRequired,
-  //showMenu: PropTypes.bool.isRequired,
+  showMenu: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => {
   return {
-    showMenu: state.showMenu,
-    messages: state.messages,
-    badges: state.badges,
+    badges: state.present.badges,
+    messages: state.present.messages,
+    showMenu: state.present.showMenu,
   }
 }
 
-//export default App;
 export default connect(mapStateToProps)(App);

@@ -12,7 +12,8 @@ New version of Badger 3.0 is located at <https://badger.søb.org/>.
 
 Feel free to create pull requests!
 
+# Run
 
-# Run:
- * `yarn` to download `node_modules`
+ * `yarn` to download `node_modules` (you will get a some warnings)
+
  * `yarn start` or `yarn build`

@@ -56,7 +56,7 @@ class EasterEgg extends Component {
 
     render () {
         return (
-          <span data-intro="Hint: you might not want to check this box">Easter egg: <input type="checkbox" disabled onChange={this.toggleEgg} /></span>)
+          <span>Easter egg: <input type="checkbox" disabled onChange={this.toggleEgg} /></span>)
     }
 }
 

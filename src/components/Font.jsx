@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 /*const canvas = document.createElement("canvas"),
     context = canvas.getContext("2d"),
@@ -40,7 +41,6 @@ class FontSelector extends Component {
                 ...additionalWindowsFonts
             ],
         };
-        this.changeFont = this.changeFont.bind(this);
     }
 
     /*doesFontExist = (fontName) => {
@@ -61,7 +61,7 @@ class FontSelector extends Component {
         let font = event.target.value;
         if (font === "[Add new font]") {
             font = prompt("Font name:");
-            
+            if (font === null || font.length === 0) return;
             /*
             // TODO THIS DOESNT WORK (trying to load font from "Google Font")
             load({
@@ -99,5 +99,10 @@ class FontSelector extends Component {
         </>)
     }
 }
+
+FontSelector.propTypes = {
+    selectedFont: PropTypes.string.isRequired,
+    setFont: PropTypes.func.isRequired,
+};
 
 export default FontSelector;

@@ -55,7 +55,7 @@ class Menu extends Component {
         if (this.props.focusedBadgeId === -1)
             return (
                 <div id="menu" className="menu no-print">Click any element on the badge to change content. &rarr;<br />
-                <strong>Tip:</strong> double-click <em>inside</em> the badge (not on the text) to change background image.</div>
+                <strong>Tip:</strong> create a full badge design (font, size, colors, etc), then clone it for each of your russes.</div>
             );
 
         const commonProps = (name) => ({

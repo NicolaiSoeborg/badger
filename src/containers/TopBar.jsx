@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import Changelog from '../components/Changelog';
+import Examples from '../components/Examples';
 import { version } from '../../package.json';
 
 class TopBar extends Component {
@@ -11,6 +12,7 @@ class TopBar extends Component {
         this.state = {
             shareBg: true,
             showChangelog: false,
+            showExamples: false,
         }
     }
 
@@ -24,6 +26,16 @@ class TopBar extends Component {
     }
     toggleChangelog = (event) => {
         this.setState({ showChangelog: !this.state.showChangelog });
+    }
+    toggleExamples = (event) => {
+        this.setState({ showExamples: !this.state.showExamples },
+        () => {
+            if (this.state.showExamples) {
+                document.body.style.backgroundColor = 'rgba(0,0,0,0.3)';
+            } else {
+                document.body.style.backgroundColor = '';
+            }
+        });
     }
     toggleShareBg = (event) => {
         this.setState({ shareBg: !this.state.shareBg });
@@ -53,7 +65,7 @@ class TopBar extends Component {
     }
 
     render () {
-        return (
+        return (<>
             <span className="no-print">
                 <strong>Badger!</strong>&nbsp;&nbsp;
                 <span id="clone" data-step="997" data-intro="When the badge design is done, use this button to clone the current badge. If the checkbox is checked, then moving/scaling the background image on one badge will also move/scale the background image on the other badges.">
@@ -65,6 +77,7 @@ class TopBar extends Component {
                     <a href="#load" className="vLine">load badges</a>
                 </>)}
                 <a href="#help" onClick={this.showHelp} className="vLine">help</a>{/*onClick="startIntro()"*/}
+                <a href="#examples" onClick={this.toggleExamples} className="vLine">examples</a>
                 <a href="#print" onClick={this.preparePrint}
                     data-step="998" data-intro="When everything is done, click this button and select 'browser-menu &rarr; print' (not <kbd>CTRL</kbd>+<kbd>P</kbd>). Make sure the webpage isn't zoomed in, and that the printer setting is set to A4."
                     className="vLine">{this.props.showMenu ? "PREPARE FOR PRINT" : "SHOW MENU"}</a>
@@ -72,7 +85,8 @@ class TopBar extends Component {
                   onClick={this.toggleChangelog} style={{float: 'right'}}>v{version}</a>
                 {this.state.showChangelog && this.props.showMenu && <><br /><Changelog /></>}
             </span>
-        )
+            {this.state.showExamples && (<Examples onClose={this.toggleExamples} />)}
+        </>)
     }
 }
 

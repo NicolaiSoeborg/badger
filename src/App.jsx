@@ -21,11 +21,11 @@ class App extends Component {
 
   componentDidMount() {
     window.addEventListener("beforeunload", (event) => {
-      // TODO:
-      // event.preventDefault();
-      // fetch()
-      console.log(`https://xn--sb-lka.org/logger/?badges=${this.props.badges.length}&showMenu=${this.props.showMenu}`);
-      // return event.returnValue = 'Are you sure you want to close?';
+      if (process.env.NODE_ENV === 'production') {
+        event.preventDefault();
+        //fetch(`https://xn--sb-lka.org/?badges=${this.props.badges.length}&showMenu=${this.props.showMenu}`);
+        return event.returnValue = 'Are you sure you want to exit?';
+      }
     });
   }
 

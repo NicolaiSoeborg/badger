@@ -13,12 +13,16 @@ import App from './App.jsx';
 import * as serviceWorker from './serviceWorker';
 
 const logger = store => next => action => {
-    console.group(action.type);
-    console.info(`dispatching ${action.type}:`, action.payload);
+    if (process.env.NODE_ENV !== 'production') {
+        console.group(action.type);
+        console.info(`dispatching ${action.type}:`, action.payload);
+    }
     const oldState = store.getState();
     const result = next(action);
-    console.log('DIFF: ', diff(oldState, store.getState()));
-    console.groupEnd();
+    if (process.env.NODE_ENV !== 'production') {
+        console.log('DIFF: ', diff(oldState, store.getState()));
+        console.groupEnd();
+    }
     return result;
 };
 

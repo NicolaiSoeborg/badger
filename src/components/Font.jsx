@@ -49,6 +49,7 @@ class FontSelector extends Component {
             fontLink.setAttribute("type", "text/css");
             fontLink.setAttribute("href", `https://fonts.googleapis.com/css?family=${font.replace(/ /g, '+')}`);
             document.getElementsByTagName("head")[0].appendChild(fontLink);
+            window.gtag('event', 'fontName_dimension', { 'fontName' : font });
 
             this.setState({ fonts: [...this.state.fonts, font] });
         }

@@ -12,11 +12,20 @@ const CHANGES = [
 ]
 
 class Changelog extends Component {
+    /*forceReload = () => {
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+                registration.update();
+            });
+        }
+    }*/
     render() {
         return (
             <div className="menu no-print" style={{float: 'right'}}>
                 Build: <code>{preval`module.exports = new Date().toLocaleString();`}</code>
                 {CHANGES.map(e => <p dangerouslySetInnerHTML={{__html: e}} />)}
+                {/*<hr/>
+                <button>Force reload page</button>*/}
             </div>
         );
     }

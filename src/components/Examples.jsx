@@ -21,10 +21,10 @@ class Examples extends Component {
         }
     }
 
-    badge = (filename) => {
+    badge2div = (filename) => {
         const download = "/static/badges/" + filename;
         const template = download + "-template.png";
-        return (<div style={{textAlign: 'center'}}>
+        return (<div key={filename} style={{textAlign: 'center'}}>
             <hr />
             <img src={template} width="300" alt="Example badge design}" />
             <a href={download}><h2>{filename}</h2></a>
@@ -32,6 +32,7 @@ class Examples extends Component {
     }
 
     render () {
+        window.gtag('event', 'screen_view', { 'screen_name' : 'Examples' });
         return (
               <div className="no-print"
               style={{
@@ -51,7 +52,7 @@ class Examples extends Component {
                 <p><strong>Note:</strong> Unfortunally I haven't saved the background images, so the following list can mostly be used as inspiration for new badge designs.
                 If you make a super nice badge, then please keep the original background image and send it to <a href="mailto:badger@xn--sb-lka.org">badger@søb.org</a>, then next year it will be even easier to badge!</p>
 
-                {EXAMPLES.map(this.badge)}
+                {EXAMPLES.map(this.badge2div)}
               </div>
         )
     }

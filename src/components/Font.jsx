@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-/*const canvas = document.createElement("canvas"),
-    context = canvas.getContext("2d"),
-    text = "abcdefghijklmnopqrstuvwxyz0123456789";
-context.font = "72px monospace";
-const baselineSize = context.measureText(text).width;*/
-
 class FontSelector extends Component {
     constructor(props) {
         super(props);
@@ -43,37 +37,19 @@ class FontSelector extends Component {
         };
     }
 
-    /*doesFontExist = (fontName) => {
-        // Modified from https://gist.github.com/alloyking/4154494
-
-        // Specifying the font whose existence we want to check
-        context.font = "72px '" + fontName + "', monospace";
-
-        // Checking the size of the font we want to check
-        const newSize = context.measureText(text).width;
-
-        // If the size of the two text instances is the same, the font does not exist because it is being rendered
-        // using the default sans-serif font
-        return (newSize !== baselineSize);
-    }*/
-
     changeFont = (event) => {
         let font = event.target.value;
         if (font === "[Add new font]") {
             font = prompt("Font name:");
             if (font === null || font.length === 0) return;
-            /*
-            // TODO THIS DOESNT WORK (trying to load font from "Google Font")
-            load({
-                google: { families: [font] },
-                loading: function() { console.log("loading") },
-                inactive: function() { console.log("BAAAAD") },
-            });
-            
-            /*if (!this.doesFontExist(font)) {
-                alert(`Seems like the font "${font}" doesn't exist.`);
-                return;
-            }*/
+
+            // Try loading from Google Fonts API:
+            const fontLink = document.createElement("link");
+            fontLink.setAttribute("rel", "stylesheet");
+            fontLink.setAttribute("type", "text/css");
+            fontLink.setAttribute("href", `https://fonts.googleapis.com/css?family=${font.replace(/ /g, '+')}`);
+            document.getElementsByTagName("head")[0].appendChild(fontLink);
+
             this.setState({ fonts: [...this.state.fonts, font] });
         }
         this.setState({ selectedFont: font });
@@ -91,7 +67,7 @@ class FontSelector extends Component {
               onChange={this.changeFont}
               data-intro="If you need additional fonts, you can install them on your computer and need to type the exact name of the font."
               >
-                {this.state.fonts/*.filter(this.doesFontExist)*/.map((name) => (
+                {this.state.fonts.map((name) => (
                     <option style={{fontFamily: name}} key={name}>{name}</option>
                 ))}
                 <option>[Add new font]</option>

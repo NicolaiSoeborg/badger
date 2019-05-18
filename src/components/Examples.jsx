@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 const EXAMPLES = [
     'Awesome_badge.pdf',
-    'bildsøskov17.pdf',
+    'bildsoeskov17.pdf',
     'C-BYG.pdf',
     'Fail_badge.pdf',
     'lucyfar.doc',

@@ -74,7 +74,7 @@ export default function badgeReducer(state, action) {
       });
 
     default:
-      if (!action.type.startsWith("@@"))
+      if (typeof(action.type) === "string" && !action.type.startsWith("@@"))
         console.log(`Unknown type "${action.type}" returning state`, state);
       return state;
   }

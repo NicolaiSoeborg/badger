@@ -3,7 +3,9 @@ let user_keys = [];
 document.onkeydown = function(e) {
     user_keys.push(e.keyCode);
     if (user_keys.toString().indexOf("38,38,40,40,37,39,37,39,66,65") >= 0) {
-        
+
+        document.getElementById("harlem").preload = "auto";
+
         // Very modified from https://gist.github.com/devn/5007287
         (function () {
             function strobeLight() {
@@ -40,25 +42,27 @@ document.onkeydown = function(e) {
             function run(startingElm) {
                 const e = document.getElementById("harlem");
                 e.loop = false;
-                setTimeout(function () {
-                    startingElm.classList.add("mw-harlem_shake_me", "im_first");
-                }, 500);
-                setTimeout(function () {
-                    cleanup();
-                    strobeLight();
-                    [...document.getElementsByTagName("*")]
-                        .filter(elm => hasGoodSize(elm) || Math.random() <= 0.3)
-                        .forEach(element => {
-                            shakeElm(element);
-                        });
-                }, 15500);
-                e.onended = function () {
-                    cleanup();
-                    [...document.body.getElementsByClassName("mw_added_css")].forEach(element => {
-                        document.body.removeChild(element);
-                    });    
-                };
-                e.play();
+                e.addEventListener('canplaythrough', function () {
+                    setTimeout(function () {
+                        startingElm.classList.add("mw-harlem_shake_me", "im_first");
+                    }, 500);
+                    setTimeout(function () {
+                        cleanup();
+                        strobeLight();
+                        [...document.body.getElementsByTagName("*")]
+                            .filter(elm => hasGoodSize(elm) || Math.random() <= 0.3)
+                            .forEach(element => {
+                                shakeElm(element);
+                            });
+                    }, 15500);
+                    e.onended = function () {
+                        cleanup();
+                        /*[...document.body.getElementsByClassName("mw_added_css")].forEach(element => {
+                            document.body.removeChild(element);
+                        });*/
+                    };
+                    e.play();
+                }, false);
             }
             function shakeElm(e) {
                 const u = ["im_drunk", "im_baked", "im_trippin", "im_blown"];

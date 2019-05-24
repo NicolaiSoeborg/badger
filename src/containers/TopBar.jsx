@@ -14,6 +14,13 @@ class TopBar extends Component {
             showChangelog: false,
             showExamples: false,
         }
+
+        const that = this;
+        window.addEventListener("beforeprint", function(event) {
+            if (props.showMenu) {
+                that.preparePrint();
+            }
+        });
     }
 
     cloneBadge = (event) => {

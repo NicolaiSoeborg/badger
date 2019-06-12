@@ -17,7 +17,7 @@ class TopBar extends Component {
 
         const that = this;
         window.addEventListener("beforeprint", function(event) {
-            if (props.showMenu) {
+            if (that.props.showMenu) {
                 that.preparePrint();
             }
         });

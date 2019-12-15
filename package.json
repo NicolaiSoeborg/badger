@@ -8,13 +8,13 @@
   "homepage": "https://badger.xn--sb-lka.org/",
   "dependencies": {
     "deep-object-diff": "^1.1.0",
-    "immer": "^1.12.0",
+    "immer": "^1.12.1",
     "preval.macro": "^3.0.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-redux": "^6.0.1",
-    "react-scripts": "3.0.1",
-    "redux": "^4.0.1",
+    "react-scripts": "3.3.0",
+    "redux": "^4.0.4",
     "redux-undo": "^1.0.0-beta9-9-7"
   },
   "scripts": {
@@ -26,10 +26,9 @@
   },
   "browserslist": [
     ">1.5%",
-    "Firefox ESR",
-    "not dead"
+    "Firefox ESR"
   ],
   "devDependencies": {
-    "eslint-plugin-react": "^7.12.4"
+    "eslint-plugin-react": "^7.17.0"
   }
 }

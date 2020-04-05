@@ -23,7 +23,7 @@ class Changelog extends Component {
         return (
             <div className="menu no-print" style={{float: 'right'}}>
                 Build: <code>{preval`module.exports = new Date().toLocaleString();`}</code>
-                {CHANGES.map(e => <p dangerouslySetInnerHTML={{__html: e}} />)}
+                {CHANGES.map(e => <p key={e} dangerouslySetInnerHTML={{__html: e}} />)}
                 {/*<hr/>
                 <button>Force reload page</button>*/}
             </div>

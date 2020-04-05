@@ -9,6 +9,7 @@ const CHANGES = [
     '[v3.0.4] Add loading bar + better caching',
     '[v3.1.0] Undo / redo (<kbd>CTRL</kbd>+<kbd>z</kbd> and <kbd>CTRL</kbd>+<kbd>y</kbd>)',
     '[v3.2.0] Examples of good badge designs',
+    '[v3.2.1] Bump dependencies',
 ]
 
 class Changelog extends Component {

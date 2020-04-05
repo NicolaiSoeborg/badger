@@ -1,6 +1,6 @@
 {
   "name": "badger",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "The one true way to make badge sheets for printing",
   "author": "Nicolai Søborg <badger@xn--sb-lka.org>",
   "license": "MIT",
@@ -8,7 +8,7 @@
   "homepage": "https://badger.xn--sb-lka.org/",
   "dependencies": {
     "deep-object-diff": "^1.1.0",
-    "immer": "^1.12.1",
+    "immer": "^6.0.3",
     "preval.macro": "^3.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

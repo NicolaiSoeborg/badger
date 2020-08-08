@@ -12,28 +12,6 @@
     <style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#29d;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:4px}</style>
     <script src="%PUBLIC_URL%/static/pace.min.js"></script>
 
-    <!-- Google Analytics (if you have any alternative, then please create a PR!) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-138589113-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-
-      const _doNotTrack = navigator.doNotTrack ?
-        navigator.doNotTrack === "1" || navigator.doNotTrack === "yes": 
-        (window.doNotTrack? window.doNotTrack === "1": false);
-
-      if (_doNotTrack){
-        window['ga-disable-UA-138589113-1'] = true;
-      } else {
-        gtag('js', new Date());
-        gtag('config', 'UA-138589113-1', {
-          'app_name': 'badger',
-          'custom_map': {'dimension1': 'fontName'}
-        });
-        gtag('event', 'screen_view', { 'screen_name' : 'Home' });
-      }
-    </script>
-
     <!-- Extra fonts (make sure to update components/Font.jsx) -->
     <link rel="stylesheet" type="text/css" crossorigin="anonymous" href="https://fonts.googleapis.com/css?family=Amatic+SC|Architects+Daughter|Black+Ops+One|Clicker+Script|Diplomata+SC|Griffy|Indie+Flower|Kaushan+Script|Lobster|Marck+Script|Monoton|Orbitron|Permanent+Marker|Poiret+One|Righteous|Roboto|Satisfy|ZCOOL+KuaiLe" />
 
@@ -47,7 +25,7 @@
 
     <script>
       if (window.navigator.userAgent.indexOf("MSIE ") !== -1 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
-        alert("Internet Explorer isn't supported.  Please use Firefox or Chrome.");
+        alert("Badger might not work correct in Internet Explorer.  Please use Firefox or Chrome.");
       }
     </script>
   </head>

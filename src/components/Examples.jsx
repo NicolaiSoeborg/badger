@@ -32,7 +32,6 @@ class Examples extends Component {
     }
 
     render () {
-        window.gtag('event', 'screen_view', { 'screen_name' : 'Examples' });
         return (
               <div className="no-print"
               style={{

@@ -5,7 +5,6 @@ document.onkeydown = function(e) {
     if (user_keys.toString().indexOf("38,38,40,40,37,39,37,39,66,65") >= 0) {
 
         document.getElementById("harlem").preload = "auto";
-        window.gtag('event', 'screen_view', { 'screen_name' : 'Harlem Shake' });
 
         // Very modified from https://gist.github.com/devn/5007287
         (function () {

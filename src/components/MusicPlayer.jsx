@@ -27,7 +27,6 @@ class MusicPlayer extends Component {
                     }
                 }, 1000)
             })
-            window.gtag('event', 'screen_view', { 'screen_name' : 'Music Player' });
         } else {
             document.getElementById("player").src = "";  // stop music
             clearInterval(this.state.badgerInterval);  // clear timer

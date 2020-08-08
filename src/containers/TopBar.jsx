@@ -58,9 +58,6 @@ class TopBar extends Component {
     }
     preparePrint = (event) => {
         this.props.dispatch({ type: 'TOGGLE_SHOW_MENU' });
-        if (this.props.showMenu) {
-            window.gtag('event', 'screen_view', { 'screen_name' : 'Print' });
-        }
     }
 
     componentDidMount() {

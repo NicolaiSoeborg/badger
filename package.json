@@ -8,7 +8,7 @@
   "homepage": "https://badger.xn--sb-lka.org/",
   "dependencies": {
     "deep-object-diff": "^1.1.0",
-    "immer": "^6.0.9",
+    "immer": "^8.0.1",
     "preval.macro": "^5.0.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",

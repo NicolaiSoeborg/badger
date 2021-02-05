@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 class FontSelector extends Component {
     constructor(props) {
         super(props);
-        const additionalWindowsFonts = (navigator.platform === 'Win32')
+        const additionalWindowsFonts = (navigator.platform === "Win32")
             ? ["Segoe Print", "Tahoma", "Terminal", "Wingdings", "Arial"] : [];
         this.state = {
             selectedFont: this.props.selectedFont || "Impact",
@@ -47,7 +47,7 @@ class FontSelector extends Component {
             const fontLink = document.createElement("link");
             fontLink.setAttribute("rel", "stylesheet");
             fontLink.setAttribute("type", "text/css");
-            fontLink.setAttribute("href", `https://fonts.googleapis.com/css?family=${font.replace(/ /g, '+')}`);
+            fontLink.setAttribute("href", `https://fonts.googleapis.com/css?family=${font.replace(/ /g, "+")}`);
             document.getElementsByTagName("head")[0].appendChild(fontLink);
 
             this.setState({ fonts: [...this.state.fonts, font] });
@@ -72,7 +72,7 @@ class FontSelector extends Component {
                 ))}
                 <option>[Add new font]</option>
             </select>
-        </>)
+        </>);
     }
 }
 

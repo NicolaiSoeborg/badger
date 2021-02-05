@@ -1,27 +1,27 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import FontSelector from "../components/Font";
-import MusicPlayer from '../components/MusicPlayer';
-import EasterEgg from '../components/EasterEgg';
+import MusicPlayer from "../components/MusicPlayer";
+import EasterEgg from "../components/EasterEgg";
 
 class Menu extends Component {
 
     setFont = (font) => {
-        this.setVal({ target: { name: 'fontFamily', value: font }})
+        this.setVal({ target: { name: "fontFamily", value: font }});
     }
 
     setVal = (event) => {
         this.props.dispatch({
-            type: 'BADGE_EDIT',
+            type: "BADGE_EDIT",
             badgeId: this.props.focusedBadgeId,
             payload: {
                 focusedPropName: this.props.focusedPropName,
                 prop: event.target.name,
                 val: event.target.value,
             },
-        })
+        });
     }
 
     hasVal = (prop) => {
@@ -37,10 +37,10 @@ class Menu extends Component {
 
     addExtraField = (event) => {
         this.props.dispatch({
-            type: 'SET_ADDITIONAL_TXT',
+            type: "SET_ADDITIONAL_TXT",
             badgeId: this.props.focusedBadgeId,
             payload: { show: event.target.checked },
-        })
+        });
     }
 
     changeBackground = (event) => {
@@ -79,7 +79,7 @@ class Menu extends Component {
                     <label htmlFor="y">y:</label>
                     <input {...commonProps("y")} type="number" style={{width: "30%"}} />
                 </>}
-                {this.props.focusedPropName === 'middle2' && <>
+                {this.props.focusedPropName === "middle2" && <>
                     <hr/>
                     <label htmlFor="dx">dx:</label>
                     <input {...commonProps("dx")} type="number" style={{width: "30%"}} />
@@ -109,7 +109,7 @@ class Menu extends Component {
                     <EasterEgg />
                 </details>
             </div>
-        )
+        );
     }
 }
 
@@ -124,7 +124,7 @@ const mapStateToProps = (state) => {
     return {
         badges: state.present.badges,
         showMenu: state.present.showMenu,
-    }
-}
+    };
+};
 
 export default connect(mapStateToProps)(Menu);

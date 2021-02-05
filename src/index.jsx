@@ -1,26 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import undoable, { ActionCreators, excludeAction } from 'redux-undo';
-import rootReducer from './reducers';
-import undoRedoGroup from './undo';
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
+import undoable, { ActionCreators, excludeAction } from "redux-undo";
+import rootReducer from "./reducers";
+import undoRedoGroup from "./undo";
 
-import { diff } from 'deep-object-diff';
+import { diff } from "deep-object-diff";
 
-import App from './App.jsx';
-import * as serviceWorker from './serviceWorker';
+import App from "./App.jsx";
+import * as serviceWorker from "./serviceWorker";
 
 const logger = store => next => action => {
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== "production") {
         console.group(action.type);
         console.info(`dispatching ${action.type}:`, action.payload);
     }
     const oldState = store.getState();
     const result = next(action);
-    if (process.env.NODE_ENV !== 'production') {
-        console.log('DIFF: ', diff(oldState, store.getState()));
+    if (process.env.NODE_ENV !== "production") {
+        console.log("DIFF: ", diff(oldState, store.getState()));
         console.groupEnd();
     }
     return result;
@@ -36,18 +36,18 @@ const store = createStore(
 );
 
 window.onkeydown = function KeyPress(event) {
-    if (event.ctrlKey && event.key === 'z') {
+    if (event.ctrlKey && event.key === "z") {
         store.dispatch(ActionCreators.undo());
-    } else if (event.ctrlKey && (event.key === 'y' || event.shiftKey && event.key === 'z')) {
+    } else if (event.ctrlKey && (event.key === "y" || event.shiftKey && event.key === "z")) {
         store.dispatch(ActionCreators.redo());
     }
-}
+};
 
 ReactDOM.render(
     <Provider store={store}>
         <App />
     </Provider>,
-    document.getElementById('root'));
+    document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

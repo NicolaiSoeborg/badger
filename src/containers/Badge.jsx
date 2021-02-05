@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+/*eslint: skip no-unused-vars*/
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import ImgUpload from '../components/ImgUpload';
+import ImgUpload from "../components/ImgUpload";
 
 class Badge extends Component {
     constructor(props) {
@@ -11,7 +12,7 @@ class Badge extends Component {
             mouse: {
                 moving: false,
             }
-        }
+        };
     }
 
     beginMove = (event) => {
@@ -22,8 +23,9 @@ class Badge extends Component {
                 y: event.clientY,
                 moving: true,
             }
-        })
+        });
     }
+
     doMove = (event) => {
         if (this.state.mouse.moving) {
             const diffX = event.clientX - this.state.mouse.x,
@@ -42,20 +44,21 @@ class Badge extends Component {
                     x: event.clientX,
                     y: event.clientY,
                 }
-            })
+            });
         }
     }
+
     stopMove = (event) => {
         this.setState({
             mouse: {
                 ...this.state.mouse,
                 moving: false,
             }
-        })
+        });
     }
 
     deleteBadge = (event) => {
-        this.props.dispatch({ type: "BADGE_DELETE", badgeId: this.props.data.id })
+        this.props.dispatch({ type: "BADGE_DELETE", badgeId: this.props.data.id });
     }
 
     scaleImg = (event) => {
@@ -106,12 +109,12 @@ class Badge extends Component {
                         stroke="black" strokeWidth=".1mm" strokeDasharray="5,5"
                         fill="transparent" className="draggable" />
 
-                    <text onDoubleClick={e => { e.stopPropagation() } }>
+                    <text onDoubleClick={e => { e.stopPropagation(); } }>
                         {/* contenteditable="true" */}
-					    <textPath onClick={e => this.props.changeFocus(this.props.data.id, 'upper')} {...this.props.data.upper}>{this.props.data.upper.text || '\u00A0'}</textPath>
-                        <textPath onClick={e => this.props.changeFocus(this.props.data.id, 'lower')} {...this.props.data.lower}>{this.props.data.lower.text || '\u00A0'}</textPath>
-                        <tspan onClick={e => this.props.changeFocus(this.props.data.id, 'middle')} {...this.props.data.middle}>{this.props.data.middle.text || '\u00A0'}</tspan>
-                        <tspan onClick={e => this.props.changeFocus(this.props.data.id, 'middle2')} {...this.props.data.middle2}>{this.props.data.middle2.text || '\u00A0'}</tspan>
+					    <textPath onClick={e => this.props.changeFocus(this.props.data.id, "upper")} {...this.props.data.upper}>{this.props.data.upper.text || "\u00A0"}</textPath>
+                        <textPath onClick={e => this.props.changeFocus(this.props.data.id, "lower")} {...this.props.data.lower}>{this.props.data.lower.text || "\u00A0"}</textPath>
+                        <tspan onClick={e => this.props.changeFocus(this.props.data.id, "middle")} {...this.props.data.middle}>{this.props.data.middle.text || "\u00A0"}</tspan>
+                        <tspan onClick={e => this.props.changeFocus(this.props.data.id, "middle2")} {...this.props.data.middle2}>{this.props.data.middle2.text || "\u00A0"}</tspan>
 	    			</text>
                 </svg>
                 <br />
@@ -121,7 +124,7 @@ class Badge extends Component {
 				        Scale: <input type="range" min="0.01" max="5" step="0.01" value={this.props.data.img.scale} onChange={this.scaleImg} />
 			        </span>}
             </div>
-        )
+        );
     }
 }
 
@@ -134,7 +137,7 @@ Badge.propTypes = {
 const mapStateToProps = (state) => {
     return {
         showMenu: state.present.showMenu,
-    }
-}
+    };
+};
 
 export default connect(mapStateToProps)(Badge);

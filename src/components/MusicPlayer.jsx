@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
 class MusicPlayer extends Component {
     constructor(props) {
@@ -7,7 +7,7 @@ class MusicPlayer extends Component {
         this.state = {
             badgerInterval: null,
             badgerTimer: 0,
-        }
+        };
     }
 
     toggleMusic = (event) => {
@@ -21,12 +21,12 @@ class MusicPlayer extends Component {
                     this.setState({ badgerTimer: this.state.badgerTimer + 1 });
                     if (this.state.badgerTimer % 1800 === 0) {
                         this.props.dispatch({
-                            type: 'ADD_MSG',
+                            type: "ADD_MSG",
                             payload: `You heard badger in: ${this.state.badgerTimer / 60} min`,
                         });
                     }
                 }, 1000)
-            })
+            });
         } else {
             document.getElementById("player").src = "";  // stop music
             clearInterval(this.state.badgerInterval);  // clear timer
@@ -39,7 +39,7 @@ class MusicPlayer extends Component {
                 <span>Play music: <input type="checkbox" onChange={this.toggleMusic} /></span>
                 <iframe id="player" allow="autoplay; encrypted-media" className="hidden" width="0" height="0" title="badger" />
             </>
-        )
+        );
     }
 }
 

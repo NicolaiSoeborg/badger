@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import Changelog from '../components/Changelog';
-import Examples from '../components/Examples';
-import { version } from '../../package.json';
+import Changelog from "../components/Changelog";
+import Examples from "../components/Examples";
+import { version } from "../../package.json";
 
 class TopBar extends Component {
     constructor(props) {
@@ -13,7 +13,7 @@ class TopBar extends Component {
             shareBg: true,
             showChangelog: false,
             showExamples: false,
-        }
+        };
 
         const that = this;
         window.addEventListener("beforeprint", function(event) {
@@ -25,28 +25,32 @@ class TopBar extends Component {
 
     cloneBadge = (event) => {
         this.props.dispatch({
-            type: 'BADGE_CLONE',
+            type: "BADGE_CLONE",
             payload: {
                 img_connected: this.state.shareBg,
             }
         });
     }
+
     toggleChangelog = (event) => {
         this.setState({ showChangelog: !this.state.showChangelog });
     }
+
     toggleExamples = (event) => {
         this.setState({ showExamples: !this.state.showExamples },
         () => {
             if (this.state.showExamples) {
-                document.body.style.backgroundColor = 'rgba(0,0,0,0.3)';
+                document.body.style.backgroundColor = "rgba(0,0,0,0.3)";
             } else {
-                document.body.style.backgroundColor = '';
+                document.body.style.backgroundColor = "";
             }
         });
     }
+
     toggleShareBg = (event) => {
         this.setState({ shareBg: !this.state.shareBg });
     }
+
     showHelp = (event) => {
         const intro = window.introJs();
         intro.setOptions({
@@ -56,12 +60,13 @@ class TopBar extends Component {
         });
         intro.start();
     }
+
     preparePrint = (event) => {
-        this.props.dispatch({ type: 'TOGGLE_SHOW_MENU' });
+        this.props.dispatch({ type: "TOGGLE_SHOW_MENU" });
     }
 
     componentDidMount() {
-        const that = this; // <-- fuck javascript
+        const that = this;
         // DOM should be ready, but add a small delay to make sure:
         setTimeout(function(event) {
             if (localStorage.getItem("runOnce") !== "true") {
@@ -89,11 +94,11 @@ class TopBar extends Component {
                     data-step="998" data-intro="When everything is done, click this button and select 'browser-menu &rarr; print' (not <kbd>CTRL</kbd>+<kbd>P</kbd>). Make sure the webpage isn't zoomed in, and that the printer setting is set to A4."
                     className="vLine">{this.props.showMenu ? "PREPARE FOR PRINT" : "SHOW MENU"}</a>
                 <a href="#changelog" data-step="999" data-intro="Happy badging!  Please report any errors/feedback to Nicolai Søborg (<a href='mailto:badger@xn--sb-lka.org'>badger@søb.org</a>)."
-                  onClick={this.toggleChangelog} style={{float: 'right'}}>v{version}</a>
+                  onClick={this.toggleChangelog} style={{float: "right"}}>v{version}</a>
                 {this.state.showChangelog && this.props.showMenu && <><br /><Changelog /></>}
             </span>
             {this.state.showExamples && (<Examples onClose={this.toggleExamples} />)}
-        </>)
+        </>);
     }
 }
 
@@ -104,7 +109,7 @@ TopBar.propTypes = {
 const mapStateToProps = (state) => {
     return {
         showMenu: state.present.showMenu,
-    }
-}
+    };
+};
 
 export default connect(mapStateToProps)(TopBar);

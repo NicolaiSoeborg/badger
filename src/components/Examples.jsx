@@ -1,30 +1,29 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 const EXAMPLES = [
-    'Awesome_badge.pdf',
-    'bildsoeskov17.pdf',
-    'C-BYG.pdf',
-    'Fail_badge.pdf',
-    'lucyfar.doc',
-    'Medico.pdf',
-    'NetIT.pdf',
-    'PandK.doc',
-    'Scor_badge.pdf',
-    'UK_pepe.png',
-    'Wrapsere.pdf',
-]
+    "Awesome_badge.pdf",
+    "bildsoeskov17.pdf",
+    "C-BYG.pdf",
+    "Fail_badge.pdf",
+    "lucyfar.doc",
+    "Medico.pdf",
+    "NetIT.pdf",
+    "PandK.doc",
+    "Scor_badge.pdf",
+    "UK_pepe.png",
+    "Wrapsere.pdf",
+];
 
 class Examples extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-        }
+        // this.state = { };
     }
 
     badge2div = (filename) => {
         const download = "/static/badges/" + filename;
         const template = download + "-template.png";
-        return (<div key={filename} style={{textAlign: 'center'}}>
+        return (<div key={filename} style={{textAlign: "center"}}>
             <hr />
             <img src={template} width="300" alt="Example badge design}" />
             <a href={download}><h2>{filename}</h2></a>
@@ -35,11 +34,11 @@ class Examples extends Component {
         return (
               <div className="no-print"
               style={{
-                  backgroundColor: '#fff',
+                  backgroundColor: "#fff",
                   borderRadius: 5,
                   maxWidth: 600,
                   minHeight: 300,
-                  margin: '0 auto',
+                  margin: "0 auto",
                   padding: 30
               }}>
                 <button className="closeBtn" onClick={this.props.onClose}>X</button>
@@ -53,7 +52,7 @@ class Examples extends Component {
 
                 {EXAMPLES.map(this.badge2div)}
               </div>
-        )
+        );
     }
 }
 

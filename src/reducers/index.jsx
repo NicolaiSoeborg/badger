@@ -1,10 +1,10 @@
-import badgeReducer from './badge';
+import badgeReducer from "./badge";
 
 const initialState = {
   showMenu: true,
   messages: [],
   focusedBadgeId: -1,
-  focusedPropName: '',
+  focusedPropName: "",
   badgeIdCounter: 1,
   badges: [
     {
@@ -33,7 +33,7 @@ const initialState = {
       },
       middle2: {
         text: "[add text]",
-        style: {display: 'none'},
+        style: {display: "none"},
         dx: -150,
         dy: 50,
         fontFamily: "Impact",
@@ -74,9 +74,8 @@ export default function rootReducer(state = initialState, action) {
       return {...state, ...{ showMenu: !state.showMenu }};
 
     case "ADD_MSG":
-      const newMsg = action.payload;
-      console.assert(typeof(newMsg) === 'string', `newMsg: ${newMsg}`);
-      return {...state, messages: [...state.messages, newMsg]};
+      console.assert(typeof(action.payload) === "string", `newMsg: ${action.payload}`);
+      return {...state, messages: [...state.messages, action.payload]};
 
     case "REMOVE_ALL_MSG":
       return {...state, messages: []};
@@ -85,4 +84,4 @@ export default function rootReducer(state = initialState, action) {
       //console.log(`root: Unknown type "${action.type}" returning state ${state}`);
       return badgeReducer(state, action);
   }
-};
+}

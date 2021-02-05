@@ -1,3 +1,4 @@
+import { ACTIONS, BADGE_TYPES } from "../Constants";
 import badgeReducer from "./badge";
 
 const initialState = {
@@ -6,6 +7,7 @@ const initialState = {
   focusedBadgeId: -1,
   focusedPropName: "",
   badgeIdCounter: 1,
+  badgeType: BADGE_TYPES[0],
   badges: [
     {
       id: 0,
@@ -67,21 +69,45 @@ const initialState = {
   ],
 };
 
-export default function rootReducer(state = initialState, action) {
+export function rootReducer(state = initialState, action) {
   switch (action.type) {
 
-    case "TOGGLE_SHOW_MENU":
+    case ACTIONS.TOGGLE_SHOW_MENU:
       return {...state, ...{ showMenu: !state.showMenu }};
 
-    case "ADD_MSG":
+    case ACTIONS.ADD_MSG:
       console.assert(typeof(action.payload) === "string", `newMsg: ${action.payload}`);
       return {...state, messages: [...state.messages, action.payload]};
 
-    case "REMOVE_ALL_MSG":
+    case ACTIONS.REMOVE_ALL_MSG:
       return {...state, messages: []};
 
     default:
       //console.log(`root: Unknown type "${action.type}" returning state ${state}`);
       return badgeReducer(state, action);
+  }
+}
+
+// This function defines the logic for how to group undo/redo events
+export function undoRedoGroup(action, currentState, previousHistory) {
+  const uniq = `${action.type}-${action.badgeId}`;
+  switch (action.type) {
+
+      case ACTIONS.BADGE_IMAGE_EDIT:
+          // Distinct between moving background and resizing:
+          return `${uniq}-${"scale" in action.payload}`;
+
+      case ACTIONS.BADGE_EDIT:
+          return `${uniq}-${action.payload.focusedPropName}-${action.payload.prop}`;
+
+      case ACTIONS.BADGE_CLONE:
+      case ACTIONS.BADGE_DELETE:
+      case ACTIONS.SET_BADGE_TYPE:
+      case ACTIONS.SET_ADDITIONAL_TXT:
+          return `${uniq}`;
+
+      default:
+          console.warn(`Unhandled undo/redo action: ${action.type}`);
+          return null;
   }
 }

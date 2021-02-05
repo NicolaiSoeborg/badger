@@ -1,5 +1,6 @@
 /*eslint no-case-declarations: off*/
 import produce from "immer";
+import { ACTIONS, BADGE_TYPES } from "../Constants";
 
 const getBadgeIndex = (badges, badgeId) => Math.max(0, badges.findIndex(badge => badge.id === badgeId));
 
@@ -7,7 +8,7 @@ export default function badgeReducer(state, action) {
   const badgeId = action.badgeId;
   switch (action.type) {
 
-    case "BADGE_CLONE":
+    case ACTIONS.BADGE_CLONE:
       const { img_connected } = action.payload;
       console.assert(typeof(img_connected) === "boolean", `img_connected: ${img_connected}`);
       return produce(state, draftState => {
@@ -20,8 +21,9 @@ export default function badgeReducer(state, action) {
         draftState.badgeIdCounter += 1;
       });
 
-    case "BADGE_DELETE":
+    case ACTIONS.BADGE_DELETE:
       if (state.badges.length === 1) {
+        // If we delete the last badge, we will lose the "badge template"
         return {...state, messages: [...state.messages, "Can't delete the last badge! Press F5 to reset layout."]};
       }
       console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
@@ -36,7 +38,7 @@ export default function badgeReducer(state, action) {
         ],
       };
 
-    case "BADGE_EDIT":
+    case ACTIONS.BADGE_EDIT:
       console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
       const { focusedPropName, prop, val } = action.payload;
       console.assert(focusedPropName !== "", `focusedPropName: ${focusedPropName}`);
@@ -44,7 +46,7 @@ export default function badgeReducer(state, action) {
         draftState.badges[getBadgeIndex(state.badges, badgeId)][focusedPropName][prop] = val;
       });
 
-    case "BADGE_IMAGE_EDIT":
+    case ACTIONS.BADGE_IMAGE_EDIT:
       console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
       return produce(state, draftState => {
         // Edit current badge:
@@ -64,7 +66,12 @@ export default function badgeReducer(state, action) {
         }
       });
 
-    case "SET_ADDITIONAL_TXT":
+    case ACTIONS.SET_BADGE_TYPE:
+      const { badgeType } = action.payload;
+      console.assert(BADGE_TYPES.includes(badgeType), `badgeType: ${badgeType}`);
+      return {...state, badgeType: badgeType };
+
+    case ACTIONS.SET_ADDITIONAL_TXT:
       console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
       const { show } = action.payload;
       console.assert(typeof(show) === "boolean", `show: ${show}`);
@@ -75,7 +82,7 @@ export default function badgeReducer(state, action) {
 
     default:
       if (typeof(action.type) === "string" && !action.type.startsWith("@@"))
-        console.log(`Unknown type "${action.type}" returning state`, state);
+          console.log(`Unknown type "${action.type}" returning state`, state);
       return state;
   }
 }

@@ -4,13 +4,13 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from "redux";
 import undoable, { ActionCreators, excludeAction } from "redux-undo";
-import rootReducer from "./reducers";
-import undoRedoGroup from "./undo";
+import { rootReducer, undoRedoGroup } from "./reducers";
 
 import { diff } from "deep-object-diff";
 
 import App from "./App.jsx";
 import * as serviceWorker from "./serviceWorker";
+import { ACTIONS } from "./Constants";
 
 const logger = store => next => action => {
     if (process.env.NODE_ENV !== "production") {
@@ -28,7 +28,9 @@ const logger = store => next => action => {
 
 const store = createStore(
     undoable(rootReducer, {
-        filter: excludeAction(["TOGGLE_SHOW_MENU", "ADD_MSG", "REMOVE_ALL_MSG"]),
+        // Actions we don't want be able to undo:
+        filter: excludeAction([ACTIONS.TOGGLE_SHOW_MENU, ACTIONS.ADD_MSG, ACTIONS.REMOVE_ALL_MSG]),
+        // Some actions
         groupBy: undoRedoGroup,
     }),
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?

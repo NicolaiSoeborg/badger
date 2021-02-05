@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
+import { ACTIONS, BADGE_TYPES } from "../Constants";
 import Changelog from "../components/Changelog";
 import Examples from "../components/Examples";
 import { version } from "../../package.json";
@@ -25,7 +26,7 @@ class TopBar extends Component {
 
     cloneBadge = (event) => {
         this.props.dispatch({
-            type: "BADGE_CLONE",
+            type: ACTIONS.BADGE_CLONE,
             payload: {
                 img_connected: this.state.shareBg,
             }
@@ -51,6 +52,15 @@ class TopBar extends Component {
         this.setState({ shareBg: !this.state.shareBg });
     }
 
+    toggleBadgeType = (event) => {
+        this.props.dispatch({
+            type: ACTIONS.SET_BADGE_TYPE,
+            payload: {
+                badgeType: document.getElementById("selectedBadgeType").value,
+            }
+        });
+    }
+
     showHelp = (event) => {
         const intro = window.introJs();
         intro.setOptions({
@@ -62,7 +72,7 @@ class TopBar extends Component {
     }
 
     preparePrint = (event) => {
-        this.props.dispatch({ type: "TOGGLE_SHOW_MENU" });
+        this.props.dispatch({ type: ACTIONS.TOGGLE_SHOW_MENU });
     }
 
     componentDidMount() {
@@ -73,7 +83,7 @@ class TopBar extends Component {
                 localStorage.setItem("runOnce", "true");
                 that.showHelp(event);
             }
-        }, 1);
+        }, 5);
     }
 
     render () {
@@ -93,9 +103,15 @@ class TopBar extends Component {
                 <a href="#print" onClick={this.preparePrint}
                     data-step="998" data-intro="When everything is done, click this button and select 'browser-menu &rarr; print' (not <kbd>CTRL</kbd>+<kbd>P</kbd>). Make sure the webpage isn't zoomed in, and that the printer setting is set to A4."
                     className="vLine">{this.props.showMenu ? "PREPARE FOR PRINT" : "SHOW MENU"}</a>
-                <a href="#changelog" data-step="999" data-intro="Happy badging!  Please report any errors/feedback to Nicolai Søborg (<a href='mailto:badger@xn--sb-lka.org'>badger@søb.org</a>)."
-                  onClick={this.toggleChangelog} style={{float: "right"}}>v{version}</a>
-                {this.state.showChangelog && this.props.showMenu && <><br /><Changelog /></>}
+                
+                <span style={{float: "right"}}>
+                    <select id="selectedBadgeType" data-step="998" data-intro="You can choose different badge types, but don't do it while designing the badge." onChange={this.toggleBadgeType}>
+                        {BADGE_TYPES.map(t => <option key={t}>{t}</option>)}
+                    </select>
+                    &nbsp; &nbsp;
+                    <a href="#changelog" onClick={this.toggleChangelog} data-step="999" data-intro="Happy badging!  Please report any errors/feedback to Nicolai Søborg (<a href='mailto:badger@xn--sb-lka.org'>badger@søb.org</a>).">v{version}</a>
+                    {this.state.showChangelog && this.props.showMenu && <><br /><Changelog /></>}
+                </span>
             </span>
             {this.state.showExamples && (<Examples onClose={this.toggleExamples} />)}
         </>);

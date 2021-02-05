@@ -59,7 +59,7 @@ class App extends Component {
           <dialog className="no-print" open={this.props.messages.length > 0}>
               <a href="#close" onClick={this.removeMsgs} style={{float: "right"}} title="Click to close dialog">X</a>
               {this.props.messages.map((msg, idx) => <p key={idx}>{msg}</p>)}
-	        </dialog>
+	      </dialog>
 
           <svg version="1.1" width="0" height="0" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -69,8 +69,14 @@ class App extends Component {
                   <clipPath id="badge-full">
                     <circle {...circleSize} r="3.35cm"></circle>
                   </clipPath>
+                  {/* This defines the text path around the round badge: */}
                   <path id="upper-path" d="M 80, 150 c 0, -100, 140, -100, 140, 0"></path>
                   <path id="lower-path" d="M 60, 150 c 0,  120, 180,  120, 180, 0"></path>
+
+                  <path id="hexagon00" fill="#FFF" d="M39.425 133.768v-69.11l60-34.561 60 34.561v69.11l-60 34.56z"></path>
+                  <path id="hexagon1" fill="#FFF" d="m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z"></path>
+                  <path id="hexagon2" fill="#050507" d="M98.925 32.983l57.5 33.119v66.221l-57.5 33.119-57.5-33.119V66.102l57.5-33.119zm0-5.771l-62.5 36v72.001l62.5 36 62.5-36V63.212l-62.5-36z"></path>
+                  
               </defs>
           </svg>
           <div id="badgeContainer"

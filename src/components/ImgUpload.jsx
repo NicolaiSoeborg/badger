@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
+import { ACTIONS } from "../Constants";
+
 class ImgUpload extends Component {
 
     loadImage = (event) => {
@@ -10,10 +12,10 @@ class ImgUpload extends Component {
         reader.onload = (evt) => {
             const data = evt.target.result;
             if (data.slice(5, data.indexOf(";")) === "image/gif") {
-                this.props.dispatch({ type: "ADD_MSG", payload: "WARNING: gifs might print weirdly!" });
+                this.props.dispatch({ type: ACTIONS.ADD_MSG, payload: "WARNING: gifs might print weirdly!" });
             }
             this.props.dispatch({
-                type: "BADGE_IMAGE_EDIT",
+                type: ACTIONS.BADGE_IMAGE_EDIT,
                 badgeId: this.props.id,
                 payload: {
                     href: data,

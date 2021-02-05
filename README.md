@@ -4,7 +4,7 @@ Badger
 [![Beerpay](https://beerpay.io/NicolaiSoeborg/badger/badge.svg?style=flat)](https://beerpay.io/NicolaiSoeborg/badger)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/NicolaiSoeborg/badger/master/LICENSE)
 
-The one true way to make badge sheets for printing.
+The one true way to make badge sheets for printing (each badge is 300x300 px).
 
 New version of Badger 3.x is located at <https://badger.søb.org/>.
 
@@ -30,7 +30,7 @@ this.props.dispatch({
 ```
 
 Using `redux-undo` (in `src/index.jsx`) actions will automatically be undo/redoable.
-In `src/undo.js` we define how group events, i.e. moving the image 20px should not generate 20 undoable actions!
+In `undoRedoGroup` we define how group events, i.e. moving the image 20px should not generate 20 undoable actions!
 
 ## Dependencies
 

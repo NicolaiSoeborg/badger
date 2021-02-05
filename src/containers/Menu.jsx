@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
+import { ACTIONS } from "../Constants";
 import FontSelector from "../components/Font";
 import MusicPlayer from "../components/MusicPlayer";
 import EasterEgg from "../components/EasterEgg";
@@ -14,7 +15,7 @@ class Menu extends Component {
 
     setVal = (event) => {
         this.props.dispatch({
-            type: "BADGE_EDIT",
+            type: ACTIONS.BADGE_EDIT,
             badgeId: this.props.focusedBadgeId,
             payload: {
                 focusedPropName: this.props.focusedPropName,
@@ -37,7 +38,7 @@ class Menu extends Component {
 
     addExtraField = (event) => {
         this.props.dispatch({
-            type: "SET_ADDITIONAL_TXT",
+            type: ACTIONS.SET_ADDITIONAL_TXT,
             badgeId: this.props.focusedBadgeId,
             payload: { show: event.target.checked },
         });

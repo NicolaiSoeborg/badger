@@ -1,8 +1,8 @@
-/*eslint: skip no-unused-vars*/
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
+import { ACTIONS } from "../Constants";
 import ImgUpload from "../components/ImgUpload";
 
 class Badge extends Component {
@@ -31,7 +31,7 @@ class Badge extends Component {
             const diffX = event.clientX - this.state.mouse.x,
                 diffY = event.clientY - this.state.mouse.y;
             this.props.dispatch({
-                type: "BADGE_IMAGE_EDIT",
+                type: ACTIONS.BADGE_IMAGE_EDIT,
                 badgeId: this.props.data.id,
                 payload: {
                     x: this.props.data.img.x + diffX,
@@ -58,13 +58,13 @@ class Badge extends Component {
     }
 
     deleteBadge = (event) => {
-        this.props.dispatch({ type: "BADGE_DELETE", badgeId: this.props.data.id });
+        this.props.dispatch({ type: ACTIONS.BADGE_DELETE, badgeId: this.props.data.id });
     }
 
     scaleImg = (event) => {
         const newSize = 400 * event.target.value;
         this.props.dispatch({
-            type: "BADGE_IMAGE_EDIT",
+            type: ACTIONS.BADGE_IMAGE_EDIT,
             badgeId: this.props.data.id,
             payload: {
                 // Update UI:

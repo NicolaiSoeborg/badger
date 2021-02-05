@@ -42,7 +42,7 @@ document.onkeydown = function(e) {
             function run(startingElm) {
                 const e = document.getElementById("harlem");
                 e.loop = false;
-                e.addEventListener('canplaythrough', function () {
+                e.addEventListener("canplaythrough", function () {
                     setTimeout(function () {
                         startingElm.classList.add("mw-harlem_shake_me", "im_first");
                     }, 500);

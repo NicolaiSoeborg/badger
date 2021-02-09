@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { ACTIONS, BADGE_TYPE, BADGE_TYPES } from "../Constants";
+import { ACTIONS, BADGE_TYPE } from "../Constants";
 import ImgUpload from "../components/ImgUpload";
 
 class Badge extends Component {
@@ -122,10 +122,10 @@ class Badge extends Component {
 
                     <text onDoubleClick={e => { e.stopPropagation(); } }>
                         {/* contenteditable="true" */}
-					    <textPath onClick={e => this.props.changeFocus(this.props.data.id, "upper")} {...this.props.data.upper}>{this.props.data.upper.text || "\u00A0"}</textPath>
+					    <textPath onClick={e => this.props.changeFocus(this.props.data.id, "upperPath")} {...this.props.data.upperPath}>{this.props.data.upperPath.text || "\u00A0"}</textPath>
                         <tspan onClick={e => this.props.changeFocus(this.props.data.id, "middle")} {...this.props.data.middle}>{this.props.data.middle.text || "\u00A0"}</tspan>
                         <tspan onClick={e => this.props.changeFocus(this.props.data.id, "middle2")} {...this.props.data.middle2}>{this.props.data.middle2.text || "\u00A0"}</tspan>
-                        <textPath onClick={e => this.props.changeFocus(this.props.data.id, "lower")} {...this.props.data.lower}>{this.props.data.lower.text || "\u00A0"}</textPath>
+                        <textPath onClick={e => this.props.changeFocus(this.props.data.id, "lowerPath")} {...this.props.data.lowerPath}>{this.props.data.lowerPath.text || "\u00A0"}</textPath>
 	    			</text>
                 </svg>
                 <br />

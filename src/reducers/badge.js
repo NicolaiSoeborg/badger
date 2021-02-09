@@ -1,7 +1,7 @@
 /*eslint no-case-declarations: off*/
 import produce from "immer";
-import { ACTIONS, BADGE_TYPES } from "../Constants";
-// import { initialStateRound } from "./index";
+import { ACTIONS, BADGE_TYPE, BADGE_TYPES } from "../Constants";
+import { initialStateRound, initialStateHexagon } from "./index";
 
 const getBadgeIndex = (badges, badgeId) => Math.max(0, badges.findIndex(badge => badge.id === badgeId));
 
@@ -67,10 +67,18 @@ export default function badgeReducer(state, action) {
     case ACTIONS.SET_BADGE_TYPE:
       const { badgeType } = action.payload;
       console.assert(BADGE_TYPES.includes(badgeType), `badgeType: ${badgeType}`);
-      if (state.badges.length === 1 && !state.badgeIsModified)
-        console.log("If badge == initialState then use other");
       return produce(state, draftState => {
         draftState.badgeType = badgeType;
+        if (state.badgeIsModified === false) {
+          // The default template doesn't fit both round and hexagon badges
+          if (badgeType === BADGE_TYPE.Round) {
+            draftState.badges = initialStateRound.badges;
+          } else if (badgeType == BADGE_TYPE.Hexagon) {
+            draftState.badges = initialStateHexagon.badges;
+          } else {
+            console.warn(`Unknown badgeType: ${badgeType}`);
+          }
+        }
       });
 
     case ACTIONS.SET_ADDITIONAL_TXT:

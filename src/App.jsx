@@ -9,7 +9,7 @@ import Menu from "./containers/Menu";
 import TopBar from "./containers/TopBar";
 import { BADGE_TYPE } from "./Constants";
 
-console.log("%cHello! Want to submit a bugfix or new feature? https://github.com/nicolaisoeborg/badger", "color: blue; font-size: 15px;");
+console.log("%cHello! Want to submit a bugfix or new feature? https://github.com/nicolaisoeborg/badger", "font-size: 18px; background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);");
 
 class App extends Component {
     constructor (props) {
@@ -80,9 +80,6 @@ class App extends Component {
                           <path d="m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z"></path>
                       ) : (console.error(`No full spec for ${this.props.badgeType}`))}
                   </clipPath>
-                  {/* This defines the text path around the round badge: */}
-                  <path id="upper-path" d="M 80, 150 c 0, -100, 140, -100, 140, 0"></path>
-                  <path id="lower-path" d="M 60, 150 c 0,  120, 180,  120, 180, 0"></path>
               </defs>
           </svg>
           <div id="badgeContainer"

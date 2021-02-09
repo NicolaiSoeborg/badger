@@ -99,6 +99,12 @@ class Menu extends Component {
                 <hr/>
                 <FontSelector selectedFont={this.getVal("fontFamily")} setFont={this.setFont} />
                 <hr/>
+                {this.props.focusedPropName.endsWith("Path") && (<>
+                    <label htmlFor="path">Path:</label><br/>
+                    <input {...commonProps("path")} /><br/>
+                    <small><a href="https://yqnn.github.io/svg-path-editor/">path editor</a></small>
+                    <hr/>
+                </>)}
                 <button onClick={this.changeBackground}>Change background</button>
                 <hr/>
                 <details>

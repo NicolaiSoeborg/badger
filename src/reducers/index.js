@@ -1,4 +1,4 @@
-import { ACTIONS, BADGE_TYPES } from "../Constants";
+import { ACTIONS, BADGE_TYPE, BADGE_TYPES } from "../Constants";
 import badgeReducer from "./badge";
 
 export const initialStateRound = {
@@ -6,13 +6,13 @@ export const initialStateRound = {
   messages: [],
   badgeIdCounter: 1,
   badgeIsModified: false,
-  badgeType: BADGE_TYPES[0],
+  badgeType: BADGE_TYPE.Round,
   badges: [
     {
       id: 0,
-      upper: {
+      upperPath: {
         text: "DTU",
-        href: "#upper-path",
+        path: "M 80, 150 c 0, -100, 140, -100, 140, 0",
         fontFamily: "Impact",
         fontSize: 25,
         fill: "#FFFFFF", // white text,
@@ -44,9 +44,9 @@ export const initialStateRound = {
         strokeWidth: 1,
         textAnchor: "middle",
       },
-      lower: {
+      lowerPath: {
         text: "C. Software",
-        href: "#lower-path",
+        path: "M 60, 150 c 0,  120, 180,  120, 180, 0",
         fill: "#FFFFFF", // white text,
         fontFamily: "Impact",
         fontSize: 25,
@@ -58,6 +58,70 @@ export const initialStateRound = {
       img_connected: true,
       img: {
         href: `static/${Math.floor(Math.random()*4) + 1}.png`,
+        x: -50,
+        y: -50,
+        scale: 1,
+        height: 400,
+        width: 400,
+      },
+    }
+  ],
+};
+
+export const initialStateHexagon = {
+  ...initialStateRound,
+  badgeType: BADGE_TYPE.Hexagon,
+  badges: [
+    {
+      id: 0,
+      upperPath: {
+        text: "DTU",
+        path: "M 60 0 l 60 -34.561 l 60 34.561 z",
+        fontFamily: "Impact",
+        fontSize: 15,
+        fill: "#FFFFFF", // white text,
+        stroke: "#000000", // black outline,
+        strokeWidth: 1,
+        textAnchor: "middle",
+        startOffset: "50%",
+      },
+      middle: {
+        text: "TXT",
+        x: 100,
+        y: 115,
+        fontFamily: "Impact",
+        fontSize: 42,
+        fill: "#FFFFFF", // white text,
+        stroke: "#000000", // black outline,
+        strokeWidth: 1,
+        textAnchor: "middle",
+      },
+      middle2: {
+        text: "[add text]",
+        style: {display: "none"},
+        dx: -130,
+        dy: 125,
+        fontFamily: "Impact",
+        fontSize: 24,
+        fill: "#FFFFFF", // white text,
+        stroke: "#000000", // black outline,
+        strokeWidth: 1,
+        textAnchor: "middle",
+      },
+      lowerPath: {
+        text: "C. Software",
+        path: "23",
+        fill: "#FFFFFF", // white text,
+        fontFamily: "Impact",
+        fontSize: 25,
+        stroke: "#000000", // black outline,
+        strokeWidth: 1,
+        textAnchor: "middle",
+        startOffset: "50%",
+      },
+      img_connected: true,
+      img: {
+        //href: TODO: `static/${Math.floor(Math.random()*4) + 1}.png`,
         x: -50,
         y: -50,
         scale: 1,

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { ACTIONS } from "../Constants";
+import { ACTIONS, BADGE_TYPE, BADGE_TYPES } from "../Constants";
 import ImgUpload from "../components/ImgUpload";
 
 class Badge extends Component {
@@ -92,10 +92,19 @@ class Badge extends Component {
     render () {
         // Make sure that when moving bg image, the browser wont make "drag-out" effect
         const stopDrag = e => e.preventDefault();
+
+        const badgeSize =
+            this.props.badgeType === BADGE_TYPE.Round ? 300 :
+            this.props.badgeType === BADGE_TYPE.Hexagon ? 180 : 0;
+
+        const outermostBorderStyle = {
+            stroke: "black", strokeWidth: ".1mm", strokeDasharray: "5,5", fill: "transparent", className: "draggable"
+        };
+
         return (
             <div className="badge" /*onMouseOut={this.stopMove}*/>
                 {this.props.showMenu && <button className="closeBtn no-print" onClick={this.deleteBadge} title="Delete badge">X</button>}
-                <svg version="1.1" baseProfile="full" width="300" height="300" xmlns="http://www.w3.org/2000/svg"
+                <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" width={badgeSize} height={badgeSize}
                     onMouseDown={this.beginMove} onMouseMove={this.doMove} onMouseUp={this.stopMove} onDoubleClick={this.changeBackground}>
                     {this.props.showMenu && /* Innermost image */
                         <image {...this.props.data.img} className="draggable" clipPath="url(#badge-cutoff)" onDragStart={stopDrag} />}
@@ -104,17 +113,19 @@ class Badge extends Component {
                     {!this.props.showMenu /* ... or just the outermost image (when printing) */
                         && <image {...this.props.data.img} clipPath="url(#badge-full)" onDragStart={stopDrag} />}
 
-                    {/* The outermost circle (always visible) */}
-                    <circle cx={150} cy={150} r="3.35cm"
-                        stroke="black" strokeWidth=".1mm" strokeDasharray="5,5"
-                        fill="transparent" className="draggable" />
+                    {/* The outermost border (always visible) */}
+                    {this.props.badgeType === BADGE_TYPE.Round ? (
+                        <circle cx={150} cy={150} r="3.35cm" {...outermostBorderStyle} />
+                    ) : this.props.badgeType === BADGE_TYPE.Hexagon ? (
+                        <path d="m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z" {...outermostBorderStyle}></path>
+                    ) : (console.warn(`No outermost border defined for ${this.props.badgeType}`))}
 
                     <text onDoubleClick={e => { e.stopPropagation(); } }>
                         {/* contenteditable="true" */}
 					    <textPath onClick={e => this.props.changeFocus(this.props.data.id, "upper")} {...this.props.data.upper}>{this.props.data.upper.text || "\u00A0"}</textPath>
-                        <textPath onClick={e => this.props.changeFocus(this.props.data.id, "lower")} {...this.props.data.lower}>{this.props.data.lower.text || "\u00A0"}</textPath>
                         <tspan onClick={e => this.props.changeFocus(this.props.data.id, "middle")} {...this.props.data.middle}>{this.props.data.middle.text || "\u00A0"}</tspan>
                         <tspan onClick={e => this.props.changeFocus(this.props.data.id, "middle2")} {...this.props.data.middle2}>{this.props.data.middle2.text || "\u00A0"}</tspan>
+                        <textPath onClick={e => this.props.changeFocus(this.props.data.id, "lower")} {...this.props.data.lower}>{this.props.data.lower.text || "\u00A0"}</textPath>
 	    			</text>
                 </svg>
                 <br />
@@ -130,12 +141,14 @@ class Badge extends Component {
 
 Badge.propTypes = {
     data: PropTypes.object.isRequired,
+    badgeType: PropTypes.string.isRequired,
     changeFocus: PropTypes.func.isRequired,
     showMenu: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => {
     return {
+        badgeType: state.present.badgeType,
         showMenu: state.present.showMenu,
     };
 };

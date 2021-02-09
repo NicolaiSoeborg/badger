@@ -10,7 +10,7 @@ const CHANGES = [
     "[v3.1.0] Undo / redo (<kbd>CTRL</kbd>+<kbd>z</kbd> and <kbd>CTRL</kbd>+<kbd>y</kbd>)",
     "[v3.2.0] Examples of good badge designs",
     "[v3.2.1] Bump dependencies",
-    "[v3.3.0] Hexagons!"
+    "[v3.3.0] New badge type: <a title='for making awesome stickers' href='https://sticker.how/'>Hexagon</a>",
 ];
 
 class Changelog extends Component {

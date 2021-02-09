@@ -105,6 +105,7 @@ class TopBar extends Component {
                     className="vLine">{this.props.showMenu ? "PREPARE FOR PRINT" : "SHOW MENU"}</a>
                 
                 <span style={{float: "right"}}>
+                    Badge type:&nbsp;
                     <select id="selectedBadgeType" data-step="998" data-intro="You can choose different badge types, but don't do it while designing the badge." onChange={this.toggleBadgeType}>
                         {BADGE_TYPES.map(t => <option key={t}>{t}</option>)}
                     </select>

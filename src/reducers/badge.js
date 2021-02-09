@@ -1,6 +1,7 @@
 /*eslint no-case-declarations: off*/
 import produce from "immer";
 import { ACTIONS, BADGE_TYPES } from "../Constants";
+// import { initialStateRound } from "./index";
 
 const getBadgeIndex = (badges, badgeId) => Math.max(0, badges.findIndex(badge => badge.id === badgeId));
 
@@ -12,9 +13,8 @@ export default function badgeReducer(state, action) {
       const { img_connected } = action.payload;
       console.assert(typeof(img_connected) === "boolean", `img_connected: ${img_connected}`);
       return produce(state, draftState => {
-        const newBadge = Object.assign({},
-          state.badges[getBadgeIndex(state.badges, state.focusedBadgeId)]
-        );
+        // Copy the first badge:
+        const newBadge = Object.assign({}, state.badges[0]);
         newBadge.id = state.badgeIdCounter;
         newBadge.img_connected = img_connected;
         draftState.badges.push(newBadge);
@@ -22,21 +22,16 @@ export default function badgeReducer(state, action) {
       });
 
     case ACTIONS.BADGE_DELETE:
-      if (state.badges.length === 1) {
-        // If we delete the last badge, we will lose the "badge template"
-        return {...state, messages: [...state.messages, "Can't delete the last badge! Press F5 to reset layout."]};
-      }
       console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
-      
-      // Deleting badge in focus? => change focus!
-      const newFocusedBadgeId = state.focusedBadgeId === badgeId ? state.badges[0].id : state.focusedBadgeId;
 
-      return {...state,
-        focusedBadgeId: newFocusedBadgeId,
-        badges: [
-          ...state.badges.filter(badge => badge.id !== badgeId),
-        ],
-      };
+      return produce(state, draftState => {
+        if (state.badges.length === 1) {
+          // If we delete the last badge, we will lose the "badge template"
+          draftState.messages.push("Can't delete the last badge! Press F5 to reset layout.");
+        } else {
+          draftState.badges = state.badges.filter(badge => badge.id !== badgeId);
+        }
+      });
 
     case ACTIONS.BADGE_EDIT:
       console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
@@ -44,11 +39,14 @@ export default function badgeReducer(state, action) {
       console.assert(focusedPropName !== "", `focusedPropName: ${focusedPropName}`);
       return produce(state, draftState => {
         draftState.badges[getBadgeIndex(state.badges, badgeId)][focusedPropName][prop] = val;
+        draftState.badgeIsModified = true;
       });
 
     case ACTIONS.BADGE_IMAGE_EDIT:
       console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
       return produce(state, draftState => {
+        draftState.badgeIsModified = true;
+
         // Edit current badge:
         for (const [k, v] of Object.entries(action.payload)) {
           draftState.badges[getBadgeIndex(state.badges, badgeId)].img[k] = v;
@@ -69,7 +67,11 @@ export default function badgeReducer(state, action) {
     case ACTIONS.SET_BADGE_TYPE:
       const { badgeType } = action.payload;
       console.assert(BADGE_TYPES.includes(badgeType), `badgeType: ${badgeType}`);
-      return {...state, badgeType: badgeType };
+      if (state.badges.length === 1 && !state.badgeIsModified)
+        console.log("If badge == initialState then use other");
+      return produce(state, draftState => {
+        draftState.badgeType = badgeType;
+      });
 
     case ACTIONS.SET_ADDITIONAL_TXT:
       console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
@@ -82,7 +84,7 @@ export default function badgeReducer(state, action) {
 
     default:
       if (typeof(action.type) === "string" && !action.type.startsWith("@@"))
-          console.log(`Unknown type "${action.type}" returning state`, state);
+          console.warn(`Unknown type "${action.type}" returning state`, state);
       return state;
   }
 }

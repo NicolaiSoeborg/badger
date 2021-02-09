@@ -1,7 +1,15 @@
-
-export const BADGE_TYPES = ["Round", "Hexagon"];
-
 // JS has no enum types, so using this workaround:
+
+export const BADGE_TYPE = {
+    Round: "Round",
+    Hexagon: "Hexagon",
+};
+
+export const BADGE_TYPES = [
+    BADGE_TYPE.Round,
+    BADGE_TYPE.Hexagon,
+];
+
 export const ACTIONS = {
     BADGE_CLONE: "BADGE_CLONE",
     BADGE_DELETE: "BADGE_DELETE",

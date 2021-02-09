@@ -7,6 +7,7 @@ import "./components/KonamiCode";
 import Badge from "./containers/Badge";
 import Menu from "./containers/Menu";
 import TopBar from "./containers/TopBar";
+import { BADGE_TYPE } from "./Constants";
 
 console.log("%cHello! Want to submit a bugfix or new feature? https://github.com/nicolaisoeborg/badger", "color: blue; font-size: 15px;");
 
@@ -43,6 +44,8 @@ class App extends Component {
     }
 
     render() {
+        console.assert(this.props.badgeType in BADGE_TYPE, `Unknown badgeType: ${this.props.badgeType}`);
+
         const circleSize = {
             cx: 150,
             cy: 150,
@@ -64,19 +67,22 @@ class App extends Component {
           <svg version="1.1" width="0" height="0" xmlns="http://www.w3.org/2000/svg">
               <defs>
                   <clipPath id="badge-cutoff">
-                    <circle {...circleSize} r="2.5cm"></circle>
+                      {this.props.badgeType === BADGE_TYPE.Round ? (
+                          <circle {...circleSize} r="2.5cm"></circle>
+                      ) : this.props.badgeType === BADGE_TYPE.Hexagon ? (
+                          <path d="m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z"></path>
+                      ) : (console.error(`No cutoff spec for ${this.props.badgeType}`))}
                   </clipPath>
                   <clipPath id="badge-full">
-                    <circle {...circleSize} r="3.35cm"></circle>
+                      {this.props.badgeType === BADGE_TYPE.Round ? (
+                          <circle {...circleSize} r="3.35cm"></circle>
+                      ) : this.props.badgeType === BADGE_TYPE.Hexagon ? (
+                          <path d="m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z"></path>
+                      ) : (console.error(`No full spec for ${this.props.badgeType}`))}
                   </clipPath>
                   {/* This defines the text path around the round badge: */}
                   <path id="upper-path" d="M 80, 150 c 0, -100, 140, -100, 140, 0"></path>
                   <path id="lower-path" d="M 60, 150 c 0,  120, 180,  120, 180, 0"></path>
-
-                  <path id="hexagon00" fill="#FFF" d="M39.425 133.768v-69.11l60-34.561 60 34.561v69.11l-60 34.56z"></path>
-                  <path id="hexagon1" fill="#FFF" d="m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z"></path>
-                  <path id="hexagon2" fill="#050507" d="M98.925 32.983l57.5 33.119v66.221l-57.5 33.119-57.5-33.119V66.102l57.5-33.119zm0-5.771l-62.5 36v72.001l62.5 36 62.5-36V63.212l-62.5-36z"></path>
-                  
               </defs>
           </svg>
           <div id="badgeContainer"
@@ -89,6 +95,7 @@ class App extends Component {
 }
 
 App.propTypes = {
+    badgeType: PropTypes.string.isRequired,
     badges: PropTypes.array.isRequired,  // arrayOf(Badge) ?
     messages: PropTypes.array.isRequired,
     showMenu: PropTypes.bool.isRequired,
@@ -96,6 +103,7 @@ App.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
+        badgeType: state.present.badgeType,
         badges: state.present.badges,
         messages: state.present.messages,
         showMenu: state.present.showMenu,

@@ -1,12 +1,11 @@
 import { ACTIONS, BADGE_TYPES } from "../Constants";
 import badgeReducer from "./badge";
 
-const initialState = {
+export const initialStateRound = {
   showMenu: true,
   messages: [],
-  focusedBadgeId: -1,
-  focusedPropName: "",
   badgeIdCounter: 1,
+  badgeIsModified: false,
   badgeType: BADGE_TYPES[0],
   badges: [
     {
@@ -69,7 +68,7 @@ const initialState = {
   ],
 };
 
-export function rootReducer(state = initialState, action) {
+export function rootReducer(state = initialStateRound, action) {
   switch (action.type) {
 
     case ACTIONS.TOGGLE_SHOW_MENU:
@@ -83,7 +82,7 @@ export function rootReducer(state = initialState, action) {
       return {...state, messages: []};
 
     default:
-      //console.log(`root: Unknown type "${action.type}" returning state ${state}`);
+      // Handle all the badge stuff in `src/reducers/badge.js`
       return badgeReducer(state, action);
   }
 }

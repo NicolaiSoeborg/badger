@@ -15,10 +15,6 @@ const EXAMPLES = [
 ];
 
 class Examples extends Component {
-    constructor(props) {
-        super(props);
-        // this.state = { };
-    }
 
     badge2div = (filename) => {
         const download = "/static/badges/" + filename;

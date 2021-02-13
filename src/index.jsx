@@ -40,7 +40,7 @@ const store = createStore(
 window.onkeydown = function KeyPress(event) {
     if (event.ctrlKey && event.key === "z") {
         store.dispatch(ActionCreators.undo());
-    } else if (event.ctrlKey && (event.key === "y" || event.shiftKey && event.key === "z")) {
+    } else if (event.ctrlKey && (event.key === "y" || (event.shiftKey && event.key === "z"))) {
         store.dispatch(ActionCreators.redo());
     }
 };

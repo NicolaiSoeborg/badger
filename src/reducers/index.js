@@ -1,4 +1,4 @@
-import { ACTIONS, BADGE_TYPE, BADGE_TYPES } from "../Constants";
+import { ACTIONS, BADGE_TYPE } from "../Constants";
 import badgeReducer from "./badge";
 
 export const initialStateRound = {

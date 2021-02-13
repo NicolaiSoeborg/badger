@@ -73,7 +73,7 @@ export default function badgeReducer(state, action) {
           // The default template doesn't fit both round and hexagon badges
           if (badgeType === BADGE_TYPE.Round) {
             draftState.badges = initialStateRound.badges;
-          } else if (badgeType == BADGE_TYPE.Hexagon) {
+          } else if (badgeType === BADGE_TYPE.Hexagon) {
             draftState.badges = initialStateHexagon.badges;
           } else {
             console.warn(`Unknown badgeType: ${badgeType}`);

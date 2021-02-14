@@ -80,6 +80,16 @@ class Badge extends Component {
         });
     }
 
+    rotateImg = (event) => {
+        this.props.dispatch({
+            type: ACTIONS.BADGE_IMAGE_EDIT,
+            badgeId: this.props.data.id,
+            payload: {
+                rotate: event.target.value,
+            }
+        });
+    }
+
     changeBackground = (event) => {
         // Note-to-self: 'ondblclick' isn't actually defined on svg elements,
 		// but just happens to work in Chrome and IE, but not FF.
@@ -104,8 +114,10 @@ class Badge extends Component {
         return (
             <div className="badge" /*onMouseOut={this.stopMove}*/>
                 {this.props.showMenu && <button className="closeBtn no-print" onClick={this.deleteBadge} title="Delete badge">X</button>}
-                <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" width={badgeSize} height={badgeSize}
-                    onMouseDown={this.beginMove} onMouseMove={this.doMove} onMouseUp={this.stopMove} onDoubleClick={this.changeBackground}>
+                <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg"
+                     width={badgeSize} height={badgeSize} transform={`rotate(${this.props.data.img.rotate})`}
+                     onMouseDown={this.beginMove} onMouseMove={this.doMove} onMouseUp={this.stopMove} onDoubleClick={this.changeBackground}
+                >
                     {this.props.showMenu && /* Innermost image */
                         <image {...this.props.data.img} className="draggable" clipPath="url(#badge-cutoff)" onDragStart={stopDrag} />}
                     {this.props.showMenu && /* + background */
@@ -133,6 +145,8 @@ class Badge extends Component {
                 {this.props.showMenu &&
                     <span className="no-print">
 				        Scale: <input type="range" min="0.01" max="5" step="0.01" value={this.props.data.img.scale} onChange={this.scaleImg} />
+                        <br/>
+                        Rotate: <input type="range" min="0" max="360" step="1" value={this.props.data.img.rotate} onChange={this.rotateImg} />
 			        </span>}
             </div>
         );

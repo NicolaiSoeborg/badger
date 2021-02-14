@@ -12,7 +12,7 @@ Feel free to create pull requests!
 
 # Run
 
- * `yarn` to download `node_modules` (you will get a some warnings)
+ * `yarn` to download `node_modules` (you will get a some warnings, this is due to `react-scripts` being crappy)
 
  * `yarn start` or `yarn build`
 

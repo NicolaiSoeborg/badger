@@ -1,5 +1,9 @@
+import preval from "preval.macro";
 import { ACTIONS, BADGE_TYPE } from "../Constants";
 import badgeReducer from "./badge";
+
+const PREDEFINED_BG = preval`module.exports = require('fs').readdirSync('public/static/bg/');`;
+const choose_random = items => items[Math.floor(Math.random() * items.length)];
 
 export const initialStateRound = {
   showMenu: true,
@@ -57,10 +61,11 @@ export const initialStateRound = {
       },
       img_connected: true,
       img: {
-        href: `static/${Math.floor(Math.random()*4) + 1}.png`,
+        href: `static/bg/${choose_random(PREDEFINED_BG.filter(f => f.startsWith("round-")))}`,
         x: -50,
         y: -50,
         scale: 1,
+        rotate: 0,
         height: 400,
         width: 400,
       },
@@ -121,10 +126,11 @@ export const initialStateHexagon = {
       },
       img_connected: true,
       img: {
-        //href: TODO: `static/${Math.floor(Math.random()*4) + 1}.png`,
+        href: `static/bg/${choose_random(PREDEFINED_BG.filter(f => f.startsWith("hex-")))}`,
         x: -50,
         y: -50,
         scale: 1,
+        rotate: 0,
         height: 400,
         width: 400,
       },

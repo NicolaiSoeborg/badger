@@ -9,11 +9,10 @@
   "dependencies": {
     "deep-object-diff": "^1.1.0",
     "immer": "^8.0.1",
-    "preval.macro": "^5.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.2",
-    "react-scripts": "4.0.1",
+    "react-scripts": "4.0.2",
     "redux": "^4.0.5",
     "redux-undo": "^1.0.1"
   },
@@ -21,14 +20,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "browserslist": [
     ">1.5%",
     "Firefox ESR"
   ],
   "devDependencies": {
-    "eslint-plugin-react": "^7.21.5"
+    "preval.macro": "^5.0.0"
   }
 }

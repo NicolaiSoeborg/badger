@@ -105,14 +105,26 @@ class Badge extends Component {
 
         const badgeSize =
             this.props.badgeType === BADGE_TYPE.Round ? 300 :
-            this.props.badgeType === BADGE_TYPE.Hexagon ? 180 : 0;
+            this.props.badgeType === BADGE_TYPE.Hexagon ? 180 : -1;
 
         const outermostBorderStyle = {
             stroke: "black", strokeWidth: ".1mm", strokeDasharray: "5,5", fill: "transparent", className: "draggable"
         };
 
+        // Browsers doesn't support setting a `path` in a TextPath element...
+        // So instead we need TextPath to have a `href="#uniqId"` and put the path in:
+        // <path id="uniqId" d="path here" />
+        const uniqPathId = `path-${this.props.data.id}`;
+
         return (
             <div className="badge" /*onMouseOut={this.stopMove}*/>
+                <svg version="1.1" width="0" height="0" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <path id={`upper-${uniqPathId}`} d={this.props.data.upperPath.path}></path>
+                        <path id={`lower-${uniqPathId}`} d={this.props.data.lowerPath.path}></path>
+                    </defs>
+                </svg>
+
                 {this.props.showMenu && <button className="closeBtn no-print" onClick={this.deleteBadge} title="Delete badge">X</button>}
                 <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg"
                      width={badgeSize} height={badgeSize} transform={`rotate(${this.props.data.img.rotate})`}
@@ -134,20 +146,21 @@ class Badge extends Component {
 
                     <text onDoubleClick={e => { e.stopPropagation(); } }>
                         {/* contenteditable="true" */}
-					    <textPath onClick={e => this.props.changeFocus(this.props.data.id, "upperPath")} {...this.props.data.upperPath}>{this.props.data.upperPath.text || "\u00A0"}</textPath>
+                        <textPath onClick={e => this.props.changeFocus(this.props.data.id, "upperPath")} {...this.props.data.upperPath} href={`#upper-${uniqPathId}`}>{this.props.data.upperPath.text || "\u00A0"}</textPath>
                         <tspan onClick={e => this.props.changeFocus(this.props.data.id, "middle")} {...this.props.data.middle}>{this.props.data.middle.text || "\u00A0"}</tspan>
                         <tspan onClick={e => this.props.changeFocus(this.props.data.id, "middle2")} {...this.props.data.middle2}>{this.props.data.middle2.text || "\u00A0"}</tspan>
-                        <textPath onClick={e => this.props.changeFocus(this.props.data.id, "lowerPath")} {...this.props.data.lowerPath}>{this.props.data.lowerPath.text || "\u00A0"}</textPath>
-	    			</text>
+                        <textPath onClick={e => this.props.changeFocus(this.props.data.id, "lowerPath")} {...this.props.data.lowerPath} href={`#lower-${uniqPathId}`}>{this.props.data.lowerPath.text || "\u00A0"}</textPath>
+                    </text>
                 </svg>
                 <br />
                 <ImgUpload id={this.props.data.id} />
                 {this.props.showMenu &&
                     <span className="no-print">
-				        Scale: <input type="range" min="0.01" max="5" step="0.01" value={this.props.data.img.scale} onChange={this.scaleImg} />
-                        <br/>
-                        Rotate: <input type="range" min="0" max="360" step="1" value={this.props.data.img.rotate} onChange={this.rotateImg} />
-			        </span>}
+                        Scale: <input type="range" min="0.01" max="5" step="0.01" value={this.props.data.img.scale} onChange={this.scaleImg} />
+                        <div style={{transform: `translate(${badgeSize/2}px, -80px) rotate(90deg)`}}>
+                            Rotate: <input type="range" min="0" max="360" step="1" value={this.props.data.img.rotate} onChange={this.rotateImg} />
+                        </div>
+                    </span>}
             </div>
         );
     }

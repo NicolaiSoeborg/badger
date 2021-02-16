@@ -1,4 +1,3 @@
-/*eslint no-case-declarations: off*/
 import produce from "immer";
 import { ACTIONS, BADGE_TYPE, BADGE_TYPES } from "../Constants";
 import { initialStateRound, initialStateHexagon } from "./index";

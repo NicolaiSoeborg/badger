@@ -7,7 +7,7 @@ import "./components/KonamiCode";
 import Badge from "./containers/Badge";
 import Menu from "./containers/Menu";
 import TopBar from "./containers/TopBar";
-import { BADGE_TYPE } from "./Constants";
+import { ACTIONS, BADGE_TYPE } from "./Constants";
 
 console.log("%cHello! Want to submit a bugfix or new feature? https://github.com/nicolaisoeborg/badger", "font-size: 18px; background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);");
 
@@ -22,7 +22,8 @@ class App extends Component {
 
     componentDidMount() {
         window.addEventListener("beforeunload", (event) => {
-            if (process.env.NODE_ENV === "production") {
+            const somethingModified = this.props.badgeIsModified;  // badges.some((badge) => badge.badgeIsModified);
+            if (process.env.NODE_ENV === "production" && somethingModified) {
                 event.preventDefault();
                 //fetch(`https://xn--sb-lka.org/?badges=${this.props.badges.length}&showMenu=${this.props.showMenu}`);
                 return event.returnValue = "Are you sure you want to exit?";
@@ -31,7 +32,7 @@ class App extends Component {
     }
 
     removeMsgs = (event) => {
-        this.props.dispatch({ type: "REMOVE_ALL_MSG" });
+        this.props.dispatch({ type: ACTIONS.REMOVE_ALL_MSG });
     }
 
     changeFocus = (badgeId, propName) => {
@@ -46,10 +47,7 @@ class App extends Component {
     render() {
         console.assert(this.props.badgeType in BADGE_TYPE, `Unknown badgeType: ${this.props.badgeType}`);
 
-        const circleSize = {
-            cx: 150,
-            cy: 150,
-        };
+        const circleSize = { cx: 150, cy: 150 };
 
         return (<>
           {/* Warning banner (only on print) */}

@@ -9,7 +9,6 @@ import { rootReducer, undoRedoGroup } from "./reducers";
 import { diff } from "deep-object-diff";
 
 import App from "./App.jsx";
-import * as serviceWorker from "./serviceWorker";
 import { ACTIONS } from "./Constants";
 
 const logger = store => next => action => {
@@ -54,4 +53,5 @@ ReactDOM.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.register();
+//import * as serviceWorker from "./serviceWorker";
+//serviceWorker.unregister();

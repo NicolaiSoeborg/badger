@@ -103,14 +103,6 @@ class Badge extends Component {
         // Make sure that when moving bg image, the browser wont make "drag-out" effect
         const stopDrag = e => e.preventDefault();
 
-        const badgeSize =
-            this.props.badgeType === BADGE_TYPE.Round ? 300 :
-            this.props.badgeType === BADGE_TYPE.Hexagon ? 180 : -1;
-
-        const outermostBorderStyle = {
-            stroke: "black", strokeWidth: ".1mm", strokeDasharray: "5,5", fill: "transparent", className: "draggable"
-        };
-
         // Browsers doesn't support setting a `path` in a TextPath element...
         // So instead we need TextPath to have a `href="#uniqId"` and put the path in:
         // <path id="uniqId" d="path here" />
@@ -127,7 +119,7 @@ class Badge extends Component {
 
                 {this.props.showMenu && <button className="closeBtn no-print" onClick={this.deleteBadge} title="Delete badge">X</button>}
                 <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg"
-                     width={badgeSize} height={badgeSize} transform={`rotate(${this.props.data.img.rotate})`}
+                     width={this.props.badgeSize} height={this.props.badgeSize} transform={`rotate(${this.props.data.img.rotate})`}
                      onMouseDown={this.beginMove} onMouseMove={this.doMove} onMouseUp={this.stopMove} onDoubleClick={this.changeBackground}
                 >
                     {this.props.showMenu && /* Innermost image */
@@ -139,9 +131,9 @@ class Badge extends Component {
 
                     {/* The outermost border (always visible) */}
                     {this.props.badgeType === BADGE_TYPE.Round ? (
-                        <circle {...outermostBorderStyle} {...this.props.border} />
+                        <circle {...this.props.border} />
                     ) : this.props.badgeType === BADGE_TYPE.Hexagon ? (
-                        <path {...outermostBorderStyle} {...this.props.border}></path>
+                        <path {...this.props.border}></path>
                     ) : (console.warn(`No outermost border defined for ${this.props.badgeType}`))}
 
                     <text onDoubleClick={e => { e.stopPropagation(); } }>
@@ -157,7 +149,7 @@ class Badge extends Component {
                 {this.props.showMenu &&
                     <span className="no-print">
                         Scale: <input type="range" min="0.01" max="5" step="0.01" value={this.props.data.img.scale} onChange={this.scaleImg} />
-                        <div style={{transform: `translate(${badgeSize/2}px, -80px) rotate(90deg)`}}>
+                        <div style={{transform: `translate(${this.props.badgeSize/2}px, -80px) rotate(90deg)`}}>
                             Rotate: <input type="range" min="0" max="360" step="1" value={this.props.data.img.rotate} onChange={this.rotateImg} />
                         </div>
                     </span>}
@@ -169,6 +161,7 @@ class Badge extends Component {
 Badge.propTypes = {
     data: PropTypes.object.isRequired,
     badgeType: PropTypes.string.isRequired,
+    badgeSize: PropTypes.number.isRequired,
     changeFocus: PropTypes.func.isRequired,
     showMenu: PropTypes.bool.isRequired,
 };

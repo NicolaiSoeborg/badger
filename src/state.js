@@ -12,11 +12,16 @@ const initialState = {
   badges: []
 };
 
+const outermostBorderStyle = {
+  stroke: "black", strokeWidth: ".1mm", strokeDasharray: "5,5", fill: "transparent"
+};
+
 export const initialStateRound = {
   ...initialState,
   badgeType: BADGE_TYPE.Round,
   // These are defined once (e.g. circle size):
   border_def: {
+    size: 300,  // total size (it is a square so x = y)
     cutoff: { cx: 150, cy: 150, r: "2.5cm", },
     full: { cx: 150, cy: 150, r: "3.35cm", },
   },
@@ -79,6 +84,7 @@ export const initialStateRound = {
         width: 400,
       },
       border: {
+        ...outermostBorderStyle,
         cx: 150, cy: 150, r: "3.35cm",
       },
     }
@@ -90,6 +96,7 @@ export const initialStateHexagon = {
   badgeType: BADGE_TYPE.Hexagon,
   // These are defined once (e.g. circle size):
   border_def: {
+    size: 180,  // x and y
     cutoff: { d: "m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z", },
     full: { d: "m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z", },
   },
@@ -144,14 +151,15 @@ export const initialStateHexagon = {
       img_connected: true,
       img: {
         href: `static/bg/${choose_random(PREDEFINED_BG.filter(f => f.startsWith("hex-")))}`,
-        x: -50,
-        y: -50,
+        x: 0,
+        y: 0,
         scale: 1,
         rotate: 0,
-        height: 400,
-        width: 400,
+        height: 180,
+        width: 180,
       },
       border: {
+        ...outermostBorderStyle,
         d: "m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z",
       },
     }

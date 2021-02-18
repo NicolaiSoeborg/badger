@@ -2,7 +2,6 @@ import produce from "immer";
 import { ACTIONS, BADGE_TYPE, BADGE_TYPES } from "../Constants";
 import { initialStateRound, initialStateHexagon } from "../state";
 
-
 export function rootReducer(state = initialStateRound, action) {
   switch (action.type) {
 
@@ -21,7 +20,6 @@ export function rootReducer(state = initialStateRound, action) {
       return badgeReducer(state, action);
   }
 }
-
 
 const getBadgeIndex = (badges, badgeId) => Math.max(0, badges.findIndex(badge => badge.id === badgeId));
 
@@ -93,8 +91,10 @@ function badgeReducer(state, action) {
           // The default template doesn't fit both round and hexagon badges
           if (badgeType === BADGE_TYPE.Round) {
             draftState.badges = initialStateRound.badges;
+            draftState.border_def = initialStateRound.border_def;
           } else if (badgeType === BADGE_TYPE.Hexagon) {
             draftState.badges = initialStateHexagon.badges;
+            draftState.border_def = initialStateHexagon.border_def;
           } else {
             console.warn(`Unknown badgeType: ${badgeType}`);
           }

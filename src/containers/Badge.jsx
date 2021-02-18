@@ -139,9 +139,9 @@ class Badge extends Component {
 
                     {/* The outermost border (always visible) */}
                     {this.props.badgeType === BADGE_TYPE.Round ? (
-                        <circle cx={150} cy={150} r="3.35cm" {...outermostBorderStyle} />
+                        <circle {...outermostBorderStyle} {...this.props.border} />
                     ) : this.props.badgeType === BADGE_TYPE.Hexagon ? (
-                        <path d="m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z" {...outermostBorderStyle}></path>
+                        <path {...outermostBorderStyle} {...this.props.border}></path>
                     ) : (console.warn(`No outermost border defined for ${this.props.badgeType}`))}
 
                     <text onDoubleClick={e => { e.stopPropagation(); } }>

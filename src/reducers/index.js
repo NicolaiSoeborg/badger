@@ -1,142 +1,7 @@
-import preval from "preval.macro";
-import { ACTIONS, BADGE_TYPE } from "../Constants";
-import badgeReducer from "./badge";
+import produce from "immer";
+import { ACTIONS, BADGE_TYPE, BADGE_TYPES } from "../Constants";
+import { initialStateRound, initialStateHexagon } from "../state";
 
-const PREDEFINED_BG = preval`module.exports = require('fs').readdirSync('public/static/bg/');`;
-const choose_random = items => items[Math.floor(Math.random() * items.length)];
-
-export const initialStateRound = {
-  showMenu: true,
-  messages: [],
-  badgeIdCounter: 1,
-  badgeIsModified: false,
-  badgeType: BADGE_TYPE.Round,
-  badges: [
-    {
-      id: 0,
-      upperPath: {
-        text: "DTU",
-        path: "M 80, 150 c 0, -100, 140, -100, 140, 0",
-        fontFamily: "Impact",
-        fontSize: 25,
-        fill: "#FFFFFF", // white text,
-        stroke: "#000000", // black outline,
-        strokeWidth: 1,
-        textAnchor: "middle",
-        startOffset: "50%",
-      },
-      middle: {
-        text: "Søborg",
-        x: 150,
-        y: 175,
-        fontFamily: "Impact",
-        fontSize: 50,
-        fill: "#FFFFFF", // white text,
-        stroke: "#000000", // black outline,
-        strokeWidth: 1,
-        textAnchor: "middle",
-      },
-      middle2: {
-        text: "[add text]",
-        style: {display: "none"},
-        dx: -150,
-        dy: 50,
-        fontFamily: "Impact",
-        fontSize: 50,
-        fill: "#FFFFFF", // white text,
-        stroke: "#000000", // black outline,
-        strokeWidth: 1,
-        textAnchor: "middle",
-      },
-      lowerPath: {
-        text: "C. Software",
-        path: "M 60, 150 c 0,  120, 180,  120, 180, 0",
-        fill: "#FFFFFF", // white text,
-        fontFamily: "Impact",
-        fontSize: 25,
-        stroke: "#000000", // black outline,
-        strokeWidth: 1,
-        textAnchor: "middle",
-        startOffset: "50%",
-      },
-      img_connected: true,
-      img: {
-        href: `static/bg/${choose_random(PREDEFINED_BG.filter(f => f.startsWith("round-")))}`,
-        x: -50,
-        y: -50,
-        scale: 1,
-        rotate: 0,
-        height: 400,
-        width: 400,
-      },
-    }
-  ],
-};
-
-export const initialStateHexagon = {
-  ...initialStateRound,
-  badgeType: BADGE_TYPE.Hexagon,
-  badges: [
-    {
-      id: 0,
-      upperPath: {
-        text: "DTU",
-        path: "M 60 0 l 60 -34.561 l 60 34.561 z",
-        fontFamily: "Impact",
-        fontSize: 15,
-        fill: "#FFFFFF", // white text,
-        stroke: "#000000", // black outline,
-        strokeWidth: 1,
-        textAnchor: "middle",
-        startOffset: "50%",
-      },
-      middle: {
-        text: "TXT",
-        x: 100,
-        y: 115,
-        fontFamily: "Impact",
-        fontSize: 42,
-        fill: "#FFFFFF", // white text,
-        stroke: "#000000", // black outline,
-        strokeWidth: 1,
-        textAnchor: "middle",
-      },
-      middle2: {
-        text: "[add text]",
-        style: {display: "none"},
-        dx: -130,
-        dy: 125,
-        fontFamily: "Impact",
-        fontSize: 24,
-        fill: "#FFFFFF", // white text,
-        stroke: "#000000", // black outline,
-        strokeWidth: 1,
-        textAnchor: "middle",
-      },
-      lowerPath: {
-        text: "C. Software",
-        path: "23",
-        fill: "#FFFFFF", // white text,
-        fontFamily: "Impact",
-        fontSize: 25,
-        stroke: "#000000", // black outline,
-        strokeWidth: 1,
-        textAnchor: "middle",
-        startOffset: "50%",
-      },
-      img_connected: true,
-      img: {
-        href: `static/bg/${choose_random(PREDEFINED_BG.filter(f => f.startsWith("hex-")))}`,
-        x: -50,
-        y: -50,
-        scale: 1,
-        rotate: 0,
-        height: 400,
-        width: 400,
-      },
-    }
-  ],
-};
 
 export function rootReducer(state = initialStateRound, action) {
   switch (action.type) {
@@ -156,6 +21,102 @@ export function rootReducer(state = initialStateRound, action) {
       return badgeReducer(state, action);
   }
 }
+
+
+const getBadgeIndex = (badges, badgeId) => Math.max(0, badges.findIndex(badge => badge.id === badgeId));
+
+function badgeReducer(state, action) {
+  const badgeId = action.badgeId;
+  switch (action.type) {
+
+    case ACTIONS.BADGE_CLONE:
+      const { img_connected } = action.payload;
+      console.assert(typeof(img_connected) === "boolean", `img_connected: ${img_connected}`);
+      return produce(state, draftState => {
+        // Copy the first badge:
+        const newBadge = Object.assign({}, state.badges[0]);
+        newBadge.id = state.badgeIdCounter;
+        newBadge.img_connected = img_connected;
+        draftState.badges.push(newBadge);
+        draftState.badgeIdCounter += 1;
+      });
+
+    case ACTIONS.BADGE_DELETE:
+      console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
+
+      return produce(state, draftState => {
+        if (state.badges.length === 1) {
+          // If we delete the last badge, we will lose the "badge template"
+          draftState.messages.push("Can't delete the last badge! Press F5 to reset layout.");
+        } else {
+          draftState.badges = state.badges.filter(badge => badge.id !== badgeId);
+        }
+      });
+
+    case ACTIONS.BADGE_EDIT:
+      console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
+      const { focusedPropName, prop, val } = action.payload;
+      console.assert(focusedPropName !== "", `focusedPropName: ${focusedPropName}`);
+      return produce(state, draftState => {
+        draftState.badges[getBadgeIndex(state.badges, badgeId)][focusedPropName][prop] = val;
+        draftState.badgeIsModified = true;
+      });
+
+    case ACTIONS.BADGE_IMAGE_EDIT:
+      console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
+      return produce(state, draftState => {
+        draftState.badgeIsModified = true;
+
+        // Edit current badge:
+        for (const [k, v] of Object.entries(action.payload)) {
+          draftState.badges[getBadgeIndex(state.badges, badgeId)].img[k] = v;
+        }
+        // And update all other connected badges:
+        if (draftState.badges[getBadgeIndex(state.badges, badgeId)].img_connected) {
+          for (let i = 0; i < draftState.badges.length; i++) {
+            if (draftState.badges[i].id === badgeId) continue;
+            if (draftState.badges[i].img_connected) {
+              for (const [k, v] of Object.entries(action.payload)) {
+                draftState.badges[i].img[k] = v;
+              }
+            }
+          }
+        }
+      });
+
+    case ACTIONS.SET_BADGE_TYPE:
+      const { badgeType } = action.payload;
+      console.assert(BADGE_TYPES.includes(badgeType), `badgeType: ${badgeType}`);
+      return produce(state, draftState => {
+        draftState.badgeType = badgeType;
+        if (state.badgeIsModified === false) {
+          // The default template doesn't fit both round and hexagon badges
+          if (badgeType === BADGE_TYPE.Round) {
+            draftState.badges = initialStateRound.badges;
+          } else if (badgeType === BADGE_TYPE.Hexagon) {
+            draftState.badges = initialStateHexagon.badges;
+          } else {
+            console.warn(`Unknown badgeType: ${badgeType}`);
+          }
+        }
+      });
+
+    case ACTIONS.SET_ADDITIONAL_TXT:
+      console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
+      const { show } = action.payload;
+      console.assert(typeof(show) === "boolean", `show: ${show}`);
+      return produce(state, draftState => {
+        draftState.badges[getBadgeIndex(state.badges, badgeId)].middle2.style = show ? {} : {display: "none"};
+        draftState.badges[getBadgeIndex(state.badges, badgeId)].middle.y += show ? -35 : 35;
+      });
+
+    default:
+      if (typeof(action.type) === "string" && !action.type.startsWith("@@"))
+          console.warn(`Unknown type "${action.type}" returning state`, state);
+      return state;
+  }
+}
+
 
 // This function defines the logic for how to group undo/redo events
 export function undoRedoGroup(action, currentState, previousHistory) {

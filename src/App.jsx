@@ -47,8 +47,6 @@ class App extends Component {
     render() {
         console.assert(this.props.badgeType in BADGE_TYPE, `Unknown badgeType: ${this.props.badgeType}`);
 
-        const circleSize = { cx: 150, cy: 150 };
-
         return (<>
           {/* Warning banner (only on print) */}
           <h1 className={this.props.showMenu ? "hidden at-print" : "hidden"}>You forgot to press 'prepare print'</h1>
@@ -66,16 +64,16 @@ class App extends Component {
               <defs>
                   <clipPath id="badge-cutoff">
                       {this.props.badgeType === BADGE_TYPE.Round ? (
-                          <circle {...circleSize} r="2.5cm"></circle>
+                          <circle {...this.props.border_def.cutoff}></circle>
                       ) : this.props.badgeType === BADGE_TYPE.Hexagon ? (
-                          <path d="m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z"></path>
+                          <path {...this.props.border_def.cutoff}></path>
                       ) : (console.error(`No cutoff spec for ${this.props.badgeType}`))}
                   </clipPath>
                   <clipPath id="badge-full">
                       {this.props.badgeType === BADGE_TYPE.Round ? (
-                          <circle {...circleSize} r="3.35cm"></circle>
+                          <circle {...this.props.border_def.full}></circle>
                       ) : this.props.badgeType === BADGE_TYPE.Hexagon ? (
-                          <path d="m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z"></path>
+                          <path {...this.props.border_def.full}></path>
                       ) : (console.error(`No full spec for ${this.props.badgeType}`))}
                   </clipPath>
               </defs>
@@ -92,6 +90,7 @@ class App extends Component {
 App.propTypes = {
     badgeType: PropTypes.string.isRequired,
     badges: PropTypes.array.isRequired,  // arrayOf(Badge) ?
+    border_def: PropTypes.object.isRequired,
     messages: PropTypes.array.isRequired,
     showMenu: PropTypes.bool.isRequired,
 };
@@ -100,6 +99,7 @@ const mapStateToProps = (state) => {
     return {
         badgeType: state.present.badgeType,
         badges: state.present.badges,
+        border_def: state.present.border_def,
         messages: state.present.messages,
         showMenu: state.present.showMenu,
     };

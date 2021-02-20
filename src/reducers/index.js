@@ -1,4 +1,5 @@
 import produce from "immer";
+import { gen_random_id } from "../helpers";
 import { ACTIONS, BADGE_TYPE, BADGE_TYPES } from "../Constants";
 import { initialStateRound, initialStateHexagon } from "../state";
 
@@ -33,10 +34,9 @@ function badgeReducer(state, action) {
       return produce(state, draftState => {
         // Copy the first badge:
         const newBadge = Object.assign({}, state.badges[0]);
-        newBadge.id = state.badgeIdCounter;
+        newBadge.id = gen_random_id();
         newBadge.img_connected = img_connected;
         draftState.badges.push(newBadge);
-        draftState.badgeIdCounter += 1;
       });
 
     case ACTIONS.BADGE_DELETE:

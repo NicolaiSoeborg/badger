@@ -1,15 +1,29 @@
 import React from "react";
 import ReactDOM from "react-dom";
-
 import { Provider } from "react-redux";
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
 import undoable, { ActionCreators, excludeAction } from "redux-undo";
-import { rootReducer, undoRedoGroup } from "./reducers";
-
+import * as Sentry from "@sentry/react";
+import { CaptureConsole as CaptureConsoleIntegration } from "@sentry/integrations";
 import { diff } from "deep-object-diff";
+// import preval from "preval.macro";
+
+import "./helpers";
 
 import App from "./App.jsx";
 import { ACTIONS } from "./Constants";
+import { rootReducer, undoRedoGroup } from "./reducers";
+
+if (true || navigator.doNotTrack !== 1) {
+    Sentry.init({
+        dsn: "https://db15f4faf8d9407e9d8ee4ade44addd2@o393671.ingest.sentry.io/5644684",
+        // preval`module.exports = require('fs').readdirSync('public/static/bg/');`;
+        release: `badger@${process.env.NODE_ENV}`,  // TODO: add git commit using preval
+        integrations: [new CaptureConsoleIntegration({
+            levels: ['warn', 'error', 'debug', 'assert']
+        })],
+    });
+};
 
 const logger = store => next => action => {
     if (process.env.NODE_ENV !== "production") {
@@ -32,8 +46,10 @@ const store = createStore(
         // Some actions
         groupBy: undoRedoGroup,
     }),
+    // Use redux devtool if installed, otherwise default to logger + sentry
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
-        window.__REDUX_DEVTOOLS_EXTENSION__() : applyMiddleware(logger)
+        window.__REDUX_DEVTOOLS_EXTENSION__() :
+        compose(applyMiddleware(logger), Sentry.createReduxEnhancer({}))
 );
 
 window.onkeydown = function KeyPress(event) {

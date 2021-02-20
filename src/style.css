@@ -28,23 +28,15 @@
   padding-right: 0.5ch;
 }
 
-.badge {
-  float: left;
-}
-
-.draggable {
-  cursor: move;
-}
+.badge { float: left; }
+.draggable { cursor: move; }
+.hidden { display: none; }
 
 .closeBtn {
   float: right;
   position: relative;
   right: 25px;
   top: 25px;
-}
-
-.hidden {
-  display: none;
 }
 
 @media print {

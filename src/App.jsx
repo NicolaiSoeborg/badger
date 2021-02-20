@@ -36,6 +36,7 @@ class App extends Component {
     }
 
     changeFocus = (badgeId, propName) => {
+        console.log(`changeFocus(${badgeId}, ${propName})`);
         this.setState({
             focusedBadgeId: badgeId,
             focusedPropName: propName,
@@ -48,43 +49,35 @@ class App extends Component {
         console.assert(this.props.badgeType in BADGE_TYPE, `Unknown badgeType: ${this.props.badgeType}`);
 
         return (<>
-          {/* Warning banner (only on print) */}
-          <h1 className={this.props.showMenu ? "hidden at-print" : "hidden"}>You forgot to press 'prepare print'</h1>
+            {/* Warning banner (only on print) */}
+            <h1 className={this.props.showMenu ? "hidden at-print" : "hidden"}>You forgot to press 'prepare print'</h1>
 
-          <TopBar />
+            <TopBar />
 
-          <Menu {...this.state} />
+            <Menu {...this.state} />
 
-          <dialog className="no-print" open={this.props.messages.length > 0}>
-              <a href="#close" onClick={this.removeMsgs} style={{float: "right"}} title="Click to close dialog">X</a>
-              {this.props.messages.map((msg, idx) => <p key={idx}>{msg}</p>)}
-	      </dialog>
+            <dialog className="no-print" open={this.props.messages.length > 0}>
+                <a href="#close" onClick={this.removeMsgs} style={{float: "right"}} title="Click to close dialog">X</a>
+                {this.props.messages.map((msg, idx) => <p key={idx}>{msg}</p>)}
+	        </dialog>
 
-          <svg version="1.1" width="0" height="0" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                  <clipPath id="badge-cutoff">
-                      {this.props.badgeType === BADGE_TYPE.Round ? (
-                          <circle {...this.props.border_def.cutoff}></circle>
-                      ) : this.props.badgeType === BADGE_TYPE.Hexagon ? (
-                          <path {...this.props.border_def.cutoff}></path>
-                      ) : (console.error(`No cutoff spec for ${this.props.badgeType}`))}
-                  </clipPath>
-                  <clipPath id="badge-full">
-                      {this.props.badgeType === BADGE_TYPE.Round ? (
-                          <circle {...this.props.border_def.full}></circle>
-                      ) : this.props.badgeType === BADGE_TYPE.Hexagon ? (
-                          <path {...this.props.border_def.full}></path>
-                      ) : (console.error(`No full spec for ${this.props.badgeType}`))}
-                  </clipPath>
-              </defs>
-          </svg>
-          <div id="badgeContainer"
-              data-step="1" data-intro="This is the current badge design. The innermost circle is the visible part of the badge, the outermost circle is the 'wrap around' part of the badge."
-              style={this.props.showMenu ? {} : {marginLeft: 0}}>
-              {this.props.badges.map((badge) =>
-                <Badge key={badge.id} data={badge} badgeSize={this.props.border_def.size} changeFocus={this.changeFocus} />
-              )}
-          </div>
+            <svg version="1.1" width="0" height="0" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <clipPath id="badge-cutoff">
+                        {React.createElement(this.props.border_def.type, this.props.border_def.cutoff)}
+                    </clipPath>
+                    <clipPath id="badge-full">
+                        {React.createElement(this.props.border_def.type, this.props.border_def.full)}
+                    </clipPath>
+                </defs>
+            </svg>
+            <div id="badgeContainer"
+                data-step="1" data-intro="This is the current badge design. The innermost circle is the visible part of the badge, the outermost circle is the 'wrap around' part of the badge."
+                style={this.props.showMenu ? {} : {marginLeft: 0}}>
+                {this.props.badges.map((badge) =>
+                    <Badge key={badge.id} {...badge} badgeSize={this.props.border_def.size} changeFocus={this.changeFocus} />
+                )}
+            </div>
         </>);
     }
 }

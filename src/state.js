@@ -1,13 +1,13 @@
 import preval from "preval.macro";
+import { gen_random_id } from "./helpers";
 import { BADGE_TYPE } from "./Constants";
 
 const PREDEFINED_BG = preval`module.exports = require('fs').readdirSync('public/static/bg/');`;
-const choose_random = items => items[Math.floor(Math.random() * items.length)];
+// const choose_random = items => items[Math.floor(Math.random() * items.length)];
 
 const initialState = {
   showMenu: true,
   messages: [],
-  badgeIdCounter: 1,  // used to generate uniq badge IDs
   badgeIsModified: false,
   badges: []
 };
@@ -22,12 +22,13 @@ export const initialStateRound = {
   // These are defined once (e.g. circle size):
   border_def: {
     size: 300,  // total size (it is a square so x = y)
+    type: "circle",  // <type> of cutoff+full
     cutoff: { cx: 150, cy: 150, r: "2.5cm", },
     full: { cx: 150, cy: 150, r: "3.35cm", },
   },
   badges: [
     {
-      id: 0,
+      id: gen_random_id(),
       upperPath: {
         text: "DTU",
         path: "M 80, 150 c 0, -100, 140, -100, 140, 0",
@@ -75,7 +76,7 @@ export const initialStateRound = {
       },
       img_connected: true,
       img: {
-        href: `static/bg/${choose_random(PREDEFINED_BG.filter(f => f.startsWith("round-")))}`,
+        href: `static/bg/${PREDEFINED_BG.filter(f => f.startsWith("round-")).choose_random()}`,
         x: -50,
         y: -50,
         scale: 1,
@@ -85,6 +86,7 @@ export const initialStateRound = {
       },
       border: {
         ...outermostBorderStyle,
+        type: "circle",
         cx: 150, cy: 150, r: "3.35cm",
       },
     }
@@ -97,12 +99,13 @@ export const initialStateHexagon = {
   // These are defined once (e.g. circle size):
   border_def: {
     size: 180,  // x and y
+    type: "path",  // <type> of cutoff+full
     cutoff: { d: "m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z", },
     full: { d: "m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z", },
   },
   badges: [
     {
-      id: 0,
+      id: gen_random_id(),
       upperPath: {
         text: "DTU",
         path: "M 60 0 l 60 -34.561 l 60 34.561 z",
@@ -150,7 +153,7 @@ export const initialStateHexagon = {
       },
       img_connected: true,
       img: {
-        href: `static/bg/${choose_random(PREDEFINED_BG.filter(f => f.startsWith("hex-")))}`,
+        href: `static/bg/${PREDEFINED_BG.filter(f => f.startsWith("hex-")).choose_random()}`,
         x: 0,
         y: 0,
         scale: 1,
@@ -160,6 +163,7 @@ export const initialStateHexagon = {
       },
       border: {
         ...outermostBorderStyle,
+        type: "path",
         d: "m 34.425 133.768 v -69.11 l 60 -34.561 l 60 34.561 v 69.11 l -60 34.56 z",
       },
     }

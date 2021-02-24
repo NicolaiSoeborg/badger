@@ -11,6 +11,10 @@ import { ACTIONS, BADGE_TYPE } from "./Constants";
 
 console.log("%cHello! Want to submit a bugfix or new feature? https://github.com/nicolaisoeborg/badger", "font-size: 18px; background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);");
 
+if (window.navigator.userAgent.indexOf("MSIE ") !== -1 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+    alert("Badger might not work correct in Internet Explorer.  Please use Firefox or Chrome.");
+}
+
 class App extends Component {
     constructor (props) {
         super(props);

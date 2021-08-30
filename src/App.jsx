@@ -61,7 +61,7 @@ class App extends Component {
             <Menu {...this.state} />
 
             <dialog className="no-print" open={this.props.messages.length > 0}>
-                <a href="#close" onClick={this.removeMsgs} style={{float: "right"}} title="Click to close dialog">X</a>
+                <a href="#close" onClick={this.removeMsgs} style={{float: "right", zIndex: 999}} title="Click to close dialog">X</a>
                 {this.props.messages.map((msg, idx) => <p key={idx}>{msg}</p>)}
 	        </dialog>
 

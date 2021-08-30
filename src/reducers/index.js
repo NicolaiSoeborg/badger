@@ -28,7 +28,7 @@ function badgeReducer(state, action) {
   const badgeId = action.badgeId;
   switch (action.type) {
 
-    case ACTIONS.BADGE_CLONE:
+    case ACTIONS.BADGE_CLONE: {
       const { img_connected } = action.payload;
       console.assert(typeof(img_connected) === "boolean", `img_connected: ${img_connected}`);
       return produce(state, draftState => {
@@ -38,6 +38,7 @@ function badgeReducer(state, action) {
         newBadge.img_connected = img_connected;
         draftState.badges.push(newBadge);
       });
+    }
 
     case ACTIONS.BADGE_DELETE:
       console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
@@ -51,7 +52,7 @@ function badgeReducer(state, action) {
         }
       });
 
-    case ACTIONS.BADGE_EDIT:
+    case ACTIONS.BADGE_EDIT: {
       console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
       const { focusedPropName, prop, val } = action.payload;
       console.assert(focusedPropName !== "", `focusedPropName: ${focusedPropName}`);
@@ -59,6 +60,7 @@ function badgeReducer(state, action) {
         draftState.badges[getBadgeIndex(state.badges, badgeId)][focusedPropName][prop] = val;
         draftState.badgeIsModified = true;
       });
+    }
 
     case ACTIONS.BADGE_IMAGE_EDIT:
       console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
@@ -82,7 +84,7 @@ function badgeReducer(state, action) {
         }
       });
 
-    case ACTIONS.SET_BADGE_TYPE:
+    case ACTIONS.SET_BADGE_TYPE: {
       const { badgeType } = action.payload;
       console.assert(BADGE_TYPES.includes(badgeType), `badgeType: ${badgeType}`);
       return produce(state, draftState => {
@@ -100,8 +102,9 @@ function badgeReducer(state, action) {
           }
         }
       });
+    }
 
-    case ACTIONS.SET_ADDITIONAL_TXT:
+    case ACTIONS.SET_ADDITIONAL_TXT: {
       console.assert(typeof(badgeId) === "number", `badgeId: ${badgeId}`);
       const { show } = action.payload;
       console.assert(typeof(show) === "boolean", `show: ${show}`);
@@ -109,6 +112,7 @@ function badgeReducer(state, action) {
         draftState.badges[getBadgeIndex(state.badges, badgeId)].middle2.style = show ? {} : {display: "none"};
         draftState.badges[getBadgeIndex(state.badges, badgeId)].middle.y += show ? -35 : 35;
       });
+    }
 
     default:
       if (typeof(action.type) === "string" && !action.type.startsWith("@@"))
@@ -119,7 +123,7 @@ function badgeReducer(state, action) {
 
 
 // This function defines the logic for how to group undo/redo events
-export function undoRedoGroup(action, currentState, previousHistory) {
+export function undoRedoGroup(action, currentState, previousHistory) {  // eslint-disable-line no-unused-vars
   const uniq = `${action.type}-${action.badgeId}`;
   switch (action.type) {
 

@@ -117,7 +117,7 @@ class Badge extends Component {
                     </defs>
                 </svg>
 
-                {this.props.showMenu && <button className="closeBtn no-print" onClick={this.deleteBadge} title="Delete badge">X</button>}
+                {this.props.showMenu && <button className="closeBtn no-print" onClick={this.deleteBadge} style={{zIndex: 998}} title="Delete badge">X</button>}
                 <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg"
                      width={this.props.badgeSize} height={this.props.badgeSize} transform={`rotate(${this.props.img.rotate})`}
                      onMouseDown={this.beginMove} onMouseMove={this.doMove} onMouseUp={this.stopMove} onDoubleClick={this.changeBackground}

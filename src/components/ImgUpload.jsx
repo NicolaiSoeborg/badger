@@ -11,7 +11,7 @@ class ImgUpload extends Component {
         // What to do when loading of data is done:
         reader.onload = (evt) => {
             const data = evt.target.result;
-            if (data.slice(5, data.indexOf(";")) === "image/gif") {
+            if (typeof data == "string" && data.slice(5, data.indexOf(";")) === "image/gif") {
                 this.props.dispatch({ type: ACTIONS.ADD_MSG, payload: "WARNING: gifs might print weirdly!" });
             }
             this.props.dispatch({

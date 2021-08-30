@@ -17,6 +17,7 @@ import { rootReducer, undoRedoGroup } from "./reducers";
 if (true || navigator.doNotTrack !== 1) {
     Sentry.init({
         dsn: "https://db15f4faf8d9407e9d8ee4ade44addd2@o393671.ingest.sentry.io/5644684",
+		autoSessionTracking: false,
         // preval`module.exports = require('fs').readdirSync('public/static/bg/');`;
         release: `badger@${process.env.NODE_ENV}`,  // TODO: add git commit using preval
         integrations: [new CaptureConsoleIntegration({

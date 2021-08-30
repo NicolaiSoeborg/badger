@@ -11,7 +11,9 @@ const CHANGES = [
     "[v3.2.0] Examples of good badge designs",
     "[v3.2.1] Bump dependencies",
     "[v3.3.0] New badge type: <a title='for making awesome stickers' href='https://sticker.how/'>Hexagon</a>",
-    "[v3.3.1] Allow changing text path and rotation"
+    "[v3.3.1] Allow changing text path and rotation",
+    "[v3.3.2] Allowing hexagon stickers (!)",
+    "[v3.3.3] Fix delete badge button",
 ];
 
 class Changelog extends Component {

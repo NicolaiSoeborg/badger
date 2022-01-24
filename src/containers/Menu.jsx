@@ -45,8 +45,12 @@ class Menu extends Component {
     }
 
     changeBackground = (event) => {
-        // TODO: should call badge.changeBackground() ?
-        document.getElementById(`fileSelect${this.props.focusedBadgeId}`).click(); // activate "select file" diag
+        const selectedBadge = document.getElementById(`fileSelect${this.props.focusedBadgeId}`);
+        if (selectedBadge === null) {
+            this.props.dispatch({ type: ACTIONS.ADD_MSG, payload: "WARNING: Can't find selected badge. Please click on the badge." });
+        } else {
+            selectedBadge.click(); // activate "select file" diag
+        }
     }
 
     render () {

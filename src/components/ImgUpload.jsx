@@ -22,8 +22,15 @@ class ImgUpload extends Component {
                 }
             });
         };
-        // Begin loading data (async)
-        reader.readAsDataURL(event.target.files[0]);
+        
+        try {
+            // Begin loading data (async) if exactly one file is selected
+            if (event.target.files.length === 1)
+                reader.readAsDataURL(event.target.files[0]);
+        } catch (err) {
+            console.warn(err);
+            this.props.dispatch({ type: ACTIONS.ADD_MSG, payload: `Error while loading image: ${err}` });
+        }
     }
 
     render () {

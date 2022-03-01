@@ -63,12 +63,12 @@ class TopBar extends Component {
 
     showHelp = (event) => {
         const intro = window.introJs();
-        intro.setOptions({
+        intro?.setOptions({
             showStepNumbers: false,
             showProgress: false,
             showBullets: false,
         });
-        intro.start();
+        intro?.start();
     }
 
     preparePrint = (event) => {

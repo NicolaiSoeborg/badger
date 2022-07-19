@@ -7,19 +7,19 @@
   "private": true,
   "homepage": "https://badger.xn--sb-lka.org/",
   "dependencies": {
-    "@sentry/integrations": "^6.18.1",
-    "@sentry/react": "^6.18.1",
+    "@sentry/integrations": "^7.7.0",
+    "@sentry/react": "^7.7.0",
     "deep-object-diff": "^1.1.7",
-    "immer": "^9.0.12",
+    "immer": "^9.0.15",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-redux": "^7.2.6",
-    "redux": "^4.1.2",
+    "react-redux": "^8.0.2",
+    "redux": "^4.2.0",
     "redux-undo": "^1.0.1"
   },
   "devDependencies": {
     "preval.macro": "^5.0.0",
-    "react-scripts": "^4.0.3"
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

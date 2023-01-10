@@ -9,7 +9,7 @@
   "dependencies": {
     "@sentry/integrations": "^7.7.0",
     "@sentry/react": "^7.7.0",
-    "deep-object-diff": "^1.1.7",
+    "deep-object-diff": "^1.1.9",
     "immer": "^9.0.15",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from 'react-dom/client';
 import { Provider } from "react-redux";
-import { createStore, applyMiddleware, compose } from "redux";
+import { legacy_createStore, applyMiddleware, compose } from "redux";
 import undoable, { ActionCreators, excludeAction } from "redux-undo";
 import * as Sentry from "@sentry/react";
 import { CaptureConsole as CaptureConsoleIntegration } from "@sentry/integrations";
@@ -43,7 +43,7 @@ const logger = store => next => action => {
     return result;
 };
 
-const store = createStore(
+const store = legacy_createStore(
     undoable(rootReducer, {
         // Actions we don't want be able to undo:
         filter: excludeAction([ACTIONS.TOGGLE_SHOW_MENU, ACTIONS.ADD_MSG, ACTIONS.REMOVE_ALL_MSG]),

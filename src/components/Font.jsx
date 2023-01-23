@@ -1,6 +1,32 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+// MAKE SURE TO UPDATE public/index.html when adding/removing fonts!
+export const FANCY_FONTS = [
+    "Amatic SC",
+    "Architects Daughter",
+    "Black Ops One",
+    "Clicker Script",
+    "Comic Sans MS",
+    "Diplomata SC",
+    "Griffy",
+    "Helvetica",
+    "Impact",
+    "Indie Flower",
+    "Kaushan Script",
+    "Lobster",
+    "Marck Script",
+    "Monoton",
+    "Orbitron",
+    "Permanent Marker",
+    "Poiret One",
+    "Righteous",
+    "Roboto",
+    "Satisfy",
+    "Times New Roman",
+    "ZCOOL KuaiLe",
+];
+
 class FontSelector extends Component {
     constructor(props) {
         super(props);
@@ -8,30 +34,8 @@ class FontSelector extends Component {
             ? ["Segoe Print", "Tahoma", "Terminal", "Wingdings", "Arial"] : [];
         this.state = {
             selectedFont: this.props.selectedFont || "Impact",
-            // MAKE SURE TO UPDATE public/index.html when adding/removing fonts!
             fonts: [
-                "Amatic SC",
-                "Architects Daughter",
-                "Black Ops One",
-                "Clicker Script",
-                "Comic Sans MS",
-                "Diplomata SC",
-                "Griffy",
-                "Helvetica",
-                "Impact",
-                "Indie Flower",
-                "Kaushan Script",
-                "Lobster",
-                "Marck Script",
-                "Monoton",
-                "Orbitron",
-                "Permanent Marker",
-                "Poiret One",
-                "Righteous",
-                "Roboto",
-                "Satisfy",
-                "Times New Roman",
-                "ZCOOL KuaiLe",
+                ...FANCY_FONTS,
                 ...additionalWindowsFonts
             ],
         };

@@ -1,6 +1,7 @@
 import preval from "preval.macro";
 import { gen_random_id } from "./helpers";
 import { BADGE_TYPE } from "./Constants";
+import { FANCY_FONTS } from "./components/Font";
 
 const PREDEFINED_BG = preval`module.exports = require('fs').readdirSync('public/static/bg/');`;
 // const choose_random = items => items[Math.floor(Math.random() * items.length)];
@@ -32,7 +33,7 @@ export const initialStateRound = {
       upperPath: {
         text: "DTU",
         path: "M 80, 150 c 0, -100, 140, -100, 140, 0",
-        fontFamily: "Impact",
+        fontFamily: FANCY_FONTS.choose_random(),
         fontSize: 25,
         fill: "#FFFFFF", // white text,
         stroke: "#000000", // black outline,
@@ -44,7 +45,7 @@ export const initialStateRound = {
         text: "Søborg",
         x: 150,
         y: 175,
-        fontFamily: "Impact",
+        fontFamily: FANCY_FONTS.choose_random(),
         fontSize: 50,
         fill: "#FFFFFF", // white text,
         stroke: "#000000", // black outline,
@@ -56,7 +57,7 @@ export const initialStateRound = {
         style: {display: "none"},
         dx: -150,
         dy: 50,
-        fontFamily: "Impact",
+        fontFamily: FANCY_FONTS.choose_random(),
         fontSize: 50,
         fill: "#FFFFFF", // white text,
         stroke: "#000000", // black outline,
@@ -67,7 +68,7 @@ export const initialStateRound = {
         text: "C. Software",
         path: "M 60, 150 c 0,  120, 180,  120, 180, 0",
         fill: "#FFFFFF", // white text,
-        fontFamily: "Impact",
+        fontFamily: FANCY_FONTS.choose_random(),
         fontSize: 25,
         stroke: "#000000", // black outline,
         strokeWidth: 1,

@@ -14,6 +14,7 @@ const CHANGES = [
     "[v3.3.1] Allow changing text path and rotation",
     "[v3.3.2] Allowing hexagon stickers (!)",
     "[v3.3.3] Fix delete badge button",
+    "[v3.3.4] Updated to React 18",
 ];
 
 class Changelog extends Component {

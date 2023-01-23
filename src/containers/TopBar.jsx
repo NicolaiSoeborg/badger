@@ -5,7 +5,9 @@ import { connect } from "react-redux";
 import { ACTIONS, BADGE_TYPES } from "../Constants";
 import Changelog from "../components/Changelog";
 import Examples from "../components/Examples";
-import { version } from "../../package.json";
+
+import preval from "preval.macro";
+const VERSION = preval`module.exports = JSON.parse(require('fs').readFileSync('package.json'))['version']`;
 
 class TopBar extends Component {
     constructor(props) {
@@ -110,7 +112,7 @@ class TopBar extends Component {
                         {BADGE_TYPES.map(t => <option key={t}>{t}</option>)}
                     </select>
                     &nbsp; &nbsp;
-                    <a href="#changelog" onClick={this.toggleChangelog} data-step="999" data-intro="Happy badging!  Please report any errors/feedback to Nicolai Søborg (<a href='mailto:badger@xn--sb-lka.org'>badger@søb.org</a>).">v{version}</a>
+                    <a href="#changelog" onClick={this.toggleChangelog} data-step="999" data-intro="Happy badging!  Please report any errors/feedback to Nicolai Søborg (<a href='mailto:badger@xn--sb-lka.org'>badger@søb.org</a>).">v{VERSION}</a>
                     {this.state.showChangelog && this.props.showMenu && <><br /><Changelog /></>}
                 </span>
             </span>

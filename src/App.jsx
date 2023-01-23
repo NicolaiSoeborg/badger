@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import "./style.css";
 import "./components/KonamiCode";
+import ErrorBoundary from "./containers/ErrorBoundary";
 import Badge from "./containers/Badge";
 import Menu from "./containers/Menu";
 import TopBar from "./containers/TopBar";
@@ -56,9 +57,13 @@ class App extends Component {
             {/* Warning banner (only on print) */}
             <h1 className={this.props.showMenu ? "hidden at-print" : "hidden"}>You forgot to press 'prepare print'</h1>
 
-            <TopBar />
+            <ErrorBoundary>
+                <TopBar />
+            </ErrorBoundary>
 
-            <Menu {...this.state} />
+            <ErrorBoundary>
+                <Menu {...this.state} />
+            </ErrorBoundary>
 
             <dialog className="no-print" style={{zIndex: 99999}} open={this.props.messages.length > 0}>
                 <a href="#close" onClick={this.removeMsgs} style={{float: "right", zIndex: 999}} title="Click to close dialog">X</a>
@@ -79,7 +84,9 @@ class App extends Component {
                 data-step="1" data-intro="This is the current badge design. The innermost circle is the visible part of the badge, the outermost circle is the 'wrap around' part of the badge."
                 style={this.props.showMenu ? {} : {marginLeft: 0}}>
                 {this.props.badges.map((badge) =>
-                    <Badge key={badge.id} {...badge} badgeSize={this.props.border_def.size} changeFocus={this.changeFocus} />
+                    <ErrorBoundary key={`boundary-${badge.id}`}>
+                        <Badge key={badge.id} {...badge} badgeSize={this.props.border_def.size} changeFocus={this.changeFocus} />
+                    </ErrorBoundary>
                 )}
             </div>
         </>);

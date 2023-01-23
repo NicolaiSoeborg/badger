@@ -1,19 +1,19 @@
 {
   "name": "badger",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "description": "The one true way to make badge sheets or hexagon stickers for printing",
   "author": "Nicolai Søborg <badger@xn--sb-lka.org>",
   "license": "MIT",
   "private": true,
   "homepage": "https://badger.xn--sb-lka.org/",
   "dependencies": {
-    "@sentry/integrations": "^7.7.0",
-    "@sentry/react": "^7.7.0",
+    "@sentry/integrations": "^7.32.1",
+    "@sentry/react": "^7.32.1",
     "deep-object-diff": "^1.1.9",
-    "immer": "^9.0.15",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-redux": "^8.0.2",
+    "immer": "^9.0.18",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.0.5",
     "redux": "^4.2.0",
     "redux-undo": "^1.0.1"
   },
@@ -23,6 +23,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "eject": "react-scripts eject",
     "build": "react-scripts build"
   },
   "browserslist": [

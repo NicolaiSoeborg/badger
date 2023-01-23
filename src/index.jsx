@@ -1,12 +1,11 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose } from "redux";
 import undoable, { ActionCreators, excludeAction } from "redux-undo";
 import * as Sentry from "@sentry/react";
 import { CaptureConsole as CaptureConsoleIntegration } from "@sentry/integrations";
 import { diff } from "deep-object-diff";
-// import preval from "preval.macro";
 
 import "./helpers";
 
@@ -14,12 +13,16 @@ import App from "./App.jsx";
 import { ACTIONS } from "./Constants";
 import { rootReducer, undoRedoGroup } from "./reducers";
 
-if (true || navigator.doNotTrack !== 1) {
+// Grab current git revision:
+import preval from "preval.macro";
+const gitRev = preval`module.exports = String(require('child_process').spawnSync("git", ["rev-parse", "HEAD"]).stdout).substr(0, 8)`;
+console.log(`Starting badger@${gitRev}-${process.env.NODE_ENV}`);
+
+if (navigator.doNotTrack !== 1) {
     Sentry.init({
         dsn: "https://db15f4faf8d9407e9d8ee4ade44addd2@o393671.ingest.sentry.io/5644684",
 		autoSessionTracking: false,
-        // preval`module.exports = require('fs').readdirSync('public/static/bg/');`;
-        release: `badger@${process.env.NODE_ENV}`,  // TODO: add git commit using preval
+        release: `badger@${gitRev}-${process.env.NODE_ENV}`,
         integrations: [new CaptureConsoleIntegration({
             levels: ['warn', 'error', 'debug', 'assert']
         })],
@@ -61,11 +64,14 @@ window.onkeydown = function KeyPress(event) {
     }
 };
 
-ReactDOM.render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById("root"));
+const container = document.getElementById("root");
+createRoot(container).render(
+    <React.StrictMode>
+        <Provider store={store}>
+            <App />
+        </Provider>
+    </React.StrictMode>
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -106,7 +106,7 @@ class Menu extends Component {
                 {this.props.focusedPropName.endsWith("Path") && (<>
                     <label htmlFor="path">Path:</label><br/>
                     <input {...commonProps("path")} /><br/>
-                    <small><a href="https://yqnn.github.io/svg-path-editor/">path editor</a></small>
+                    <small><a target="_blank" href="https://yqnn.github.io/svg-path-editor/">path editor</a></small>
                     <hr/>
                 </>)}
                 <button onClick={this.changeBackground}>Change background</button>

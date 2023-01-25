@@ -13,13 +13,13 @@ class MusicPlayer extends Component {
     toggleMusic = (event) => {
         if (event.target.checked) {
             // Play badger music:
-            document.getElementById("player").src = "https://www.youtube-nocookie.com/embed/hGlyFc79BUE?rel=0&controls=0&showinfo=0&enablejsapi=1&autoplay=1&origin=https://xn--sb-lka.org";
+            document.getElementById("player").src = "https://www.youtube-nocookie.com/embed/hGlyFc79BUE?rel=0&controls=0&showinfo=0&enablejsapi=1&autoplay=1&origin=https://badger.xn--sb-lka.org";
 
             // And log how much time has been spent:
             this.setState({
                 badgerInterval: setInterval(() => {
                     this.setState({ badgerTimer: this.state.badgerTimer + 1 });
-                    if (this.state.badgerTimer % 1800 === 0) {
+                    if (this.state.badgerTimer % 1800 === 0 && this.state.badgerTimer > 0) {
                         this.props.dispatch({
                             type: "ADD_MSG",
                             payload: `The badger song has been running for ${this.state.badgerTimer / 60} min`,
@@ -36,7 +36,7 @@ class MusicPlayer extends Component {
     render () {
         return (
             <>
-                <span>Play music: <input type="checkbox" onChange={this.toggleMusic} /></span>
+                <span>Play <a target="_blank" href="https://www.youtube-nocookie.com/embed/hGlyFc79BUE?rel=0&autoplay=1">music</a>: <input type="checkbox" onChange={this.toggleMusic} /></span>
                 <iframe id="player" allow="autoplay; encrypted-media" loading="eager" referrerPolicy="no-referrer"
                     className="hidden" width="0" height="0" title="badger" />
             </>

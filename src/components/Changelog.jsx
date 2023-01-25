@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import preval from "preval.macro";
 
 const CHANGES = [
-    "[<a href='https://nicolaisoeborg.github.io/badger/'>v1.x</a>] Idea by <a href='https://github.com/henrikh'>Henrik Enggaard</a>.",
+    "[<a target='_blank' href='https://nicolaisoeborg.github.io/badger/'>v1.x</a>] Idea by <a target='_blank' href='https://github.com/henrikh'>Henrik Enggaard</a>.",
     "[v2.x] Rebuild using knockout.js",
     "[v3.0.0] Rebuild using React",
     "[v3.0.3] Bugfixes and easter eggs",
@@ -10,7 +10,7 @@ const CHANGES = [
     "[v3.1.0] Undo / redo (<kbd>CTRL</kbd>+<kbd>z</kbd> and <kbd>CTRL</kbd>+<kbd>y</kbd>)",
     "[v3.2.0] Examples of good badge designs",
     "[v3.2.1] Bump dependencies",
-    "[v3.3.0] New badge type: <a title='for making awesome stickers' href='https://sticker.how/'>Hexagon</a>",
+    "[v3.3.0] New badge type: <a target='_blank' title='for making awesome stickers' href='https://sticker.how/'>Hexagon</a>",
     "[v3.3.1] Allow changing text path and rotation",
     "[v3.3.2] Allowing hexagon stickers (!)",
     "[v3.3.3] Fix delete badge button",

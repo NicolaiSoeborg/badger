@@ -64,6 +64,10 @@ class TopBar extends Component {
     }
 
     showHelp = (event) => {
+        if (window.introJs === undefined) {
+            console.warn("introJs is undefined");
+            return;
+        }
         const intro = window.introJs();
         intro?.setOptions({
             showStepNumbers: false,
@@ -79,13 +83,14 @@ class TopBar extends Component {
 
     componentDidMount() {
         const that = this;
+        // It seems like when loading badger from a local file, introJS is not loaded yet when componentDidMount is called?
         // DOM should be ready, but add a small delay to make sure:
         setTimeout(function(event) {
             if (localStorage.getItem("runOnce") !== "true") {
                 localStorage.setItem("runOnce", "true");
                 that.showHelp(event);
             }
-        }, 5);
+        }, 25);
     }
 
     render () {

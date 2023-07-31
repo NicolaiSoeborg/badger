@@ -1,4 +1,4 @@
-import produce from "immer";
+import { produce } from "immer";
 import { gen_random_id } from "../helpers";
 import { ACTIONS, BADGE_TYPE, BADGE_TYPES } from "../Constants";
 import { initialStateRound, initialStateHexagon } from "../state";

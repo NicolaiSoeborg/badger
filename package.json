@@ -7,12 +7,10 @@
   "private": true,
   "homepage": "https://badger.xn--sb-lka.org/",
   "dependencies": {
-    "@sentry/integrations": "^7.107.0",
-    "@sentry/react": "^7.107.0",
     "deep-object-diff": "^1.1.9",
-    "immer": "^10.0.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "immer": "^10.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-redux": "^8.1.2",
     "redux": "^4.2.1",
     "redux-undo": "^1.1.0"

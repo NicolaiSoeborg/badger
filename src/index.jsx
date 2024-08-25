@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from "react-redux";
 import { legacy_createStore, applyMiddleware, compose } from "redux";
 import undoable, { ActionCreators, excludeAction } from "redux-undo";
-import * as Sentry from "@sentry/react";
-import { CaptureConsole as CaptureConsoleIntegration } from "@sentry/integrations";
+//import * as Sentry from "@sentry/react";
+//import { CaptureConsole as CaptureConsoleIntegration } from "@sentry/integrations";
 import { diff } from "deep-object-diff";
 
 import "./helpers";
@@ -18,7 +18,7 @@ import preval from "preval.macro";
 const gitRev = preval`module.exports = String(require('child_process').spawnSync("git", ["rev-parse", "HEAD"]).stdout).substr(0, 8)`;
 console.log(`Starting badger@${gitRev}-${process.env.NODE_ENV}`);
 
-if (navigator.doNotTrack !== 1) {
+/*if (navigator.doNotTrack !== 1) {
     Sentry.init({
         dsn: "https://db15f4faf8d9407e9d8ee4ade44addd2@o393671.ingest.sentry.io/5644684",
 		autoSessionTracking: false,
@@ -27,7 +27,7 @@ if (navigator.doNotTrack !== 1) {
             levels: ['warn', 'error', 'debug', 'assert']
         })],
     });
-};
+};*/
 
 const logger = store => next => action => {
     if (process.env.NODE_ENV !== "production") {
